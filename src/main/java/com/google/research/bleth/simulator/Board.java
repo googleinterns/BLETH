@@ -1,0 +1,36 @@
+package com.google.research.bleth.simulator;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/** A container for all the agents, representing their locations, either real or estimated. */
+public class Board {
+    public final int rowNum;
+    public final int colNum;
+    ArrayList<Agent>[][] matrix;
+
+    public Board(int rows, int cols) {
+        rowNum = rows;
+        colNum = cols;
+        matrix = new ArrayList[rowNum][colNum];
+        for (int row = 0; row < rows; row++) {
+            Arrays.setAll(matrix[row], ArrayList::new);
+        }
+    }
+
+    /** Place an agent on board if the given location is valid. */
+    public void placeAgent(Location newLocation, Agent agent) {
+        boolean isRowValid = newLocation != null && 0 <= newLocation.row && newLocation.row < rowNum;
+        boolean isColValid = newLocation != null && 0 <= newLocation.col && newLocation.col < colNum;
+        if (isRowValid && isColValid) {
+            matrix[newLocation.row][newLocation.col].add(agent);
+        }
+    }
+
+    /** Remove an agent from its current location on board and place it on new location. */
+    public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
+        //
+    }
+}
+
+
