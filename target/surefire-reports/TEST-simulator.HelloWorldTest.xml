@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="2" failures="0" name="simulator.HelloWorldTest" time="0.002" errors="0" skipped="0">
+<testsuite tests="2" failures="0" name="simulator.HelloWorldTest" time="0.022" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.8+10-google-release-330023116"/>
@@ -61,6 +61,6 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="simulator.HelloWorldTest" name="testApp" time="0.002"/>
-  <testcase classname="simulator.HelloWorldTest" name="testHelloWorld" time="0"/>
+  <testcase classname="simulator.HelloWorldTest" name="testApp" time="0.001"/>
+  <testcase classname="simulator.HelloWorldTest" name="testHelloWorld" time="0.021"/>
 </testsuite>
