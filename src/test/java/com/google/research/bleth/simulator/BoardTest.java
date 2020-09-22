@@ -1,15 +1,12 @@
 package com.google.research.bleth.simulator;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
 import static org.mockito.Mockito.when;
 
 import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.Mock;
-
-
 
 @RunWith(MockitoJUnitRunner.class)
 public final class BoardTest{
@@ -132,62 +129,178 @@ public final class BoardTest{
 
     @Test
     public void moveAgentToEmptyLocationAgentShouldBeInNewLocation() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
     }
 
     @Test
     public void moveAgentToEmptyLocationAgentShouldNotBeInOldLocation() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][0]).isEmpty();
     }
 
     @Test
     public void moveAgentToNonEmptyLocation() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        board.placeAgent(zeroOnOneCoordinate, secondAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
 
-    }
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-    @Test
-    public void moveAgentFromEmptyLocation() {
-
+        assertThat(board.matrix[0][1]).containsExactly(secondAgent, firstAgent);
     }
 
     @Test
     public void moveAgentFromNonEmptyLocation() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        board.placeAgent(zeroOnZeroCoordinate, secondAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][0]).containsExactly(secondAgent);
+        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
     }
 
     @Test
     public void moveAgentToItsCurrentLocation() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
     }
 
     @Test
-    public void tryMoveAgentOutsideTheBoard() {
+    public void canNotMoveAnAgentOutsideTheBoardNegativeRow() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        when(firstAgent.move()).thenReturn(negativeRowCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
+    }
+
+    @Test
+    public void canNotMoveAnAgentOutsideTheBoardNegativeCol() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        when(firstAgent.move()).thenReturn(negativeColCoordinate);
+
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
+    }
+
+    @Test
+    public void canNotMoveAnAgentOutsideTheBoardTooHighRow() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        Location rowTooHighCoordinate = new Location(2, 0);
+        when(firstAgent.move()).thenReturn(rowTooHighCoordinate);
+
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
+    }
+
+    @Test
+    public void canNotMoveAnAgentOutsideTheBoardTooHighCol() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        Location colTooHighCoordinate = new Location(0, 2);
+        when(firstAgent.move()).thenReturn(colTooHighCoordinate);
+
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
     }
 
     @Test
     public void moveTwoAgentsFromDifferentLocationsToDifferentLocations() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        board.placeAgent(oneOnOneCoordinate, secondAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
+        when(secondAgent.move()).thenReturn(oneOnZeroCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+        board.moveAgent(oneOnOneCoordinate, secondAgent.move(), secondAgent);
+
+        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
+        assertThat(board.matrix[1][0]).containsExactly(secondAgent);
     }
 
     @Test
     public void moveTwoAgentsFromDifferentLocationsToSameLocation() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        board.placeAgent(oneOnOneCoordinate, secondAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
+        when(secondAgent.move()).thenReturn(zeroOnOneCoordinate);
 
-    }
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+        board.moveAgent(oneOnOneCoordinate, secondAgent.move(), secondAgent);
 
-    @Test
-    public void moveTwoAgentsFromSameLocationToDifferentLocations() {
-
+        assertThat(board.matrix[0][1]).containsExactly(firstAgent, secondAgent);
     }
 
     @Test
     public void moveTwoAgentsFromSameLocationToSameLocation() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        board.placeAgent(zeroOnZeroCoordinate, secondAgent);
+        when(firstAgent.move()).thenReturn(oneOnOneCoordinate);
+        when(secondAgent.move()).thenReturn(oneOnOneCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+        board.moveAgent(zeroOnZeroCoordinate, secondAgent.move(), secondAgent);
+
+        assertThat(board.matrix[1][1]).containsExactly(firstAgent, secondAgent);
+    }
+
+    @Test
+    public void moveTwoAgentsFromSameLocationToDifferentLocations() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        board.placeAgent(zeroOnZeroCoordinate, secondAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
+        when(secondAgent.move()).thenReturn(oneOnZeroCoordinate);
+
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+        board.moveAgent(zeroOnZeroCoordinate, secondAgent.move(), secondAgent);
+
+        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
+        assertThat(board.matrix[1][0]).containsExactly(secondAgent);
     }
 
     @Test
     public void moveTwoAgentsFromSameLocationSecondAgentFirst() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        board.placeAgent(zeroOnZeroCoordinate, secondAgent);
+        when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
+        when(secondAgent.move()).thenReturn(oneOnZeroCoordinate);
 
+        board.moveAgent(zeroOnZeroCoordinate, secondAgent.move(), secondAgent);
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+
+        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
+        assertThat(board.matrix[1][0]).containsExactly(secondAgent);
     }
 }
-
