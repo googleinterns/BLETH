@@ -41,7 +41,7 @@ public final class BoardTest{
     }
 
     @Test
-    public void placeAnAgentOnBoardAgentShouldBeInRightLocation() {
+    public void placeAnAgentOnBoardAgentShouldBeOnRightLocation() {
         Board board = new Board(2, 2);
         when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
 
@@ -51,7 +51,7 @@ public final class BoardTest{
     }
 
     @Test
-    public void placeAnAgentOnBoardAgentShouldNotBeInOtherLocation() {
+    public void placeAnAgentOnBoardAgentShouldNotBeOnOtherLocation() {
         Board board = new Board(2, 2);
         when(firstAgent.move()).thenReturn(oneOnOneCoordinate);
 
@@ -85,50 +85,50 @@ public final class BoardTest{
         assertThat(board.matrix[0][1]).containsExactly(firstAgent, secondAgent);
     }
 
-    @Test
-    public void canNotPlaceAnAgentOutsideTheBoardNegativeRow() {
+    @Test(expected = IllegalArgumentException.class)
+    public void placeNullOnBoardThrowsException() {
+        Board board = new Board(2, 2);
+        when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
+
+        board.placeAgent(firstAgent.move(), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void placeAnAgentOutsideTheBoardNegativeRowThrowsException() {
         Board board = new Board(2, 2);
         when(firstAgent.move()).thenReturn(negativeRowCoordinate);
 
         board.placeAgent(firstAgent.move(), firstAgent);
-
-        assertThat(isBoardEmpty(board, 2, 2)).isTrue();
     }
 
-    @Test
-    public void canNotPlaceAnAgentOutsideTheBoardNegativeCol() {
+    @Test(expected = IllegalArgumentException.class)
+    public void placeAnAgentOutsideTheBoardNegativeColThrowsException() {
         Board board = new Board(2, 2);
         when(firstAgent.move()).thenReturn(negativeColCoordinate);
 
         board.placeAgent(firstAgent.move(), firstAgent);
-
-        assertThat(isBoardEmpty(board, 2, 2)).isTrue();
     }
 
-    @Test
-    public void canNotPlaceAnAgentOutsideTheBoardTooHighRow() {
+    @Test(expected = IllegalArgumentException.class)
+    public void placeAnAgentOutsideTheBoardTooHighRowThrowsException() {
         Board board = new Board(2, 2);
         Location rowTooHighCoordinate = new Location(2, 0);
         when(firstAgent.move()).thenReturn(rowTooHighCoordinate);
 
         board.placeAgent(firstAgent.move(), firstAgent);
-
-        assertThat(isBoardEmpty(board, 2, 2)).isTrue();
     }
 
-    @Test
-    public void canNotPlaceAnAgentOutsideTheBoardTooHighCol() {
+    @Test(expected = IllegalArgumentException.class)
+    public void placeAnAgentOutsideTheBoardTooHighColThrowsException() {
         Board board = new Board(2, 2);
         Location colTooHighCoordinate = new Location(0, 2);
         when(firstAgent.move()).thenReturn(colTooHighCoordinate);
 
         board.placeAgent(firstAgent.move(), firstAgent);
-
-        assertThat(isBoardEmpty(board, 2, 2)).isTrue();
     }
 
     @Test
-    public void moveAgentToEmptyLocationAgentShouldBeInNewLocation() {
+    public void moveAgentToEmptyLocationAgentShouldBeOnNewLocation() {
         Board board = new Board(2, 2);
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
@@ -139,7 +139,7 @@ public final class BoardTest{
     }
 
     @Test
-    public void moveAgentToEmptyLocationAgentShouldNotBeInOldLocation() {
+    public void moveAgentToEmptyLocationAgentShouldNotBeOnOldLocation() {
         Board board = new Board(2, 2);
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         when(firstAgent.move()).thenReturn(zeroOnOneCoordinate);
@@ -158,7 +158,7 @@ public final class BoardTest{
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(secondAgent, firstAgent);
+        assertThat(board.matrix[0][1]).containsExactly(firstAgent, secondAgent);
     }
 
     @Test
@@ -185,50 +185,51 @@ public final class BoardTest{
         assertThat(board.matrix[0][0]).containsExactly(firstAgent);
     }
 
-    @Test
-    public void canNotMoveAnAgentOutsideTheBoardNegativeRow() {
+    @Test(expected = IllegalArgumentException.class)
+    public void moveNullOnBoardThrowsException() {
+        Board board = new Board(2, 2);
+        board.placeAgent(zeroOnZeroCoordinate, firstAgent);
+        when(firstAgent.move()).thenReturn(oneOnZeroCoordinate);
+
+        board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void moveAnAgentOutsideTheBoardNegativeRowThrowsException() {
         Board board = new Board(2, 2);
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         when(firstAgent.move()).thenReturn(negativeRowCoordinate);
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
-
-        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
     }
 
-    @Test
-    public void canNotMoveAnAgentOutsideTheBoardNegativeCol() {
+    @Test(expected = IllegalArgumentException.class)
+    public void moveAnAgentOutsideTheBoardNegativeColThrowsException() {
         Board board = new Board(2, 2);
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         when(firstAgent.move()).thenReturn(negativeColCoordinate);
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
-
-        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
     }
 
-    @Test
-    public void canNotMoveAnAgentOutsideTheBoardTooHighRow() {
+    @Test(expected = IllegalArgumentException.class)
+    public void moveAnAgentOutsideTheBoardTooHighRowThrowsException() {
         Board board = new Board(2, 2);
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         Location rowTooHighCoordinate = new Location(2, 0);
         when(firstAgent.move()).thenReturn(rowTooHighCoordinate);
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
-
-        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
     }
 
-    @Test
-    public void canNotMoveAnAgentOutsideTheBoardTooHighCol() {
+    @Test(expected = IllegalArgumentException.class)
+    public void moveAnAgentOutsideTheBoardTooHighColThrowsException() {
         Board board = new Board(2, 2);
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         Location colTooHighCoordinate = new Location(0, 2);
         when(firstAgent.move()).thenReturn(colTooHighCoordinate);
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
-
-        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
     }
 
     @Test
@@ -290,7 +291,7 @@ public final class BoardTest{
     }
 
     @Test
-    public void moveTwoAgentsFromSameLocationSecondAgentFirst() {
+    public void moveTwoAgentsFromSameLocationToDifferentLocationsSecondAgentFirst() {
         Board board = new Board(2, 2);
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         board.placeAgent(zeroOnZeroCoordinate, secondAgent);
