@@ -22,9 +22,13 @@ public class Board {
     public void placeAgent(Location newLocation, Agent agent) {
         boolean isRowValid = newLocation != null && 0 <= newLocation.row && newLocation.row < rowNum;
         boolean isColValid = newLocation != null && 0 <= newLocation.col && newLocation.col < colNum;
-        if (isRowValid && isColValid) {
-            matrix[newLocation.row][newLocation.col].add(agent);
+        if (!(isRowValid && isColValid)) {
+            throw new IllegalArgumentException("Invalid Location");
         }
+        if (agent == null) {
+            throw new IllegalArgumentException("Invalid Agent");
+        }
+        matrix[newLocation.row][newLocation.col].add(agent);
     }
 
     /** Remove an agent from its current location on board and place it on new location. */
@@ -33,9 +37,13 @@ public class Board {
         boolean isOldColValid = oldLocation != null && 0 <= oldLocation.col && oldLocation.col < colNum;
         boolean isNewRowValid = newLocation != null && 0 <= newLocation.row && newLocation.row < rowNum;
         boolean isNewColValid = newLocation != null && 0 <= newLocation.col && newLocation.col < colNum;
-        if (isOldRowValid && isOldColValid && isNewRowValid && isNewColValid) {
-            matrix[oldLocation.row][oldLocation.col].remove(agent);
-            placeAgent(newLocation, agent);
+        if (!(isOldRowValid && isOldColValid && isNewRowValid && isNewColValid)) {
+            throw new IllegalArgumentException("Invalid Location");
         }
+        if (agent == null) {
+            throw new IllegalArgumentException("Invalid Agent");
+        }
+        matrix[oldLocation.row][oldLocation.col].remove(agent);
+        placeAgent(newLocation, agent);
     }
 }
