@@ -18,7 +18,11 @@ public class Board {
         }
     }
 
-    /** Place an agent on board if the given location is valid. */
+    /**
+     * Place an agent on board if the given location is valid.
+     * @param newLocation is the location where the agent will be placed.
+     * @param agent is the Agent which placed on the board.
+     */
     public void placeAgent(Location newLocation, Agent agent) {
         boolean isRowValid = newLocation != null && 0 <= newLocation.row && newLocation.row < rowNum;
         boolean isColValid = newLocation != null && 0 <= newLocation.col && newLocation.col < colNum;
@@ -31,7 +35,12 @@ public class Board {
         matrix[newLocation.row][newLocation.col].add(agent);
     }
 
-    /** Remove an agent from its current location on board and place it on new location. */
+    /**
+     * Remove an agent from its current location on board and place it on new location.
+     * @param oldLocation is the agent's current location.
+     * @param newLocation is the location where the agent will be placed.
+     * @param agent is the Agent which moves from oldLocation to newLocation.
+     */
     public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
         boolean isOldRowValid = oldLocation != null && 0 <= oldLocation.row && oldLocation.row < rowNum;
         boolean isOldColValid = oldLocation != null && 0 <= oldLocation.col && oldLocation.col < colNum;
