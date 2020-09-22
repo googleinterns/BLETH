@@ -29,8 +29,13 @@ public class Board {
 
     /** Remove an agent from its current location on board and place it on new location. */
     public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
-        //
+        boolean isOldRowValid = oldLocation != null && 0 <= oldLocation.row && oldLocation.row < rowNum;
+        boolean isOldColValid = oldLocation != null && 0 <= oldLocation.col && oldLocation.col < colNum;
+        boolean isNewRowValid = newLocation != null && 0 <= newLocation.row && newLocation.row < rowNum;
+        boolean isNewColValid = newLocation != null && 0 <= newLocation.col && newLocation.col < colNum;
+        if (isOldRowValid && isOldColValid && isNewRowValid && isNewColValid) {
+            matrix[oldLocation.row][oldLocation.col].remove(agent);
+            placeAgent(newLocation, agent);
+        }
     }
 }
-
-
