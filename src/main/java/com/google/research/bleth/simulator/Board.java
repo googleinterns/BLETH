@@ -1,13 +1,16 @@
 package com.google.research.bleth.simulator;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Table;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /** A container for all the agents, representing their locations, either real or estimated. */
 public class Board {
-    public final int rowNum;
-    public final int colNum;
-    ArrayList<Agent>[][] matrix;
+    private int rowNum;
+    private int colNum;
+    private ArrayList<Agent>[][] matrix;
 
     public Board(int rows, int cols) {
         rowNum = rows;
@@ -16,6 +19,15 @@ public class Board {
         for (int row = 0; row < rows; row++) {
             Arrays.setAll(matrix[row], ArrayList::new);
         }
+    }
+
+    /**
+     * Create and return an immutable list of all the agents which located on specific location.
+     * @param location is the requested location to retrieve all the agents that located on it.
+     * @return an immutable copy of the list of all agents which located on location.
+     */
+    public List<Agent> getAgentsOnLocation(Location location) {
+        return ImmutableList.copyOf(matrix[location.row][location.col]);
     }
 
     /**

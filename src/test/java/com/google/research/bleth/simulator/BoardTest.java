@@ -26,7 +26,7 @@ public final class BoardTest{
     private boolean isBoardEmpty(Board board, int rowNum, int colNum) {
         for (int row = 0; row < rowNum; row++) {
             for (int col = 0; col < colNum; col++) {
-                if (!board.matrix[row][col].isEmpty()) {
+                if (!board.getAgentsOnLocation(new Location(row, col)).isEmpty()) {
                     return false;
                 }
             }
@@ -48,7 +48,7 @@ public final class BoardTest{
 
         board.placeAgent(firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnZeroCoordinate)).containsExactly(firstAgent);
     }
 
     @Test
@@ -58,7 +58,7 @@ public final class BoardTest{
 
         board.placeAgent(firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][0]).isEmpty();
+        assertThat(board.getAgentsOnLocation(zeroOnZeroCoordinate)).isEmpty();
     }
 
     @Test
@@ -70,8 +70,8 @@ public final class BoardTest{
         board.placeAgent(firstAgent.move(), firstAgent);
         board.placeAgent(secondAgent.move(), secondAgent);
 
-        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
-        assertThat(board.matrix[1][1]).containsExactly(secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnZeroCoordinate)).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(oneOnOneCoordinate)).containsExactly(secondAgent);
     }
 
     @Test
@@ -83,7 +83,7 @@ public final class BoardTest{
         board.placeAgent(firstAgent.move(), firstAgent);
         board.placeAgent(secondAgent.move(), secondAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent, secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent, secondAgent);
     }
 
     @Test
@@ -146,7 +146,7 @@ public final class BoardTest{
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent);
     }
 
     @Test
@@ -157,7 +157,7 @@ public final class BoardTest{
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][0]).isEmpty();
+        assertThat(board.getAgentsOnLocation(zeroOnZeroCoordinate)).isEmpty();
     }
 
     @Test
@@ -169,7 +169,7 @@ public final class BoardTest{
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent, secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent, secondAgent);
     }
 
     @Test
@@ -181,8 +181,8 @@ public final class BoardTest{
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][0]).containsExactly(secondAgent);
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnZeroCoordinate)).containsExactly(secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent);
     }
 
     @Test
@@ -193,7 +193,7 @@ public final class BoardTest{
 
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][0]).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnZeroCoordinate)).containsExactly(firstAgent);
     }
 
     @Test
@@ -264,8 +264,8 @@ public final class BoardTest{
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
         board.moveAgent(oneOnOneCoordinate, secondAgent.move(), secondAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
-        assertThat(board.matrix[1][0]).containsExactly(secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(oneOnZeroCoordinate)).containsExactly(secondAgent);
     }
 
     @Test
@@ -279,7 +279,7 @@ public final class BoardTest{
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
         board.moveAgent(oneOnOneCoordinate, secondAgent.move(), secondAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent, secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent, secondAgent);
     }
 
     @Test
@@ -293,7 +293,7 @@ public final class BoardTest{
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
         board.moveAgent(zeroOnZeroCoordinate, secondAgent.move(), secondAgent);
 
-        assertThat(board.matrix[1][1]).containsExactly(firstAgent, secondAgent);
+        assertThat(board.getAgentsOnLocation(oneOnOneCoordinate)).containsExactly(firstAgent, secondAgent);
     }
 
     @Test
@@ -307,8 +307,8 @@ public final class BoardTest{
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
         board.moveAgent(zeroOnZeroCoordinate, secondAgent.move(), secondAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
-        assertThat(board.matrix[1][0]).containsExactly(secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(oneOnZeroCoordinate)).containsExactly(secondAgent);
     }
 
     @Test
@@ -322,7 +322,7 @@ public final class BoardTest{
         board.moveAgent(zeroOnZeroCoordinate, secondAgent.move(), secondAgent);
         board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
 
-        assertThat(board.matrix[0][1]).containsExactly(firstAgent);
-        assertThat(board.matrix[1][0]).containsExactly(secondAgent);
+        assertThat(board.getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstAgent);
+        assertThat(board.getAgentsOnLocation(oneOnZeroCoordinate)).containsExactly(secondAgent);
     }
 }
