@@ -14,7 +14,13 @@ public class Board {
     private final int colNum;
     private ArrayTable<Integer, Integer, ArrayList<Agent>> matrix;
 
-
+    /**
+     * Create an empty board for storing agents' locations.
+     * A board can represent either the real agents' locations in the simulation,
+     * or the estimated locations from the resolver's point of view.
+     * @param rows is number of rows.
+     * @param cols is number of columns.
+     */
     public Board(int rows, int cols) {
         rowNum = rows;
         colNum = cols;
