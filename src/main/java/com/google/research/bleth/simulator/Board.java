@@ -1,24 +1,29 @@
 package com.google.research.bleth.simulator;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Table;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /** A container for all the agents, representing their locations, either real or estimated. */
 public class Board {
-    private int rowNum;
-    private int colNum;
-    private ArrayList<Agent>[][] matrix;
+    private final int rowNum;
+    private final int colNum;
+    private ArrayTable<Integer, Integer, ArrayList<Agent>> matrix;
+
 
     public Board(int rows, int cols) {
         rowNum = rows;
         colNum = cols;
-        matrix = new ArrayList[rowNum][colNum];
+        matrix = ArrayTable.create(IntStream.range(0, rows).boxed().collect(Collectors.toList()),
+                                    IntStream.range(0, cols).boxed().collect(Collectors.toList()));
         for (int row = 0; row < rows; row++) {
-            Arrays.setAll(matrix[row], ArrayList::new);
+            for (int col = 0; col < cols; col++) {
+                matrix.set(row, col, new ArrayList<Agent>());
+            }
         }
     }
 
@@ -38,7 +43,7 @@ public class Board {
         if (!isLocationValid(location)) {
             throw new IllegalArgumentException("Invalid Location");
         }
-        return ImmutableList.copyOf(matrix[location.row][location.col]);
+        return ImmutableList.copyOf(matrix.get(location.row, location.col));
     }
 
     /**
@@ -51,7 +56,7 @@ public class Board {
         if (!isLocationValid(newLocation)) {
             throw new IllegalArgumentException("Invalid Location");
         }
-        matrix[newLocation.row][newLocation.col].add(agent);
+        matrix.get(newLocation.row, newLocation.col).add(agent);
     }
 
     /**
@@ -65,7 +70,7 @@ public class Board {
         if (!isLocationValid(oldLocation) || !isLocationValid(newLocation)) {
             throw new IllegalArgumentException("Invalid Location");
         }
-        matrix[oldLocation.row][oldLocation.col].remove(agent);
+        matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
     }
 }
