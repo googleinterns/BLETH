@@ -91,7 +91,7 @@ public final class BoardTest{
         Board board = new Board(2, 2);
         Mockito.when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(NullPointerException.class, () -> {
             board.placeAgent(firstAgent.move(), null);
         });
     }
@@ -202,7 +202,7 @@ public final class BoardTest{
         board.placeAgent(zeroOnZeroCoordinate, firstAgent);
         Mockito.when(firstAgent.move()).thenReturn(oneOnZeroCoordinate);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(NullPointerException.class, () -> {
             board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), null);
         });
     }
@@ -250,6 +250,58 @@ public final class BoardTest{
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             board.moveAgent(zeroOnZeroCoordinate, firstAgent.move(), firstAgent);
+        });
+    }
+
+    @Test
+    public void moveAnAgentFromNegativeRowOutsideTheBoardThrowsException() {
+        Board board = new Board(2, 2);
+        Mockito.when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            board.moveAgent(negativeRowCoordinate, firstAgent.move(), firstAgent);
+        });
+    }
+
+    @Test
+    public void moveAnAgentFromNegativeColOutsideTheBoardThrowsException() {
+        Board board = new Board(2, 2);
+        Mockito.when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            board.moveAgent(negativeColCoordinate, firstAgent.move(), firstAgent);
+        });
+    }
+
+    @Test
+    public void moveAnAgentFromTooHighRowOutsideTheBoardThrowsException() {
+        Board board = new Board(2, 2);
+        Mockito.when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
+        Location rowTooHighCoordinate = new Location(2, 0);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            board.moveAgent(rowTooHighCoordinate, firstAgent.move(), firstAgent);
+        });
+    }
+
+    @Test
+    public void moveAnAgentFromTooHighColOutsideTheBoardThrowsException() {
+        Board board = new Board(2, 2);
+        Mockito.when(firstAgent.move()).thenReturn(zeroOnZeroCoordinate);
+        Location colTooHighCoordinate = new Location(0, 2);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            board.moveAgent(colTooHighCoordinate, firstAgent.move(), firstAgent);
+        });
+    }
+
+    @Test
+    public void moveAnAgentFromOutsideTheBoardToOutsideTheBoardThrowsException() {
+        Board board = new Board(2, 2);
+        Mockito.when(firstAgent.move()).thenReturn(negativeColCoordinate);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            board.moveAgent(negativeRowCoordinate, firstAgent.move(), firstAgent);
         });
     }
 
