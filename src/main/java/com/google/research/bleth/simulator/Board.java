@@ -19,7 +19,7 @@ public class Board {
         rowNum = rows;
         colNum = cols;
         matrix = ArrayTable.create(IntStream.range(0, rows).boxed().collect(Collectors.toList()),
-                                    IntStream.range(0, cols).boxed().collect(Collectors.toList()));
+                                   IntStream.range(0, cols).boxed().collect(Collectors.toList()));
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 matrix.set(row, col, new ArrayList<Agent>());
@@ -27,11 +27,11 @@ public class Board {
         }
     }
 
-    private boolean isLocationValid(Location location) {
+    private boolean isLocationInvalid(Location location) {
         Preconditions.checkNotNull(location);
         boolean isRowValid = 0 <= location.row && location.row < rowNum;
         boolean isColValid = 0 <= location.col && location.col < colNum;
-        return isColValid && isRowValid;
+        return !isColValid || !isRowValid;
     }
 
     /**
@@ -40,7 +40,7 @@ public class Board {
      * @return an immutable copy of the list of all agents which located on location.
      */
     public List<Agent> getAgentsOnLocation(Location location) {
-        if (!isLocationValid(location)) {
+        if (isLocationInvalid(location)) {
             throw new IllegalArgumentException("Invalid Location");
         }
         return ImmutableList.copyOf(matrix.get(location.row, location.col));
@@ -53,7 +53,7 @@ public class Board {
      */
     public void placeAgent(Location newLocation, Agent agent) {
         Preconditions.checkNotNull(agent);
-        if (!isLocationValid(newLocation)) {
+        if (isLocationInvalid(newLocation)) {
             throw new IllegalArgumentException("Invalid Location");
         }
         matrix.get(newLocation.row, newLocation.col).add(agent);
@@ -67,7 +67,7 @@ public class Board {
      */
     public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
         Preconditions.checkNotNull(agent);
-        if (!isLocationValid(oldLocation) || !isLocationValid(newLocation)) {
+        if (isLocationInvalid(oldLocation) || isLocationInvalid(newLocation)) {
             throw new IllegalArgumentException("Invalid Location");
         }
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
