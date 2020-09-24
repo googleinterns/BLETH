@@ -33,7 +33,12 @@ public class Board {
         }
     }
 
-    private boolean isLocationInvalid(Location location) {
+    /**
+     * Check if a location is within the board boundaries.
+     * @param location is the location to check if valid.
+     * @return true if the location is valid, false otherwise.
+     */
+    public boolean isLocationInvalid(Location location) {
         Preconditions.checkNotNull(location);
         boolean isRowValid = 0 <= location.row && location.row < rowNum;
         boolean isColValid = 0 <= location.col && location.col < colNum;
