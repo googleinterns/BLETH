@@ -50,6 +50,16 @@ public class BeaconTest {
     }
 
     @Test
+    public void createBeaconOutsideTheBoardThrowsException() {
+        Board board = new Board(1, 1);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new Beacon(new Location(0, -1), new RandomMovementStrategy(), simulation);
+        });
+    }
+
+    @Test
     public void staticBeaconTransmitStaticId() {
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
