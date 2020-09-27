@@ -18,4 +18,9 @@ public interface Agent {
      * Move the agent to its next location and update the board accordingly.
      */
     void move();
+
+    /**
+     * @return a string consisting of the Agent's type and its ID.
+     */
+    String getTypeAndIdAsString();
 }
