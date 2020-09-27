@@ -3,7 +3,7 @@ package com.google.research.bleth.simulator;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Beacon implements IBeacon {
-    static int beaconId = 0; // used for generating unique id for every beacon.
+    static int beaconId = 0; // used for generating unique id for each beacon.
 
     public final int id;
     private Location realLocation;
@@ -37,11 +37,11 @@ public class Beacon implements IBeacon {
      */
     @Override
     public Location moveTo() {
-        return movementStrategy.move(simulation.getBoard(), realLocation);
+        return movementStrategy.moveTo(simulation.getBoard(), realLocation);
     }
 
     /**
-     * @return a transmission based on the beacon's eid.
+     * @return a transmission based on the beacon's eid, which equals its static id.
      */
     @Override
     public Transmission transmit() {

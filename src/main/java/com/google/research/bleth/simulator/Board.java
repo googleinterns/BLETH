@@ -36,7 +36,7 @@ public class Board {
     }
 
     /**
-     * Check if a location is within the board boundaries.
+     * Check if a location is within the board boundaries. If not - throw an exception.
      * @param location is the location to check if valid.
      */
     public void isLocationInvalid(Location location) {

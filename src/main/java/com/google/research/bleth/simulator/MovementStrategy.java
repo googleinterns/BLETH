@@ -9,5 +9,5 @@ public interface MovementStrategy {
      * @param currentLocation is the current location of the agent on the board.
      * @return the location on the board that the agent is moving to.
      */
-    Location move(Board board, Location currentLocation);
+    Location moveTo(Board board, Location currentLocation);
 }
