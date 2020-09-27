@@ -26,7 +26,7 @@ public class RandomMovementStrategy implements MovementStrategy {
         for (List<Integer> direction : shuffledDirections) {
             Location newLocation = new Location(currentLocation.row + direction.get(0),
                                                 currentLocation.col + direction.get(1));
-            if (!board.isLocationInvalid(newLocation)) {
+            if (board.isLocationValid(newLocation)) {
                 return newLocation;
             }
         }

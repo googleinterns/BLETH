@@ -38,12 +38,25 @@ public class Board {
     /**
      * Check if a location is within the board boundaries.
      * @param location is the location to check if valid.
-     * @return true if the location is valid, false otherwise.
      */
     public void isLocationInvalid(Location location) {
         checkNotNull(location);
         checkArgument(0 <= location.row && location.row < rowNum, "Invalid Location");
         checkArgument(0 <= location.col && location.col < colNum, "Invalid Location");
+    }
+
+    /**
+     * Check if a location is within the board boundaries.
+     * @param location is the location to check if valid.
+     * @return true if the location is valid, false otherwise.
+     */
+    public boolean isLocationValid(Location location) {
+        try {
+            isLocationInvalid(location);
+        } catch (IllegalArgumentException invalidLocation) {
+            return false;
+        }
+        return true;
     }
 
     /**

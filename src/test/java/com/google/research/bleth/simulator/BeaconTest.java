@@ -37,7 +37,7 @@ public class BeaconTest {
 
         Location nextLocation = randomBeacon.moveTo();
 
-        return !simulation.getBoard().isLocationInvalid(nextLocation) && calculateDistance(corner, nextLocation) <= 1;
+        return simulation.getBoard().isLocationValid(nextLocation) && calculateDistance(corner, nextLocation) <= 1;
     }
 
     private boolean movingBeaconLocationIsUpdatedOnBoardMatrix(Board board, Location initialLocation) {
