@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/welcome-msg")
+@WebServlet("/hard-coded-board-state")
 public class HardCodedBoardStateServlet extends HttpServlet {
 
     private Board board;
