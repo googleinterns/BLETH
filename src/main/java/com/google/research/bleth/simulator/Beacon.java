@@ -1,6 +1,6 @@
 package com.google.research.bleth.simulator;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Beacon implements IBeacon {
     static int beaconId = 0; // used for generating unique id for every beacon.
@@ -17,9 +17,9 @@ public class Beacon implements IBeacon {
      * @param simulation is the world the agent lives in.
      */
     Beacon(Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
-        Preconditions.checkNotNull(initialLocation);
-        Preconditions.checkNotNull(movementStrategy);
-        Preconditions.checkNotNull(simulation);
+        checkNotNull(initialLocation);
+        checkNotNull(movementStrategy);
+        checkNotNull(simulation);
         if (!simulation.getBoard().isLocationValid(initialLocation)) {
             throw new IllegalArgumentException("Invalid Location");
         }

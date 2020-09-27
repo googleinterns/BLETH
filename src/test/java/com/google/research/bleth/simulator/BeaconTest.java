@@ -1,8 +1,8 @@
 package com.google.research.bleth.simulator;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -54,7 +54,7 @@ public class BeaconTest {
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new Beacon(new Location(0, -1), new RandomMovementStrategy(), simulation);
         });
     }
@@ -78,6 +78,25 @@ public class BeaconTest {
     }
 
     @Test
+    public void newBeaconLocationIsUpdatedOnBoardMatrix() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+
+        assertThat(simulation.getBoard().getAgentsOnLocation(zeroOnOneCoordinate)).contains(randomBeacon);
+    }
+
+    @Test
+    public void newBeaconLocationIsUpdated() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+
+        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
+        assertThat(randomBeacon.getLocation().col).isEqualTo(1);
+    }
+
+    @Test
     public void staticBeaconNextMoveIsToItsLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
@@ -92,7 +111,7 @@ public class BeaconTest {
     @Test
     public void randomBeaconSurroundedByFourDirectionsNextMoveIsToItsLocation() {
         // ------
-        // |  B |
+        // | B  |
         // ------
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
