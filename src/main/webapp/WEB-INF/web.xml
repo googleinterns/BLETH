@@ -8,7 +8,7 @@
   <!-- Servlet Mapping. -->
   <servlet>
     <servlet-name>HardCodedBoardStateServlet</servlet-name>
-    <servlet-class>servlets.HardCodedBoardStateServlet</servlet-class>
+    <servlet-class>com.google.research.bleth.servlets.HardCodedBoardStateServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>HardCodedBoardStateServlet</servlet-name>
