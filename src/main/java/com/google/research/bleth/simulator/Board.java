@@ -1,6 +1,8 @@
 package com.google.research.bleth.simulator;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -38,11 +40,10 @@ public class Board {
      * @param location is the location to check if valid.
      * @return true if the location is valid, false otherwise.
      */
-    public boolean isLocationInvalid(Location location) {
-        Preconditions.checkNotNull(location);
-        boolean isRowValid = 0 <= location.row && location.row < rowNum;
-        boolean isColValid = 0 <= location.col && location.col < colNum;
-        return !isColValid || !isRowValid;
+    public void isLocationInvalid(Location location) {
+        checkNotNull(location);
+        checkArgument(0 <= location.row && location.row < rowNum, "Invalid Location");
+        checkArgument(0 <= location.col && location.col < colNum, "Invalid Location");
     }
 
     /**
@@ -51,9 +52,7 @@ public class Board {
      * @return an immutable copy of the list of all agents which located on location.
      */
     public List<Agent> getAgentsOnLocation(Location location) {
-        if (isLocationInvalid(location)) {
-            throw new IllegalArgumentException("Invalid Location");
-        }
+        isLocationInvalid(location);
         return ImmutableList.copyOf(matrix.get(location.row, location.col));
     }
 
@@ -63,10 +62,8 @@ public class Board {
      * @param agent is the Agent which placed on the board.
      */
     public void placeAgent(Location newLocation, Agent agent) {
-        Preconditions.checkNotNull(agent);
-        if (isLocationInvalid(newLocation)) {
-            throw new IllegalArgumentException("Invalid Location");
-        }
+        checkNotNull(agent);
+        isLocationInvalid(newLocation);
         matrix.get(newLocation.row, newLocation.col).add(agent);
     }
 
@@ -77,10 +74,9 @@ public class Board {
      * @param agent is the Agent which moves from oldLocation to newLocation.
      */
     public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
-        Preconditions.checkNotNull(agent);
-        if (isLocationInvalid(oldLocation) || isLocationInvalid(newLocation)) {
-            throw new IllegalArgumentException("Invalid Location");
-        }
+        checkNotNull(agent);
+        isLocationInvalid(newLocation);
+        isLocationInvalid(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
     }
