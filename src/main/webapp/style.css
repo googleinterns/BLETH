@@ -1,0 +1,41 @@
+.left-nav {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.game-board-table {
+    border: 1px solid black;
+    table-layout: fixed;
+    float: left;
+    width: 30%;
+    height: 30%;
+    margin-top: 5px;
+    margin-right: 30px;
+}
+
+.game-board-th {
+    border: 1px solid black;
+    overflow: hidden;
+}
+  
+.game-board-td {
+    border: 1px solid black;
+    overflow: hidden;
+    width: 10%;
+    position: relative;
+}
+
+.game-board-td:after {
+    content: '';
+    display: block;
+    margin-top: 100%;
+}
+
+.game-board-td .content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
