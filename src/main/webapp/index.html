@@ -5,7 +5,7 @@
     <title>BLETH</title>
     <script>
         fetch('/hard-coded-board-state').then(response => response.json()).then((boardState) => {
-        document.getElementById('board-state-html-element').innerText = boardState;
+        document.getElementById('board-state-html-element').innerText = boardState.toString();
         });
     </script>
 </head>
