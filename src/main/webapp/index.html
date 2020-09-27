@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>BLETH</title>
-    <script>
-        fetch('/hard-coded-board-state').then(response => response.json()).then((boardState) => {
-        document.getElementById('board-state-html-element').innerText = boardState.toString();
-        });
-    </script>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>BLETH</title>
+        <script src='board_state_visualization.js'></script>
+    </head>
 
-<body>
-<h1>BLETH 2020</h1>
-
-<h4><i id="board-state-html-element"></i></h4>
-<p>
-</body>
+    <body onload="fetchHardCodedBoardState()">
+        <h1>BLETH 2020</h1>
+        <table class='game-board-table' id='real-game-board'></table>
+        <table class='game-board-table' id='estimated-game-board'></table>
+    </body>
 </html>

@@ -88,7 +88,8 @@ public class Board {
      * @return a JSON string.
      */
     public String getState() {
+        // todo: create a new table to contain only agents' ID (as string) - then apply toJson on this struct.
         Gson gson = new Gson();
-        return gson.toJson(this);
+        return gson.toJson(this.matrix);
     }
 }
