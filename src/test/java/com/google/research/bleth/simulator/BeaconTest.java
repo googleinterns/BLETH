@@ -92,8 +92,7 @@ public class BeaconTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(1);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnOneCoordinate);
     }
 
     @Test
@@ -104,8 +103,7 @@ public class BeaconTest {
 
         Location newLocation = staticBeacon.moveTo();
 
-        assertThat(newLocation.row).isEqualTo(0);
-        assertThat(newLocation.col).isEqualTo(0);
+        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -119,8 +117,7 @@ public class BeaconTest {
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation.row).isEqualTo(0);
-        assertThat(newLocation.col).isEqualTo(0);
+        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -136,8 +133,7 @@ public class BeaconTest {
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation.row).isEqualTo(0);
-        assertThat(newLocation.col).isEqualTo(0);
+        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -153,8 +149,7 @@ public class BeaconTest {
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation.row).isEqualTo(1);
-        assertThat(newLocation.col).isEqualTo(0);
+        assertThat(newLocation).isEqualTo(oneOnZeroCoordinate);
     }
 
     @Test
@@ -168,8 +163,7 @@ public class BeaconTest {
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation.row).isEqualTo(0);
-        assertThat(newLocation.col).isEqualTo(1);
+        assertThat(newLocation).isEqualTo(zeroOnOneCoordinate);
     }
 
     @Test
@@ -183,8 +177,7 @@ public class BeaconTest {
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation.row).isEqualTo(0);
-        assertThat(newLocation.col).isEqualTo(0);
+        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -209,8 +202,7 @@ public class BeaconTest {
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(0);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -226,8 +218,7 @@ public class BeaconTest {
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(0);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -243,8 +234,7 @@ public class BeaconTest {
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(1);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(0);
+        assertThat(randomBeacon.getLocation()).isEqualTo(oneOnZeroCoordinate);
     }
 
     @Test
@@ -258,8 +248,7 @@ public class BeaconTest {
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(1);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnOneCoordinate);
     }
 
     @Test
@@ -273,8 +262,7 @@ public class BeaconTest {
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(0);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -367,8 +355,7 @@ public class BeaconTest {
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(1);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(0);
+        assertThat(randomBeacon.getLocation()).isEqualTo(oneOnZeroCoordinate);
     }
 
     @Test
@@ -385,8 +372,7 @@ public class BeaconTest {
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(0);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -401,8 +387,7 @@ public class BeaconTest {
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(0);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
     }
 
     @Test
@@ -417,8 +402,7 @@ public class BeaconTest {
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation().row).isEqualTo(0);
-        assertThat(randomBeacon.getLocation().col).isEqualTo(1);
+        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnOneCoordinate);
     }
 
     @Test
