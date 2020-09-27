@@ -65,4 +65,12 @@ public class Beacon implements IBeacon {
         simulation.getBoard().moveAgent(realLocation, nextMove, this);
         realLocation = nextMove;
     }
+
+    /**
+     * @return a string consisting of the word Beacon and its ID.
+     */
+    @Override
+    public String getTypeAndIdAsString() {
+        return "Beacon" + id;
+    }
 }
