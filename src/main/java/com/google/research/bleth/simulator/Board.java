@@ -1,14 +1,16 @@
 package com.google.research.bleth.simulator;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /** A container for all the agents, representing their locations, either real or estimated. */
 public class Board {
@@ -79,5 +81,14 @@ public class Board {
         isLocationInvalid(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
+    }
+
+    /**
+     * return a JSON string to represent the board state.
+     * @return a JSON string.
+     */
+    public String getState() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }
