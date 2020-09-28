@@ -8,12 +8,12 @@
   <!-- Servlet Mapping. -->
 
     <servlet>
-        <servlet-name>HardCodedBoardStateServlet</servlet-name>
-        <servlet-class>com.google.research.bleth.servlets.HardCodedBoardStateServlet</servlet-class>
+        <servlet-name>ReadHardCodedRealBoardStateServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.ReadHardCodedRealBoardStateServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>HardCodedBoardStateServlet</servlet-name>
-        <url-pattern>/hard-coded-board-state</url-pattern>
+        <servlet-name>ReadHardCodedRealBoardStateServlet</servlet-name>
+        <url-pattern>/read-hard-coded-real-board-state</url-pattern>
     </servlet-mapping>
 
     <servlet>
