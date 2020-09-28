@@ -2,7 +2,7 @@
  * Fetch the hard coded board state servlet to display a hard coded board state on index.html page.
  */
 function fetchHardCodedBoardState() {
-    fetch('/hard-coded-board-state')
+    fetch('/read-hard-coded-real-board-state')
     .then(response => response.json())
     .then(boardState => visualizeHardCodedBoardState(boardState.array, true));
 }
