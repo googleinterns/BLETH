@@ -24,8 +24,6 @@ function sleep(ms) {
  */
 function visualizeHardCodedBoardState(board, isReal) {
 
-    console.log(board);
-
     // Set table and table body
     if (isReal) { var gameBoardTable = document.getElementById('real-game-board'); }
     else { var gameBoardTable = document.getElementById('estimated-game-board'); }
