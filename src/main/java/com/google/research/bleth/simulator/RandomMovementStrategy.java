@@ -9,9 +9,8 @@ import java.util.List;
 /** A random movement strategy for an agent. */
 public class RandomMovementStrategy implements MovementStrategy {
 
-    private final static List<List<Integer>> directions =
-            ImmutableList.of(ImmutableList.of(0, -1), ImmutableList.of(0, 1),
-                             ImmutableList.of(-1, 0), ImmutableList.of(1, 0));
+    private final static List<Direction> directions =
+            ImmutableList.of(Direction.Down, Direction.Left, Direction.Right, Direction.Up);
 
     /**
      * Determine and return the new location of a randomly moving agent, which is walking a single step in one of the
@@ -22,11 +21,10 @@ public class RandomMovementStrategy implements MovementStrategy {
      */
     @Override
     public Location moveTo(Board board, Location currentLocation) {
-        List<List<Integer>> shuffledDirections = new ArrayList<>(directions);
+        List<Direction> shuffledDirections = new ArrayList<>(directions);
         Collections.shuffle(shuffledDirections);
-        for (List<Integer> direction : shuffledDirections) {
-            Location newLocation = new Location(currentLocation.row + direction.get(0),
-                                                currentLocation.col + direction.get(1));
+        for (Direction direction : shuffledDirections) {
+            Location newLocation = currentLocation.moveInDirection(direction);
             if (board.isLocationValid(newLocation)) {
                 return newLocation;
             }
