@@ -85,11 +85,27 @@ public class Board {
 
     /**
      * return a JSON string to represent the board state.
-     * @return a JSON string.
+     * @return a JSON string. each matrix cell contains a list of string encoding agent type and id.
      */
     public String getState() {
-        // todo: create a new table to contain only agents' ID (as string) - then apply toJson on this struct.
+        // Create new table where each cell is a list of strings.
+        ArrayTable<Integer, Integer, ArrayList<String>> boardState =
+                ArrayTable.create(IntStream.range(0, this.rowNum).boxed().collect(Collectors.toList()),
+                                  IntStream.range(0, this.colNum).boxed().collect(Collectors.toList()));
+
+        // Fill each boardState cell with the list of the corresponding agents string ids.
+        for (int row = 0; row < this.rowNum; row++) {
+            for (int col = 0; col < this.colNum; col++) {
+                ArrayList<String> agentsIdList =
+                        this.matrix.get(row, col).stream()
+                                .map(Agent::getTypeAndIdAsString)
+                                .collect(Collectors.toCollection(ArrayList::new));
+                boardState.set(row, col, agentsIdList);
+            }
+        }
+
+        // Deserialize boardState into a JSON string and return.
         Gson gson = new Gson();
-        return gson.toJson(this.matrix);
+        return gson.toJson(boardState);
     }
 }
