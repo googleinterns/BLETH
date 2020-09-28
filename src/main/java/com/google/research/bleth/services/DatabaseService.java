@@ -58,6 +58,7 @@ public class DatabaseService {
             return (String) boardStateEntity.getProperty("state");
         }
 
+        // todo: change this to exception throwing
         else return new Board(5, 5).getState();
     }
 }
