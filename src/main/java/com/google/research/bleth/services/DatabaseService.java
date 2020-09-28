@@ -1,10 +1,6 @@
 package com.google.research.bleth.services;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.research.bleth.simulator.Board;
 
 public class DatabaseService {
@@ -23,7 +19,7 @@ public class DatabaseService {
         return instance;
     }
 
-    public void writeRealBoardState(String simulationId, String round, String boardState) {
+    public void writeRealBoardState(String simulationId, int round, String boardState) {
         // Create new entity.
         Entity boardStateEntity = new Entity("TracingRealBoardState");
         boardStateEntity.setProperty("simulationId", simulationId);
@@ -34,7 +30,7 @@ public class DatabaseService {
         datastore.put(boardStateEntity);
     }
 
-    public void writeEstimatedBoardState(String simulationId, String round, String boardState) {
+    public void writeEstimatedBoardState(String simulationId, int round, String boardState) {
         // Create new entity.
         Entity boardStateEntity = new Entity("TracingEstimatedBoardState");
         boardStateEntity.setProperty("simulationId", simulationId);
@@ -46,11 +42,14 @@ public class DatabaseService {
     }
 
     // todo: change round argument to integer
-    public String getRealBoardState(String simulationId, String round) {
+    public String getRealBoardState(String simulationId, int round) {
 
-        Query boardStateBySimulationAndRoundQuery = new Query("TracingRealBoardState")
-                .setFilter(new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId))
-                .setFilter(new Query.FilterPredicate("round", Query.FilterOperator.EQUAL, round));
+        Query boardStateBySimulationAndRoundQuery = new Query("TracingRealBoardState").setFilter(
+                Query.CompositeFilterOperator.and(
+                        (new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId)),
+                        (new Query.FilterPredicate("round", Query.FilterOperator.EQUAL, round))
+                )
+        );
 
         PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
         Entity boardStateEntity = pq.asSingleEntity();
