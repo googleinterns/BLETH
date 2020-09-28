@@ -9,6 +9,15 @@ function fetchHardCodedBoardState() {
 
 
 /**
+ * JS sleep method implementation.
+ * @param {number} ms number of milliseconds to sleep.
+ */
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+/**
  * Visualize the board state on index.html page.
  * @param {boardState} board a JSON string representing the board state in a certain round of the simulation.
  * @param {boolean} isReal   if 'true' visualize the real board, otherwise visualize the estimated board.
