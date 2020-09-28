@@ -14,8 +14,7 @@ public class ReadHardCodedRealBoardStateServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;");
-
-        String randomBoardState = DatabaseService.getInstance().getRealBoardState("1", "1");
+        String randomBoardState = DatabaseService.getInstance().getRealBoardState("demo-tracing-sim-1", 1);
         response.getWriter().println(randomBoardState);
     }
 }
