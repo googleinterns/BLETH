@@ -6,17 +6,23 @@
   <display-name>Archetype Created Web Application</display-name>
 
   <!-- Servlet Mapping. -->
-  <servlet>
-<!--    <servlet-name>HardCodedBoardStateServlet</servlet-name>-->
-<!--    <servlet-class>com.google.research.bleth.servlets.HardCodedBoardStateServlet</servlet-class>-->
-    <servlet-name>WriteHardCodedBoardStatesServlet</servlet-name>
-    <servlet-class>com.google.research.bleth.servlets.WriteHardCodedBoardStatesServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-<!--    <servlet-name>HardCodedBoardStateServlet</servlet-name>-->
-<!--    <url-pattern>/hard-coded-board-state</url-pattern>-->
-    <servlet-name>WriteHardCodedBoardStatesServlet</servlet-name>
-    <url-pattern>/write-hard-coded-board-state</url-pattern>
-  </servlet-mapping>
+
+    <servlet>
+        <servlet-name>HardCodedBoardStateServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.HardCodedBoardStateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HardCodedBoardStateServlet</servlet-name>
+        <url-pattern>/hard-coded-board-state</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>WriteHardCodedBoardStatesServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.WriteHardCodedBoardStatesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WriteHardCodedBoardStatesServlet</servlet-name>
+        <url-pattern>/write-hard-coded-board-state</url-pattern>
+    </servlet-mapping>
 
 </web-app>
