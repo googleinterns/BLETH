@@ -7,15 +7,15 @@
 
   <!-- Servlet Mapping. -->
   <servlet>
-    <servlet-name>HardCodedBoardStateServlet</servlet-name>
-    <servlet-class>com.google.research.bleth.servlets.HardCodedBoardStateServlet</servlet-class>
-    <servlet-name>WriteHardCodedBoardStateServlet</servlet-name>
-    <servlet-class>com.google.research.bleth.servlets.WriteHardCodedBoardStateServlet</servlet-class>
+<!--    <servlet-name>HardCodedBoardStateServlet</servlet-name>-->
+<!--    <servlet-class>com.google.research.bleth.servlets.HardCodedBoardStateServlet</servlet-class>-->
+    <servlet-name>WriteHardCodedBoardStatesServlet</servlet-name>
+    <servlet-class>com.google.research.bleth.servlets.WriteHardCodedBoardStatesServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>WriteHardCodedBoardStateServlet</servlet-name>
-    <url-pattern>/hard-coded-board-state</url-pattern>
-    <servlet-name>HardCodedBoardStateServlet</servlet-name>
+<!--    <servlet-name>HardCodedBoardStateServlet</servlet-name>-->
+<!--    <url-pattern>/hard-coded-board-state</url-pattern>-->
+    <servlet-name>WriteHardCodedBoardStatesServlet</servlet-name>
     <url-pattern>/write-hard-coded-board-state</url-pattern>
   </servlet-mapping>
 
