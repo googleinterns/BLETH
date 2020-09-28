@@ -45,6 +45,7 @@ public class DatabaseService {
         datastore.put(boardStateEntity);
     }
 
+    // todo: change round argument to integer
     public String getRealBoardState(String simulationId, String round) {
 
         Query boardStateBySimulationAndRoundQuery = new Query("TracingRealBoardState")
