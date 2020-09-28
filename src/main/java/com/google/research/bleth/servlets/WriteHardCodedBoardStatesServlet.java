@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/hard-coded-board-state-write")
+@WebServlet("/write-hard-coded-board-state")
 public class WriteHardCodedBoardStatesServlet extends HttpServlet {
 
     DatabaseService datastore = DatabaseService.getInstance();
