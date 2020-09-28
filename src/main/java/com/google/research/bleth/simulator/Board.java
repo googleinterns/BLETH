@@ -38,7 +38,7 @@ public class Board {
     }
 
     /**
-     * Check if a location is within the board boundaries.
+     * Check if a location is within the board boundaries. If not - throw an exception.
      * @param location is the location to check if valid.
      * @return true if the location is valid, false otherwise.
      */
