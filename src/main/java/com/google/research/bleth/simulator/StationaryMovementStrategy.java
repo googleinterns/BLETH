@@ -1,7 +1,7 @@
 package com.google.research.bleth.simulator;
 
-/** A static movement strategy for an agent. */
-public class StaticMovementStrategy implements MovementStrategy {
+/** A stationary movement strategy for an agent. */
+public class StationaryMovementStrategy implements MovementStrategy {
 
     /**
      * Determine and return the new location of a static agent, which is its current location.

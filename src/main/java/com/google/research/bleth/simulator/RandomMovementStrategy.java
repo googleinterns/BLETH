@@ -10,7 +10,7 @@ import java.util.List;
 public class RandomMovementStrategy implements MovementStrategy {
 
     private final static List<Direction> directions =
-            ImmutableList.of(Direction.Down, Direction.Left, Direction.Right, Direction.Up);
+            ImmutableList.copyOf(Direction.values());
 
     /**
      * Determine and return the new location of a randomly moving agent, which is walking a single step in one of the

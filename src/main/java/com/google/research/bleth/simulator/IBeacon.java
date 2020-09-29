@@ -4,7 +4,7 @@ package com.google.research.bleth.simulator;
 public interface IBeacon extends Agent {
 
     /**
-     * @return a transmission based on the beacon's eid.
+     * Returns a transmission based on the beacon's eid.
      */
     Transmission transmit();
 }

@@ -2,13 +2,15 @@ package com.google.research.bleth.simulator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/** Tracing Simulation's Beacon, which moves on the board and transmits its unique static ID each round. */
 public class Beacon implements IBeacon {
     static int beaconId = 0; // used for generating unique id for each beacon.
 
     public final int id;
-    private Location realLocation;
     private final MovementStrategy movementStrategy;
     private final Simulation simulation;
+
+    private Location realLocation; // the beacon's location on the board, changes each time the beacon moves.
 
     /**
      * Create new Beacon with consecutive serial number.
@@ -31,34 +33,21 @@ public class Beacon implements IBeacon {
         this.simulation = simulation;
     }
 
-    /**
-     * Calculate the location the agent is moving to, based on its current location and its strategy.
-     * @return the location on board which the agent is moving to.
-     */
     @Override
     public Location moveTo() {
         return movementStrategy.moveTo(simulation.getBoard(), realLocation);
     }
 
-    /**
-     * @return a transmission based on the beacon's eid, which equals its static id.
-     */
     @Override
     public Transmission transmit() {
         return new Transmission(id);
     }
 
-    /**
-     * @return the current agent's location on the real board.
-     */
     @Override
     public Location getLocation() {
         return realLocation;
     }
 
-    /**
-     * Move the agent to its next location and update the board accordingly.
-     */
     @Override
     public void move() {
         Location nextMove = moveTo();
@@ -66,11 +55,13 @@ public class Beacon implements IBeacon {
         realLocation = nextMove;
     }
 
-    /**
-     * @return a string consisting of the word Beacon and its ID.
-     */
     @Override
-    public String getTypeAndIdAsString() {
-        return "Beacon" + id;
+    public String getType() {
+        return "Beacon";
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }

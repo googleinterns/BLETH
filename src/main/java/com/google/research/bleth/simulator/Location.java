@@ -28,6 +28,6 @@ public class Location {
      * @return new Location, differ from the original location in one step, according the given direction.
      */
     public Location moveInDirection(Direction direction) {
-        return new Location(row + direction.row, col + direction.col);
+        return new Location(row + direction.getRowDelta(), col + direction.getColDelta());
     }
 }

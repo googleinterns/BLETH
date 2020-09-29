@@ -36,10 +36,11 @@ public class Board {
     }
 
     /**
-     * Check if a location is within the board boundaries. If not - throw an exception.
+     * Check if a location is within the board boundaries.
      * @param location is the location to check if valid.
+     * @throws IllegalArgumentException if the location is without the board boundaries.
      */
-    public void isLocationInvalid(Location location) {
+    public void validateLocation(Location location) {
         checkNotNull(location);
         checkArgument(0 <= location.row && location.row < rowNum, "Invalid Location");
         checkArgument(0 <= location.col && location.col < colNum, "Invalid Location");
@@ -52,7 +53,7 @@ public class Board {
      */
     public boolean isLocationValid(Location location) {
         try {
-            isLocationInvalid(location);
+            validateLocation(location);
         } catch (IllegalArgumentException invalidLocation) {
             return false;
         }
@@ -65,7 +66,7 @@ public class Board {
      * @return an immutable copy of the list of all agents which located on location.
      */
     public List<Agent> getAgentsOnLocation(Location location) {
-        isLocationInvalid(location);
+        validateLocation(location);
         return ImmutableList.copyOf(matrix.get(location.row, location.col));
     }
 
@@ -76,7 +77,7 @@ public class Board {
      */
     public void placeAgent(Location newLocation, Agent agent) {
         checkNotNull(agent);
-        isLocationInvalid(newLocation);
+        validateLocation(newLocation);
         matrix.get(newLocation.row, newLocation.col).add(agent);
     }
 
@@ -88,8 +89,8 @@ public class Board {
      */
     public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
         checkNotNull(agent);
-        isLocationInvalid(newLocation);
-        isLocationInvalid(oldLocation);
+        validateLocation(newLocation);
+        validateLocation(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
     }

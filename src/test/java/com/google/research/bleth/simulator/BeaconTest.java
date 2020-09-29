@@ -20,7 +20,7 @@ public class BeaconTest {
     private Simulation simulation;
 
     private Beacon createStaticBeaconOnLocation(Location initial_location) {
-        return new Beacon(initial_location, new StaticMovementStrategy(), simulation);
+        return new Beacon(initial_location, new StationaryMovementStrategy(), simulation);
     }
 
     private Beacon createRandomBeaconOnLocation(Location initial_location) {

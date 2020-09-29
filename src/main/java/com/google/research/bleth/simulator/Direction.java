@@ -1,16 +1,24 @@
 package com.google.research.bleth.simulator;
 
 public enum Direction {
-    Down(1, 0),
-    Left(0, -1),
-    Right(0, 1),
-    Up(-1, 0);
+    DOWN(1, 0),
+    LEFT(0, -1),
+    RIGHT(0, 1),
+    UP(-1, 0);
 
-    public final int row;
-    public final int col;
+    private final int rowDelta;
+    private final int colDelta;
 
-    Direction(int row, int col) {
-        this.row = row;
-        this.col = col;
+    Direction(int rowDelta, int colDelta) {
+        this.rowDelta = rowDelta;
+        this.colDelta = colDelta;
+    }
+
+    public int getRowDelta() {
+        return rowDelta;
+    }
+
+    public int getColDelta() {
+        return colDelta;
     }
 }
