@@ -3,7 +3,6 @@ package com.google.research.bleth.simulator;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

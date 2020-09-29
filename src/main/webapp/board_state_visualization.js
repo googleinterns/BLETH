@@ -5,7 +5,6 @@ function writeHardCodedBoardStates() {
     fetch('/write-hard-coded-board-state');
 }
 
-
 /**
  * Display 10 rounds of a dummy hard-coded simultaion, both real and estimated board.
  */
@@ -25,7 +24,7 @@ async function fetchHardCodedBoardStates() {
         .then(response => response.json())
         .then(boardState => visualizeHardCodedBoardState(boardState.array, true));
 
-        // Fetch and display real board state.
+        // Fetch and display estimated board state.
         fetch('/read-hard-coded-estimated-board-state', {method: 'POST', body: params})
         .then(response => response.json())
         .then(boardState => visualizeHardCodedBoardState(boardState.array, false));
@@ -34,7 +33,6 @@ async function fetchHardCodedBoardStates() {
     }
 }
 
-
 /**
  * JS sleep method implementation.
  * @param {number} ms number of milliseconds to sleep.
@@ -42,7 +40,6 @@ async function fetchHardCodedBoardStates() {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 
 /**
  * Visualize the board state on index.html page.
@@ -59,6 +56,7 @@ function visualizeHardCodedBoardState(board, isReal) {
     // Clear last state of table
     gameBoardTable.innerHTML = '';
 
+    // Change cells' colors according to board.
     board.forEach(function(rowData) {
 
         var row = document.createElement('tr');
@@ -77,7 +75,6 @@ function visualizeHardCodedBoardState(board, isReal) {
     gameBoardTable.appendChild(gameBoardTableBody);
     document.body.appendChild(gameBoardTable);  
 }
-
 
 /**
  * return 'white' is cell is empty, 'blue' if contains observers only and 'red' otherwise.
