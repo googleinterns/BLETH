@@ -30,30 +30,16 @@ public class DatabaseService {
         return instance;
     }
 
-    /**
-     * Create an entity of baord state based on input params and write it to datastore.
-     * @param simulationId is the Id of the simulation associated with the input board state.
-     * @param round is the round number in the simulation that matches the input board state.
-     * @param boardState is a JSON string represnting the state of the board.
-     *                   Is parsable to a 3D array of strings (representing the agents' Ids).
-     * @param isReal indicates the board type (true for real board, false for estimated board).
-     * @throws PreparedQuery.TooManyResultsException if a board state with the same simulationId and round already exists.
-     */
-    public void writeBoardState(String simulationId, int round, String boardState, boolean isReal)
+    private void writeBoardState(String simulationId, int round, String boardState, String entityKind)
             throws PreparedQuery.TooManyResultsException {
 
         // Validate there is no such board state in datastore.
-        if (this.getBoardState(simulationId, round, isReal) != null) {
+        if (this.getBoardState(simulationId, round, entityKind) != null) {
             throw new PreparedQuery.TooManyResultsException();
         }
 
         // Create new entity.
-        Entity boardStateEntity;
-        if (isReal) {
-            boardStateEntity = new Entity("TracingRealBoardState");
-        } else {
-            boardStateEntity = new Entity("TracingEstimatedBoardState");
-        }
+        Entity boardStateEntity = new Entity(entityKind);
 
         // Set properties.
         boardStateEntity.setProperty("simulationId", simulationId);
@@ -65,23 +51,33 @@ public class DatabaseService {
     }
 
     /**
-     * Retrieve the board state who matches the input params (if exists) and return it as a JSON string.
-     * @param simulationId is the Id of the simulation.
-     * @param round is the round number in the simulation.
-     * @param isReal indicates the board type (true for real board, false for estimated board).
-     * @return a JSON string representing the corresponding board state, or null if it doesn't exist.
-     * @throws PreparedQuery.TooManyResultsException if there are more than a single entity matching the input params.
+     * Create an entity of a real baord state based on input params and write it to datastore.
+     * @param simulationId is the Id of the simulation associated with the input board state.
+     * @param round is the round number in the simulation that matches the input board state.
+     * @param boardState is a JSON string represnting the state of the board.
+     *                   Is parsable to a 3D array of strings (representing the agents' Ids).
+     * @throws PreparedQuery.TooManyResultsException if a board state with the same simulationId and round already exists.
      */
-    public String getBoardState(String simulationId, int round, boolean isReal)
+    public void writeRealBoardState(String simulationId, int round, String boardState)
             throws PreparedQuery.TooManyResultsException {
+        writeBoardState(simulationId, round, boardState, "TracingRealBoardState");
+    }
 
-        // Determine query kind.
-        String queryKind;
-        if (isReal) {
-            queryKind = "TracingRealBoardState";
-        } else {
-            queryKind = "TracingEstimatedBoardState";
-        }
+    /**
+     * Create an entity of an estimated baord state based on input params and write it to datastore.
+     * @param simulationId is the Id of the simulation associated with the input board state.
+     * @param round is the round number in the simulation that matches the input board state.
+     * @param boardState is a JSON string represnting the state of the board.
+     *                   Is parsable to a 3D array of strings (representing the agents' Ids).
+     * @throws PreparedQuery.TooManyResultsException if a board state with the same simulationId and round already exists.
+     */
+    public void writeEstimatedBoardState(String simulationId, int round, String boardState)
+            throws PreparedQuery.TooManyResultsException {
+        writeBoardState(simulationId, round, boardState, "TracingEstimatedBoardState");
+    }
+
+    private String getBoardState(String simulationId, int round, String queryKind)
+            throws PreparedQuery.TooManyResultsException {
 
         // Set simple predicates.
         Query.FilterPredicate p1 =
@@ -105,19 +101,30 @@ public class DatabaseService {
     }
 
     /**
-     * Delete all real or estimated simulations associated with the input simulation Id.
-     * @param simulationId is the Id of the simulation to delete all board states.
-     * @param isReal indicates the board type (true for real board, false for estimated board).
+     * Retrieve the real board state who matches the input params (if exists) and return it as a JSON string.
+     * @param simulationId is the Id of the simulation.
+     * @param round is the round number in the simulation.
+     * @return a JSON string representing the corresponding board state, or null if it doesn't exist.
+     * @throws PreparedQuery.TooManyResultsException if there are more than a single entity matching the input params.
      */
-    public void deleteAllSimulationBoardStates(String simulationId, boolean isReal) {
+    public String getRealBoardState(String simulationId, int round)
+            throws PreparedQuery.TooManyResultsException {
+        return getBoardState(simulationId, round, "TracingRealBoardState");
+    }
 
-        // Determine query kind.
-        String queryKind;
-        if (isReal) {
-            queryKind = "TracingRealBoardState";
-        } else {
-            queryKind = "TracingEstimatedBoardState";
-        }
+    /**
+     * Retrieve the estimated board state who matches the input params (if exists) and return it as a JSON string.
+     * @param simulationId is the Id of the simulation.
+     * @param round is the round number in the simulation.
+     * @return a JSON string representing the corresponding board state, or null if it doesn't exist.
+     * @throws PreparedQuery.TooManyResultsException if there are more than a single entity matching the input params.
+     */
+    public String getEstimatedBoardState(String simulationId, int round)
+            throws PreparedQuery.TooManyResultsException {
+        return getBoardState(simulationId, round, "TracingEstimatedBoardState");
+    }
+
+    private void deleteAllSimulationBoardStates(String simulationId, String queryKind) {
 
         // Build query and fetch results.
         Query.FilterPredicate predicate =
@@ -131,5 +138,21 @@ public class DatabaseService {
             Key keyToDelete = entity.getKey();
             datastore.delete(keyToDelete);
         }
+    }
+
+    /**
+     * Delete all real simulations associated with the input simulation Id.
+     * @param simulationId is the Id of the simulation to delete all board states.
+     */
+    public void deleteAllSimulationRealBoardStates(String simulationId) {
+        deleteAllSimulationBoardStates(simulationId, "TracingRealBoardState");
+    }
+
+    /**
+     * Delete all estimated simulations associated with the input simulation Id.
+     * @param simulationId is the Id of the simulation to delete all board states.
+     */
+    public void deleteAllSimulationEstimatedBoardStates(String simulationId) {
+        deleteAllSimulationBoardStates(simulationId, "TracingEstimatedBoardState");
     }
 }

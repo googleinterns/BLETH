@@ -25,7 +25,7 @@ public class ReadHardCodedRealBoardStateServlet extends HttpServlet {
         String simulationId = "demo-tracing-sim-1";
 
         // If board state does not exists in datastore, write the state of an empty 5*5 board.
-        String boardState = DatabaseService.getInstance().getBoardState(simulationId, round, true);
+        String boardState = DatabaseService.getInstance().getRealBoardState(simulationId, round);
         if (boardState != null) {
             response.getWriter().println(boardState);
         } else {

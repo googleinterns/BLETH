@@ -46,8 +46,8 @@ public class WriteHardCodedBoardStatesServlet extends HttpServlet {
 
         // Clear datastore.
         String simulationId = "demo-tracing-sim-1";
-        datastore.deleteAllSimulationBoardStates(simulationId, true);
-        datastore.deleteAllSimulationBoardStates(simulationId, false);
+        datastore.deleteAllSimulationRealBoardStates(simulationId);
+        datastore.deleteAllSimulationEstimatedBoardStates(simulationId);
 
         for (int round = 0; round < 10; round++) {
             // Clear boards.
@@ -64,8 +64,8 @@ public class WriteHardCodedBoardStatesServlet extends HttpServlet {
             estimatedBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), thirdDummyBeacon);
 
             // Write to datastore.
-            datastore.writeBoardState(simulationId, round, realBoard.getState(), true);
-            datastore.writeBoardState(simulationId, round, estimatedBoard.getState(), false);
+            datastore.writeRealBoardState(simulationId, round, realBoard.getState());
+            datastore.writeEstimatedBoardState(simulationId, round, estimatedBoard.getState());
         }
 
         response.sendRedirect("/index.html");
