@@ -14,6 +14,11 @@ async function fetchHardCodedBoardStates() {
         .then(response => response.json())
         .then(boardState => visualizeHardCodedBoardState(boardState.array, true));
 
+        // Fetch and display real board state.
+        fetch('/read-hard-coded-estimated-board-state', {method: 'POST', body: params})
+        .then(response => response.json())
+        .then(boardState => visualizeHardCodedBoardState(boardState.array, false));
+
         await sleep(1000);
     }
 }

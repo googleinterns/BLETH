@@ -17,6 +17,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>ReadHardCodedEstimatedBoardStateServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.ReadHardCodedEstimatedBoardStateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReadHardCodedEstimatedBoardStateServlet</servlet-name>
+        <url-pattern>/read-hard-coded-estimated-board-state</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>WriteHardCodedBoardStatesServlet</servlet-name>
         <servlet-class>com.google.research.bleth.servlets.WriteHardCodedBoardStatesServlet</servlet-class>
     </servlet>

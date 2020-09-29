@@ -53,4 +53,17 @@ public class DatabaseService {
         PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
         return (String) pq.asSingleEntity().getProperty("state");
     }
+
+    public String getEstimatedBoardState(String simulationId, int round) throws PreparedQuery.TooManyResultsException {
+
+        Query boardStateBySimulationAndRoundQuery = new Query("TracingEstimatedBoardState").setFilter(
+                Query.CompositeFilterOperator.and(
+                        (new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId)),
+                        (new Query.FilterPredicate("round", Query.FilterOperator.EQUAL, round))
+                )
+        );
+
+        PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
+        return (String) pq.asSingleEntity().getProperty("state");
+    }
 }
