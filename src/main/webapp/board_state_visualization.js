@@ -1,4 +1,12 @@
 /**
+ * Write hard-coded board states for db.
+ */
+function writeHardCodedBoardStates() {
+    fetch('/write-hard-coded-board-state');
+}
+
+
+/**
  * Display 10 rounds of a dummy hard-coded simultaion, both real and estimated board.
  */
 async function fetchHardCodedBoardStates() {
