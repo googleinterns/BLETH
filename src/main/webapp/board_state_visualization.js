@@ -1,3 +1,6 @@
+/**
+ * Display 10 rounds of a dummy hard-coded simultaion, both real and estimated board.
+ */
 async function fetchHardCodedBoardStates() {
 
     var simulationId = "demo-tracing-sim-1";
