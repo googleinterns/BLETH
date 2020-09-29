@@ -15,16 +15,17 @@ public class BeaconTest {
     private static final Location oneOnOneCoordinate = new Location(1, 1);
     private static final Location zeroOnOneCoordinate = new Location(0, 1);
     private static final Location oneOnZeroCoordinate = new Location(1, 0);
+    private static final BeaconFactory beaconFactory = new BeaconFactory();
 
     @Mock
     private Simulation simulation;
 
     private Beacon createStaticBeaconOnLocation(Location initial_location) {
-        return new Beacon(initial_location, new StationaryMovementStrategy(), simulation);
+        return beaconFactory.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
     }
 
     private Beacon createRandomBeaconOnLocation(Location initial_location) {
-        return new Beacon(initial_location, new RandomMovementStrategy(), simulation);
+        return beaconFactory.createBeacon(initial_location, new RandomMovementStrategy(), simulation);
     }
 
     private int calculateDistance(Location oldLocation, Location newLocation) {
@@ -55,7 +56,7 @@ public class BeaconTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            new Beacon(new Location(0, -1), new RandomMovementStrategy(), simulation);
+            beaconFactory.createBeacon(new Location(0, -1), new RandomMovementStrategy(), simulation);
         });
     }
 

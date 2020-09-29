@@ -1,7 +1,5 @@
 package com.google.research.bleth.simulator;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /** Tracing Simulation's Beacon, which moves on the board and transmits its unique static ID each round. */
 public class Beacon implements IBeacon {
     static int beaconId = 0; // used for generating unique id for each beacon.
@@ -14,19 +12,13 @@ public class Beacon implements IBeacon {
 
     /**
      * Create new Beacon with consecutive serial number.
+     * @param id is a unique ID.
      * @param initialLocation is the location on board where the agent is placed.
      * @param movementStrategy determines how the agent moves.
      * @param simulation is the world the agent lives in.
      */
-    Beacon(Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
-        checkNotNull(initialLocation);
-        checkNotNull(movementStrategy);
-        checkNotNull(simulation);
-        if (!simulation.getBoard().isLocationValid(initialLocation)) {
-            throw new IllegalArgumentException("Invalid Location");
-        }
-
-        this.id = beaconId++;
+    Beacon(int id, Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
+        this.id = id;
         realLocation = initialLocation;
         simulation.getBoard().placeAgent(realLocation,this);
         this.movementStrategy = movementStrategy;
