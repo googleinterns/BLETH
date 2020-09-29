@@ -1,6 +1,10 @@
 package com.google.research.bleth.services;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.research.bleth.simulator.Board;
 
 public class DatabaseService {
@@ -13,8 +17,9 @@ public class DatabaseService {
     }
 
     public static DatabaseService getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new DatabaseService();
+        }
 
         return instance;
     }
