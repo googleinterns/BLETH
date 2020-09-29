@@ -1,11 +1,6 @@
 package com.google.research.bleth.services;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.research.bleth.simulator.Board;
+import com.google.appengine.api.datastore.*;
 
 public class DatabaseService {
 
@@ -46,7 +41,7 @@ public class DatabaseService {
         datastore.put(boardStateEntity);
     }
 
-    public String getRealBoardState(String simulationId, int round) {
+    public String getRealBoardState(String simulationId, int round) throws PreparedQuery.TooManyResultsException {
 
         Query boardStateBySimulationAndRoundQuery = new Query("TracingRealBoardState").setFilter(
                 Query.CompositeFilterOperator.and(
@@ -56,13 +51,6 @@ public class DatabaseService {
         );
 
         PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
-        Entity boardStateEntity = pq.asSingleEntity();
-
-        if (boardStateEntity != null) {
-            return (String) boardStateEntity.getProperty("state");
-        }
-
-        // todo: change this to exception throwing
-        else return new Board(5, 5).getState();
+        return (String) pq.asSingleEntity().getProperty("state");
     }
 }
