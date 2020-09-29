@@ -80,13 +80,13 @@ public class DatabaseService {
             throws PreparedQuery.TooManyResultsException {
 
         // Set simple predicates.
-        Query.FilterPredicate p1 =
+        Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId);
-        Query.FilterPredicate p2 =
+        Query.FilterPredicate filterByRound =
                 new Query.FilterPredicate("round", Query.FilterOperator.EQUAL, round);
 
         // Compose simple predicates.
-        Query.CompositeFilter composedFilter = Query.CompositeFilterOperator.and(p1, p2);
+        Query.CompositeFilter composedFilter = Query.CompositeFilterOperator.and(filterBySimulationId, filterByRound);
 
         // Create query and return result.
         Query boardStateBySimulationAndRoundQuery = new Query(queryKind).setFilter(composedFilter);
