@@ -1,10 +1,6 @@
 package com.google.research.bleth.services;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 
 public class DatabaseService {
 
@@ -19,13 +15,21 @@ public class DatabaseService {
         if (instance == null) {
             instance = new DatabaseService();
         }
-
         return instance;
     }
 
-    public void writeRealBoardState(String simulationId, int round, String boardState) {
+    // todo: verify a board state with same sim id and round does not exists. if so - raise exception!
+    public void writeBoardState(String simulationId, int round, String boardState, boolean isReal) {
+
         // Create new entity.
-        Entity boardStateEntity = new Entity("TracingRealBoardState");
+        Entity boardStateEntity;
+        if (isReal) {
+            boardStateEntity = new Entity("TracingRealBoardState");
+        } else {
+            boardStateEntity = new Entity("TracingEstimatedBoardState");
+        }
+
+        // Set properties.
         boardStateEntity.setProperty("simulationId", simulationId);
         boardStateEntity.setProperty("round", round);
         boardStateEntity.setProperty("state", boardState);
@@ -34,39 +38,28 @@ public class DatabaseService {
         datastore.put(boardStateEntity);
     }
 
-    public void writeEstimatedBoardState(String simulationId, int round, String boardState) {
-        // Create new entity.
-        Entity boardStateEntity = new Entity("TracingEstimatedBoardState");
-        boardStateEntity.setProperty("simulationId", simulationId);
-        boardStateEntity.setProperty("round", round);
-        boardStateEntity.setProperty("state", boardState);
+    public String getBoardState(String simulationId, int round, boolean isReal)
+            throws PreparedQuery.TooManyResultsException {
 
-        // Write to datastore.
-        datastore.put(boardStateEntity);
-    }
+        // Determine query kind.
+        String queryKind;
+        if (isReal) {
+            queryKind = "TracingRealBoardState";
+        } else {
+            queryKind = "TracingEstimatedBoardState";
+        }
 
-    public String getRealBoardState(String simulationId, int round) throws PreparedQuery.TooManyResultsException {
+        // Set simple predicates.
+        Query.FilterPredicate p1 =
+                new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId);
+        Query.FilterPredicate p2 =
+                new Query.FilterPredicate("round", Query.FilterOperator.EQUAL, round);
 
-        Query boardStateBySimulationAndRoundQuery = new Query("TracingRealBoardState").setFilter(
-                Query.CompositeFilterOperator.and(
-                        (new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId)),
-                        (new Query.FilterPredicate("round", Query.FilterOperator.EQUAL, round))
-                )
-        );
+        // Compose simple predicates.
+        Query.CompositeFilter composedFilter = Query.CompositeFilterOperator.and(p1, p2);
 
-        PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
-        return (String) pq.asSingleEntity().getProperty("state");
-    }
-
-    public String getEstimatedBoardState(String simulationId, int round) throws PreparedQuery.TooManyResultsException {
-
-        Query boardStateBySimulationAndRoundQuery = new Query("TracingEstimatedBoardState").setFilter(
-                Query.CompositeFilterOperator.and(
-                        (new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId)),
-                        (new Query.FilterPredicate("round", Query.FilterOperator.EQUAL, round))
-                )
-        );
-
+        // Create query and return result.
+        Query boardStateBySimulationAndRoundQuery = new Query(queryKind).setFilter(composedFilter);
         PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
         return (String) pq.asSingleEntity().getProperty("state");
     }

@@ -19,7 +19,7 @@ public class ReadHardCodedEstimatedBoardStateServlet extends HttpServlet {
         int round = Integer.parseInt(request.getParameter("round"));
         String simulationId = "demo-tracing-sim-1";
 
-        String boardState = DatabaseService.getInstance().getEstimatedBoardState(simulationId, round);
+        String boardState = DatabaseService.getInstance().getBoardState(simulationId, round, false);
         if (boardState != null) {
             response.getWriter().println(boardState);
         } else {

@@ -46,8 +46,8 @@ public class WriteHardCodedBoardStatesServlet extends HttpServlet {
             estimatedBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), secondDummyBeacon);
             estimatedBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), thirdDummyBeacon);
 
-            datastore.writeRealBoardState(simulationId, round, realBoard.getState());
-            datastore.writeEstimatedBoardState(simulationId, round, estimatedBoard.getState());
+            datastore.writeBoardState(simulationId, round, realBoard.getState(), true);
+            datastore.writeBoardState(simulationId, round, estimatedBoard.getState(), false);
         }
 
         response.sendRedirect("/index.html");
