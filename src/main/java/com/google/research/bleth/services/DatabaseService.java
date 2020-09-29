@@ -18,8 +18,13 @@ public class DatabaseService {
         return instance;
     }
 
-    // todo: verify a board state with same sim id and round does not exists. if so - raise exception!
-    public void writeBoardState(String simulationId, int round, String boardState, boolean isReal) {
+    public void writeBoardState(String simulationId, int round, String boardState, boolean isReal)
+            throws PreparedQuery.TooManyResultsException {
+
+        // Validate there is no such board state in datastore.
+        if (this.getBoardState(simulationId, round, isReal) != null) {
+            throw new PreparedQuery.TooManyResultsException();
+        }
 
         // Create new entity.
         Entity boardStateEntity;
@@ -86,6 +91,5 @@ public class DatabaseService {
             Key keyToDelete = entity.getKey();
             datastore.delete(keyToDelete);
         }
-
     }
 }
