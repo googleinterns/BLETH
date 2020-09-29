@@ -20,7 +20,12 @@ public interface Agent {
     void move();
 
     /**
-     * @return a string consisting of the Agent's type and its ID.
+     * Returns a string representing of the Agent's type.
      */
-    String getTypeAndIdAsString();
+    String getType();
+
+    /**
+     * Returns the Agent's ID.
+     */
+    int getId();
 }

@@ -88,8 +88,8 @@ function determineColor(agents) {
     var hasBeacon = false;
     var hasObsrver = false;
     for (var i = 0; i < agents.length; i++) {
-        if (agents[i].charAt(0) === 'b') { hasBeacon = true; }
-        if (agents[i].charAt(0) === 'o') { hasObsrver = true; }
+        if (agents[i].charAt(0) === 'B') { hasBeacon = true; }
+        if (agents[i].charAt(0) === 'O') { hasObsrver = true; }
         if (hasBeacon) { return 'red'; }
     }
 

@@ -5,7 +5,7 @@ package com.google.research.bleth.simulator;
  */
 public class DummyBeacon implements Agent {
 
-    public final int id;
+    private final int id;
     private Location realLocation;
 
     public DummyBeacon(int id, Location realLocation) {
@@ -24,12 +24,15 @@ public class DummyBeacon implements Agent {
     }
 
     @Override
-    public void move() {
+    public void move() { }
 
+    @Override
+    public String getType() {
+        return "Beacon";
     }
 
     @Override
-    public String getTypeAndIdAsString() {
-        return 'b' + Integer.toString(this.id);
+    public int getId() {
+        return id;
     }
 }

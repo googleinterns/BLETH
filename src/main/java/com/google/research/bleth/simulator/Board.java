@@ -98,7 +98,7 @@ public class Board {
             for (int col = 0; col < this.colNum; col++) {
                 ArrayList<String> agentsIdList =
                         this.matrix.get(row, col).stream()
-                                .map(Agent::getTypeAndIdAsString)
+                                .map((agent) -> agent.getType() + agent.getId())
                                 .collect(Collectors.toCollection(ArrayList::new));
                 boardState.set(row, col, agentsIdList);
             }
