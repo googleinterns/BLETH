@@ -2,8 +2,6 @@ package com.google.research.bleth.simulator;
 
 /** Tracing Simulation's Beacon, which moves on the board and transmits its unique static ID each round. */
 public class Beacon implements IBeacon {
-    static int beaconId = 0; // used for generating unique id for each beacon.
-
     private final int id;
     private final MovementStrategy movementStrategy;
     private final Simulation simulation;
@@ -20,7 +18,6 @@ public class Beacon implements IBeacon {
     Beacon(int id, Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
         this.id = id;
         realLocation = initialLocation;
-        simulation.getBoard().placeAgent(realLocation,this);
         this.movementStrategy = movementStrategy;
         this.simulation = simulation;
     }

@@ -16,9 +16,10 @@ public class BeaconFactory {
         checkNotNull(initialLocation);
         checkNotNull(movementStrategy);
         checkNotNull(simulation);
-        if (!simulation.getBoard().isLocationValid(initialLocation)) {
-            throw new IllegalArgumentException("Invalid Location");
-        }
-        return new Beacon(beaconId++, initialLocation, movementStrategy, simulation);
+        simulation.getBoard().validateLocation(initialLocation);
+
+        Beacon newBeacon = new Beacon(beaconId++, initialLocation, movementStrategy, simulation);
+        simulation.getBoard().placeAgent(initialLocation,newBeacon);
+        return newBeacon;
     }
 }

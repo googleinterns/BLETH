@@ -1,7 +1,6 @@
 package com.google.research.bleth.simulator;
 
 import static com.google.common.truth.Truth.assertThat;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.runner.RunWith;

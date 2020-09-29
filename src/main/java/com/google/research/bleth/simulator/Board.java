@@ -38,6 +38,7 @@ public class Board {
     /**
      * Check if a location is within the board boundaries.
      * @param location is the location to check if valid.
+     * @throws NullPointerException if the location is null.
      * @throws IllegalArgumentException if the location is without the board boundaries.
      */
     public void validateLocation(Location location) {
