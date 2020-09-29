@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -253,12 +252,5 @@ public final class DatabaseServiceTest extends TestCase {
     @After
     public void tearDown() {
         helper.tearDown();
-    }
-
-    @AfterAll
-    static void clearDatastore() {
-        DatabaseService db = DatabaseService.getInstance();
-        db.deleteAllSimulationRealBoardStates(firstSimulationId);
-        db.deleteAllSimulationEstimatedBoardStates(firstSimulationId);
     }
 }
