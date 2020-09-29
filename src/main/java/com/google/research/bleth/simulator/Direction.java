@@ -20,7 +20,7 @@ public enum Direction {
         return rowDelta;
     }
 
-    /** Return the delta of the col index required to move in the specific direction. */
+    /** Return the delta of the column index required to move in the specific direction. */
     public int getColDelta() {
         return colDelta;
     }

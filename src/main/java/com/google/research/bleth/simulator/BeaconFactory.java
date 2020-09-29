@@ -19,7 +19,7 @@ public class BeaconFactory {
         simulation.getBoard().validateLocation(initialLocation);
 
         Beacon newBeacon = new Beacon(beaconId++, initialLocation, movementStrategy, simulation);
-        simulation.getBoard().placeAgent(initialLocation,newBeacon);
+        simulation.getBoard().placeAgent(initialLocation, newBeacon);
         return newBeacon;
     }
 }
