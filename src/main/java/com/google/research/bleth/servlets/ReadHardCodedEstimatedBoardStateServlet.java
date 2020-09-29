@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet for testing the board visualization.
+ * Writes to response the real board state corresponding to a round of a demo hard coded simulation.
+ * round is a request parameter.
+ */
 @WebServlet("/read-hard-coded-estimated-board-state")
 public class ReadHardCodedEstimatedBoardStateServlet extends HttpServlet {
 
@@ -19,6 +24,7 @@ public class ReadHardCodedEstimatedBoardStateServlet extends HttpServlet {
         int round = Integer.parseInt(request.getParameter("round"));
         String simulationId = "demo-tracing-sim-1";
 
+        // If board state does not exists in datastore, write the state of an empty 5*5 board.
         String boardState = DatabaseService.getInstance().getBoardState(simulationId, round, false);
         if (boardState != null) {
             response.getWriter().println(boardState);

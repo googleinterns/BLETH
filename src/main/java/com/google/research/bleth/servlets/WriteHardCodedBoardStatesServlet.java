@@ -11,6 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Servlet for testing the board visualization.
+ *
+ * Clear all real and estimated board state entities (corresponding to the demo simulation id) from datastore.
+ *
+ * Generate 10 random real boards and 10 random estimated boards in a demo 5*5 simulation,
+ * by locating dummy beacons in random locations.
+ *
+ * Write generated board state to datastore.
+ *
+ */
 @WebServlet("/write-hard-coded-board-state")
 public class WriteHardCodedBoardStatesServlet extends HttpServlet {
 
@@ -33,14 +44,17 @@ public class WriteHardCodedBoardStatesServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        // Clear datastore.
         String simulationId = "demo-tracing-sim-1";
         datastore.deleteAllSimulationBoardStates(simulationId, true);
         datastore.deleteAllSimulationBoardStates(simulationId, false);
 
         for (int round = 0; round < 10; round++) {
+            // Clear boards.
             realBoard = new Board(5, 5);
             estimatedBoard = new Board(5, 5);
 
+            // Randomly locate dummy beacons on both boards.
             realBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), firstDummyBeacon);
             realBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), secondDummyBeacon);
             realBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), thirdDummyBeacon);
@@ -49,6 +63,7 @@ public class WriteHardCodedBoardStatesServlet extends HttpServlet {
             estimatedBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), secondDummyBeacon);
             estimatedBoard.placeAgent(new Location((int) (Math.random() * 3),(int) (Math.random() * 3)), thirdDummyBeacon);
 
+            // Write to datastore.
             datastore.writeBoardState(simulationId, round, realBoard.getState(), true);
             datastore.writeBoardState(simulationId, round, estimatedBoard.getState(), false);
         }
