@@ -1,7 +1,7 @@
 package com.google.research.bleth.simulator;
 
 /**
- * A CLass used only for testing board visualization.
+ * A CLass used for testing board visualization.
  */
 public class DummyBeacon implements Agent {
 
