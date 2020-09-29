@@ -34,6 +34,9 @@ public class WriteHardCodedBoardStatesServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String simulationId = "demo-tracing-sim-1";
+        datastore.deleteAllSimulationBoardStates(simulationId, true);
+        datastore.deleteAllSimulationBoardStates(simulationId, false);
+
         for (int round = 0; round < 10; round++) {
             realBoard = new Board(5, 5);
             estimatedBoard = new Board(5, 5);

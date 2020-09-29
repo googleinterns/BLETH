@@ -63,4 +63,29 @@ public class DatabaseService {
         PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
         return (String) pq.asSingleEntity().getProperty("state");
     }
+
+    public void deleteAllSimulationBoardStates(String simulationId, boolean isReal) {
+
+        // Determine query kind.
+        String queryKind;
+        if (isReal) {
+            queryKind = "TracingRealBoardState";
+        } else {
+            queryKind = "TracingEstimatedBoardState";
+        }
+
+        // Build query and fetch results.
+        Query.FilterPredicate predicate =
+                new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId);
+
+        Query deleteRealBoardStateQuery = new Query(queryKind).setFilter(predicate);
+        PreparedQuery toDelete = datastore.prepare(deleteRealBoardStateQuery);
+
+        // Delete entities.
+        for (Entity entity : toDelete.asIterable()) {
+            Key keyToDelete = entity.getKey();
+            datastore.delete(keyToDelete);
+        }
+
+    }
 }
