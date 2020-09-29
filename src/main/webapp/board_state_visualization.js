@@ -1,10 +1,21 @@
-/**
- * Fetch the hard coded board state servlet to display a hard coded board state on index.html page.
- */
-function fetchHardCodedBoardState() {
-    fetch('/read-hard-coded-real-board-state')
-    .then(response => response.json())
-    .then(boardState => visualizeHardCodedBoardState(boardState.array, true));
+async function fetchHardCodedBoardStates() {
+
+    var simulationId = "demo-tracing-sim-1";
+
+    for (var roundNumber = 0; roundNumber < 10; roundNumber++) {
+        // Set params to POST request.
+        const params = new URLSearchParams();
+        params.append('simulationId', 'demo-tracing-sim-1');
+        params.append('simulationId', simulationId);
+        params.append('round', roundNumber);
+
+        // Fetch and display real board state.
+        fetch('/read-hard-coded-real-board-state', {method: 'POST', body: params})
+        .then(response => response.json())
+        .then(boardState => visualizeHardCodedBoardState(boardState.array, true));
+
+        await sleep(1000);
+    }
 }
 
 

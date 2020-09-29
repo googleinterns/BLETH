@@ -13,9 +13,13 @@ import java.io.IOException;
 public class ReadHardCodedRealBoardStateServlet extends HttpServlet {
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;");
-        String boardState = DatabaseService.getInstance().getRealBoardState("demo-tracing-sim-1", 1);
+
+        int round = Integer.parseInt(request.getParameter("round"));
+        String simulationId = "demo-tracing-sim-1";
+
+        String boardState = DatabaseService.getInstance().getRealBoardState(simulationId, round);
         if (boardState != null) {
             response.getWriter().println(boardState);
         } else {
