@@ -2,15 +2,27 @@ package com.google.research.bleth.services;
 
 import com.google.appengine.api.datastore.*;
 
+/**
+ * DatabaseService is a singleton class wrapping the application's datastore instance.
+ * DatabaseService provides a global point of access to any read/write operation using the datastore instance.
+ */
 public class DatabaseService {
 
     private static DatabaseService instance = null;
     private DatastoreService datastore;
 
+    /**
+     * A private constructor.
+     * Ensures that the only way to create an instance of the class is by calling the getInstance() static method.
+     */
     private DatabaseService() {
         datastore = DatastoreServiceFactory.getDatastoreService();
     }
 
+    /**
+     * Static method to create an instance of the DatabaseService class.
+     * @return a DatabaseService class instance.
+     */
     public static DatabaseService getInstance() {
         if (instance == null) {
             instance = new DatabaseService();
@@ -18,6 +30,15 @@ public class DatabaseService {
         return instance;
     }
 
+    /**
+     * Create an entity of baord state based on input params and write it to datastore.
+     * @param simulationId is the Id of the simulation associated with the input board state.
+     * @param round is the round number in the simulation that matches the input board state.
+     * @param boardState is a JSON string represnting the state of the board.
+     *                   Is parsable to a 3D array of strings (representing the agents' Ids).
+     * @param isReal indicates the board type (true for real board, false for estimated board).
+     * @throws PreparedQuery.TooManyResultsException if a board state with the same simulationId and round already exists.
+     */
     public void writeBoardState(String simulationId, int round, String boardState, boolean isReal)
             throws PreparedQuery.TooManyResultsException {
 
@@ -43,6 +64,14 @@ public class DatabaseService {
         datastore.put(boardStateEntity);
     }
 
+    /**
+     * Retrieve the board state who matches the input params (if exists) and return it as a JSON string.
+     * @param simulationId is the Id of the simulation.
+     * @param round is the round number in the simulation.
+     * @param isReal indicates the board type (true for real board, false for estimated board).
+     * @return a JSON string representing the corresponding board state, or null if it doesn't exist.
+     * @throws PreparedQuery.TooManyResultsException if there are more than a single entity matching the input params.
+     */
     public String getBoardState(String simulationId, int round, boolean isReal)
             throws PreparedQuery.TooManyResultsException {
 
@@ -66,9 +95,20 @@ public class DatabaseService {
         // Create query and return result.
         Query boardStateBySimulationAndRoundQuery = new Query(queryKind).setFilter(composedFilter);
         PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
-        return (String) pq.asSingleEntity().getProperty("state");
+
+        Entity boardStateEntity = pq.asSingleEntity();
+        if (boardStateEntity == null) {
+            return null;
+        } else {
+            return (String) boardStateEntity.getProperty("state");
+        }
     }
 
+    /**
+     * Delete all real or estimated simulations associated with the input simulation Id.
+     * @param simulationId is the Id of the simulation to delete all board states.
+     * @param isReal indicates the board type (true for real board, false for estimated board).
+     */
     public void deleteAllSimulationBoardStates(String simulationId, boolean isReal) {
 
         // Determine query kind.
