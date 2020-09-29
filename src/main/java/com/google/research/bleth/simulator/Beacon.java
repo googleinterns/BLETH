@@ -4,11 +4,11 @@ package com.google.research.bleth.simulator;
 public class Beacon implements IBeacon {
     static int beaconId = 0; // used for generating unique id for each beacon.
 
-    public final int id;
+    private final int id;
     private final MovementStrategy movementStrategy;
     private final Simulation simulation;
 
-    private Location realLocation; // the beacon's location on the board, changes each time the beacon moves.
+    private Location realLocation; // the beacon's location on the board, changed each time the beacon moves.
 
     /**
      * Create new Beacon with consecutive serial number.

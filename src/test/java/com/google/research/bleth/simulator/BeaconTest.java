@@ -66,7 +66,7 @@ public class BeaconTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
 
-        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.id);
+        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class BeaconTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(oneOnOneCoordinate);
 
-        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.id);
+        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
     }
 
     @Test
