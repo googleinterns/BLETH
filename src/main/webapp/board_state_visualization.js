@@ -82,13 +82,8 @@ function visualizeHardCodedBoardState(board, isReal) {
  */
 function determineColor(agents) {
     if (agents.length === 0) { return 'white'; }
-    var hasBeacon = false;
-    var hasObsrver = false;
     for (var i = 0; i < agents.length; i++) {
-        if (agents[i].charAt(0) === 'B') { hasBeacon = true; }
-        if (agents[i].charAt(0) === 'O') { hasObsrver = true; }
-        if (hasBeacon) { return 'red'; }
+        if (agents[i].charAt(0) === 'B') { return 'red'; }
     }
-
     return 'blue';
 }
