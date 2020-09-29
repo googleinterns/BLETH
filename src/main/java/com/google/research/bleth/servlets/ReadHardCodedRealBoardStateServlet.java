@@ -1,6 +1,7 @@
 package com.google.research.bleth.servlets;
 
 import com.google.research.bleth.services.DatabaseService;
+import com.google.research.bleth.simulator.Board;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +15,11 @@ public class ReadHardCodedRealBoardStateServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;");
-        String randomBoardState = DatabaseService.getInstance().getRealBoardState("demo-tracing-sim-1", 1);
-        response.getWriter().println(randomBoardState);
+        String boardState = DatabaseService.getInstance().getRealBoardState("demo-tracing-sim-1", 1);
+        if (boardState != null) {
+            response.getWriter().println(boardState);
+        } else {
+            response.getWriter().println(new Board(5, 5).getState());
+        }
     }
 }
