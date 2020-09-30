@@ -13,4 +13,7 @@ public interface IObserver extends Agent {
      * Deliver all the transmissions the observer observed in the current round to its resolver.
      */
     void passInformationToResolver();
+
+    /** Returns true if the observer is active, false otherwise. */
+    boolean isObserverAwake();
 }

@@ -11,9 +11,9 @@ public class Beacon implements IBeacon {
     /**
      * Create new Beacon with consecutive serial number.
      * @param id is a unique ID.
-     * @param initialLocation is the location on board where the agent is placed.
-     * @param movementStrategy determines how the agent moves.
-     * @param simulation is the world the agent lives in.
+     * @param initialLocation is the location on board where the beacon is placed.
+     * @param movementStrategy determines how the beacon moves.
+     * @param simulation is the world the beacon lives in.
      */
     Beacon(int id, Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
         this.id = id;

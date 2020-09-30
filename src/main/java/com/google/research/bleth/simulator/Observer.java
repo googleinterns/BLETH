@@ -13,20 +13,34 @@ public class Observer implements IObserver {
     private List<Transmission> transmissions = new ArrayList<Transmission>(); // contains the transmissions the observer observed in the current round
     private Location realLocation; // the observer's location on the board, changed each time the observer moves.
 
+    private final int awakenessDuration;
+    private int nextAwakenessTime;
+    private int nextAwakenessIntervalStart = 0;
+    private boolean isAwake = false;
+    private AwakenessStrategy awakenessStrategy;
+
     /**
      * Create new Beacon with consecutive serial number.
      * @param id is a unique ID.
      * @param initialLocation is the location on board where the agent is placed.
-     * @param movementStrategy determines how the agent moves.
+     * @param movementStrategy determines how the observer moves.
      * @param resolver is the resolver that the observer belongs to.
      * @param simulation is the world the agent lives in.
+     * @param awakenessDuration is the duration of each awakeness interval.
+     * @param firstAwakenessTime is the first time the observer wakes up.
+     * @param awakenessStrategy determines when the observer wakes up.
      */
-    Observer(int id, Location initialLocation, MovementStrategy movementStrategy, IResolver resolver, Simulation simulation) {
+    Observer(int id, Location initialLocation, MovementStrategy movementStrategy, IResolver resolver, Simulation simulation,
+             int awakenessDuration, int firstAwakenessTime, AwakenessStrategy awakenessStrategy) {
         this.id = id;
         realLocation = initialLocation;
         this.movementStrategy = movementStrategy;
         this.resolver = resolver;
         this.simulation = simulation;
+
+        this.awakenessDuration = awakenessDuration;
+        this.nextAwakenessTime = firstAwakenessTime;
+        this.awakenessStrategy = awakenessStrategy;
     }
 
     @Override
@@ -52,7 +66,7 @@ public class Observer implements IObserver {
     @Override
     public void move() {
         Location nextMove = moveTo();
-        simulation.getBoard().moveAgent(realLocation, nextMove, this);
+        simulation.getBoard().moveAgent(realLocation, nextMove,this);
         realLocation = nextMove;
     }
 
@@ -64,5 +78,28 @@ public class Observer implements IObserver {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean isObserverAwake() {
+        return isAwake;
+    }
+
+    /**
+     * Activate the observer if the current round is the start of its current awakeness time
+     * and turn it off if it's the end of its current awakeness time.
+     * @param currentRound is the the current round of the simulation.
+     */
+    public void updateAwakenessState(int currentRound) {
+        if (!isAwake && currentRound == nextAwakenessTime) {
+            isAwake = true;
+        } else if (isAwake && currentRound == nextAwakenessTime + awakenessDuration) {
+            isAwake = false;
+
+            // determines when the observer wakes up next according to its awakeness strategy.
+            nextAwakenessIntervalStart += simulation.getAwakenessCycle();
+            nextAwakenessTime = awakenessStrategy.nextTime(nextAwakenessIntervalStart,
+                                simulation.getAwakenessCycle(), awakenessDuration, nextAwakenessTime);
+        }
     }
 }
