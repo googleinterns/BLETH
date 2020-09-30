@@ -13,16 +13,20 @@ public abstract class Simulation {
     protected final int beaconsNum;
     protected final int observersNum;
     protected ArrayList<Beacon> beacons = new ArrayList<Beacon>();
-//    private ArrayList<Observer> observers = new ArrayList<Observer>();
+    //private ArrayList<Observer> observers = new ArrayList<Observer>();
+    protected final MovementStrategy beaconMovementStrategy;
+    protected final MovementStrategy observerMovementStrategy;
     private IResolver resolver;
     private final int awakenessCycle;   // size of interval in which each observer has exactly one awakeness period
     private final double radius;        // threshold transmission radius
+
     // todo: add some hashmap object to store stats - here or at sub classes
     // todo: add db service
 
     protected Simulation
             (String id, int maxNumberOfRounds, int rowNum, int colNum,
-             int beaconsNum, int observersNum, IResolver resolver, int awakenessCycle, double radius) {
+             int beaconsNum, int observersNum, IResolver resolver, int awakenessCycle, double radius,
+             MovementStrategy beaconMovementStrategy, MovementStrategy observerMovementStrategy) {
         this.id = id;
         this.maxNumberOfRounds = maxNumberOfRounds;
         this.rowNum = rowNum;
@@ -33,10 +37,16 @@ public abstract class Simulation {
         this.resolver = resolver;
         this.awakenessCycle = awakenessCycle;
         this.radius = radius;
+        this.beaconMovementStrategy = beaconMovementStrategy;
+        this.observerMovementStrategy = observerMovementStrategy;
     }
 
     Board getBoard() {
         return board;
+    }
+
+    private void increaseCurrentRound() {
+        currentRound++;
     }
 
     public void run() {
@@ -46,6 +56,7 @@ public abstract class Simulation {
         writeRoundState();
 
         for (int round = 1; round <= maxNumberOfRounds; round++) {
+            increaseCurrentRound();
             moveAgents();
             updateObserversAwaknessState();
             beaconsToObservers();

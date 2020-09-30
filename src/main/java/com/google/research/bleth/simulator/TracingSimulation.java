@@ -6,9 +6,11 @@ public class TracingSimulation extends Simulation {
 
     protected TracingSimulation
             (String id, int maxNumberOfRounds, int rowNum, int colNum,
-             int beaconsNum, int observersNum, int awakenessCycle, double radius) {
+             int beaconsNum, int observersNum, int awakenessCycle, double radius,
+             MovementStrategy beaconMovementStrategy, MovementStrategy observerMovementStrategy) {
 
-        super(id, maxNumberOfRounds, rowNum, colNum, beaconsNum, observersNum, new GlobalResolver(), awakenessCycle, radius);
+        super(id, maxNumberOfRounds, rowNum, colNum, beaconsNum, observersNum, new GlobalResolver(),
+                awakenessCycle, radius, beaconMovementStrategy, observerMovementStrategy);
     }
 
     @Override
@@ -18,7 +20,7 @@ public class TracingSimulation extends Simulation {
             // Generate random initial location.
             Location initialLocation = new Location(rand.nextInt(this.rowNum), rand.nextInt(this.colNum));
             // Assign movement strategy.
-            MovementStrategy movementStrategy = new RandomMovementStrategy();
+            MovementStrategy movementStrategy = this.beaconMovementStrategy;
             // Add beacon.
             beacons.add(new BeaconFactory().createBeacon(initialLocation, movementStrategy, this));
         }
