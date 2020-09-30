@@ -1,6 +1,7 @@
 package com.google.research.bleth.services;
 
 import com.google.appengine.api.datastore.*;
+import com.google.research.bleth.simulator.Board;
 
 /**
  * DatabaseService is a singleton class wrapping the application's datastore instance.
@@ -30,7 +31,7 @@ public class DatabaseService {
         return instance;
     }
 
-    private void writeBoardState(String simulationId, int round, String boardState, String entityKind)
+    private void writeBoardState(String simulationId, int round, Board board, String entityKind)
             throws PreparedQuery.TooManyResultsException {
 
         // Validate there is no such board state in datastore.
@@ -44,36 +45,34 @@ public class DatabaseService {
         // Set properties.
         boardStateEntity.setProperty("simulationId", simulationId);
         boardStateEntity.setProperty("round", round);
-        boardStateEntity.setProperty("state", boardState);
+        boardStateEntity.setProperty("state", BoardParser.parse(board));
 
         // Write to datastore.
         datastore.put(boardStateEntity);
     }
 
     /**
-     * Create an entity of a real baord state based on input params and write it to datastore.
+     * Create an entity of a real board state based on input params and write it to datastore.
      * @param simulationId is the Id of the simulation associated with the input board state.
      * @param round is the round number in the simulation that matches the input board state.
-     * @param boardState is a JSON string represnting the state of the board.
-     *                   Is parsable to a 3D array of strings (representing the agents' Ids).
+     * @param board is a Board object representing the state of the board.
      * @throws PreparedQuery.TooManyResultsException if a board state with the same simulationId and round already exists.
      */
-    public void writeRealBoardState(String simulationId, int round, String boardState)
+    public void writeRealBoardState(String simulationId, int round, Board board)
             throws PreparedQuery.TooManyResultsException {
-        writeBoardState(simulationId, round, boardState, "TracingRealBoardState");
+        writeBoardState(simulationId, round, board, "TracingRealBoardState");
     }
 
     /**
-     * Create an entity of an estimated baord state based on input params and write it to datastore.
+     * Create an entity of a estimated board state based on input params and write it to datastore.
      * @param simulationId is the Id of the simulation associated with the input board state.
      * @param round is the round number in the simulation that matches the input board state.
-     * @param boardState is a JSON string represnting the state of the board.
-     *                   Is parsable to a 3D array of strings (representing the agents' Ids).
+     * @param board is a Board object representing the state of the board.
      * @throws PreparedQuery.TooManyResultsException if a board state with the same simulationId and round already exists.
      */
-    public void writeEstimatedBoardState(String simulationId, int round, String boardState)
+    public void writeEstimatedBoardState(String simulationId, int round, Board board)
             throws PreparedQuery.TooManyResultsException {
-        writeBoardState(simulationId, round, boardState, "TracingEstimatedBoardState");
+        writeBoardState(simulationId, round, board, "TracingEstimatedBoardState");
     }
 
     private String getBoardState(String simulationId, int round, String queryKind)

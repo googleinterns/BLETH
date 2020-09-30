@@ -1,5 +1,6 @@
 package com.google.research.bleth.servlets;
 
+import com.google.research.bleth.services.BoardParser;
 import com.google.research.bleth.services.DatabaseService;
 import com.google.research.bleth.simulator.Board;
 
@@ -29,7 +30,7 @@ public class ReadHardCodedRealBoardStateServlet extends HttpServlet {
         if (boardState != null) {
             response.getWriter().println(boardState);
         } else {
-            response.getWriter().println(new Board(5, 5).getState());
+            response.getWriter().println(BoardParser.parse(new Board(5, 5)));
         }
     }
 }

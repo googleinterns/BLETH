@@ -50,12 +50,12 @@ public final class DatabaseServiceTest extends TestCase {
     public void writeAndThenReadEmptyRealBoardState_ShouldGetEqualBoardState() {
 
         DatabaseService db = DatabaseService.getInstance();
-        String emptyRealBoardState = new Board(2, 2).getState();
+        Board emptyRealBoardState = new Board(2, 2);
 
         db.writeRealBoardState(firstSimulationId, roundOne, emptyRealBoardState);
         String outputRealBoardState = db.getRealBoardState(firstSimulationId, roundOne);
 
-        assertThat(emptyRealBoardState).isEqualTo(outputRealBoardState);
+        assertThat(BoardParser.parse(emptyRealBoardState)).isEqualTo(outputRealBoardState);
     }
 
     @Test
@@ -65,9 +65,9 @@ public final class DatabaseServiceTest extends TestCase {
         Board nonEmptyRealBoard = new Board(2, 2);
         Mockito.when(firstAgent.moveTo()).thenReturn(zeroOnZeroCoordinate);
         nonEmptyRealBoard.placeAgent(firstAgent.moveTo(), firstAgent);
-        String nonEmptyRealBoardState = nonEmptyRealBoard.getState();
+        String nonEmptyRealBoardState = BoardParser.parse(nonEmptyRealBoard);
 
-        db.writeRealBoardState(firstSimulationId, roundOne, nonEmptyRealBoardState);
+        db.writeRealBoardState(firstSimulationId, roundOne, nonEmptyRealBoard);
         String outputRealBoardState = db.getRealBoardState(firstSimulationId, roundOne);
 
         assertThat(nonEmptyRealBoardState).isEqualTo(outputRealBoardState);
@@ -77,7 +77,7 @@ public final class DatabaseServiceTest extends TestCase {
     public void writeThenDeleteThenReadEmptyRealBoardState_ShouldGetNull () {
 
         DatabaseService db = DatabaseService.getInstance();
-        String emptyRealBoardState = new Board(2, 2).getState();
+        Board emptyRealBoardState = new Board(2, 2);
 
         db.writeRealBoardState(firstSimulationId, roundOne, emptyRealBoardState);
         db.deleteAllSimulationRealBoardStates(firstSimulationId);
@@ -104,10 +104,9 @@ public final class DatabaseServiceTest extends TestCase {
         Mockito.when(secondAgent.moveTo()).thenReturn(oneOnZeroCoordinate);
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
-        String boardState = board.getState();
 
-        db.writeRealBoardState(firstSimulationId, roundOne, boardState);
-        db.writeEstimatedBoardState(firstSimulationId, roundOne, boardState);
+        db.writeRealBoardState(firstSimulationId, roundOne, board);
+        db.writeEstimatedBoardState(firstSimulationId, roundOne, board);
         String outputRealBoardState = db.getRealBoardState(firstSimulationId, roundOne);
         String outputEstimatedBoardState = db.getEstimatedBoardState(firstSimulationId, roundOne);
 
@@ -123,10 +122,9 @@ public final class DatabaseServiceTest extends TestCase {
         Mockito.when(secondAgent.moveTo()).thenReturn(zeroOnOneCoordinate);
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
-        String boardState = board.getState();
 
-        db.writeRealBoardState(firstSimulationId, roundOne, boardState);
-        db.writeRealBoardState(firstSimulationId, roundTwo, boardState);
+        db.writeRealBoardState(firstSimulationId, roundOne, board);
+        db.writeRealBoardState(firstSimulationId, roundTwo, board);
         String outputFirstRealBoardState = db.getRealBoardState(firstSimulationId, roundOne);
         String outputSecondRealBoardState = db.getRealBoardState(firstSimulationId, roundTwo);
 
@@ -142,10 +140,9 @@ public final class DatabaseServiceTest extends TestCase {
         Mockito.when(secondAgent.moveTo()).thenReturn(zeroOnOneCoordinate);
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
-        String boardState = board.getState();
 
-        db.writeRealBoardState(firstSimulationId, roundOne, boardState);
-        db.writeRealBoardState(secondSimulationId, roundOne, boardState);
+        db.writeRealBoardState(firstSimulationId, roundOne, board);
+        db.writeRealBoardState(secondSimulationId, roundOne, board);
         String outputFirstRealBoardState = db.getRealBoardState(firstSimulationId, roundOne);
         String outputSecondRealBoardState = db.getRealBoardState(secondSimulationId, roundOne);
 
@@ -161,10 +158,10 @@ public final class DatabaseServiceTest extends TestCase {
         Mockito.when(secondAgent.moveTo()).thenReturn(oneOnZeroCoordinate);
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
-        String boardState = board.getState();
+        String boardState = BoardParser.parse(board);
 
-        db.writeRealBoardState(firstSimulationId, roundOne, boardState);
-        db.writeEstimatedBoardState(firstSimulationId, roundOne, boardState);
+        db.writeRealBoardState(firstSimulationId, roundOne, board);
+        db.writeEstimatedBoardState(firstSimulationId, roundOne, board);
         db.deleteAllSimulationRealBoardStates(firstSimulationId);
         String outputEstimatedBoardState = db.getEstimatedBoardState(firstSimulationId, roundOne);
 
@@ -180,12 +177,11 @@ public final class DatabaseServiceTest extends TestCase {
         Mockito.when(secondAgent.moveTo()).thenReturn(zeroOnOneCoordinate);
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
-        String boardState = board.getState();
 
-        db.writeRealBoardState(firstSimulationId, roundOne, boardState);
+        db.writeRealBoardState(firstSimulationId, roundOne, board);
 
         assertThrows(PreparedQuery.TooManyResultsException.class, () -> {
-            db.writeRealBoardState(firstSimulationId, roundOne, boardState);
+            db.writeRealBoardState(firstSimulationId, roundOne, board);
         });
     }
 
@@ -200,13 +196,11 @@ public final class DatabaseServiceTest extends TestCase {
         firstBoard.placeAgent(firstAgent.moveTo(), firstAgent);
         firstBoard.placeAgent(secondAgent.moveTo(), secondAgent);
         secondBoard.placeAgent(secondAgent.moveTo(), secondAgent);
-        String firstBoardState = firstBoard.getState();
-        String secondBoardState = firstBoard.getState();
 
-        db.writeRealBoardState(firstSimulationId, roundOne, firstBoardState);
+        db.writeRealBoardState(firstSimulationId, roundOne, firstBoard);
 
         assertThrows(PreparedQuery.TooManyResultsException.class, () -> {
-            db.writeRealBoardState(firstSimulationId, roundOne, secondBoardState);
+            db.writeRealBoardState(firstSimulationId, roundOne, secondBoard);
         });
     }
 
@@ -219,12 +213,11 @@ public final class DatabaseServiceTest extends TestCase {
         Mockito.when(secondAgent.moveTo()).thenReturn(zeroOnOneCoordinate);
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
-        String boardState = board.getState();
 
-        db.writeEstimatedBoardState(firstSimulationId, roundOne, boardState);
+        db.writeEstimatedBoardState(firstSimulationId, roundOne, board);
 
         assertThrows(PreparedQuery.TooManyResultsException.class, () -> {
-            db.writeEstimatedBoardState(firstSimulationId, roundOne, boardState);
+            db.writeEstimatedBoardState(firstSimulationId, roundOne, board);
         });
     }
 
@@ -239,13 +232,11 @@ public final class DatabaseServiceTest extends TestCase {
         firstBoard.placeAgent(firstAgent.moveTo(), firstAgent);
         firstBoard.placeAgent(secondAgent.moveTo(), secondAgent);
         secondBoard.placeAgent(secondAgent.moveTo(), secondAgent);
-        String firstBoardState = firstBoard.getState();
-        String secondBoardState = firstBoard.getState();
 
-        db.writeEstimatedBoardState(firstSimulationId, roundOne, firstBoardState);
+        db.writeEstimatedBoardState(firstSimulationId, roundOne, firstBoard);
 
         assertThrows(PreparedQuery.TooManyResultsException.class, () -> {
-            db.writeEstimatedBoardState(firstSimulationId, roundOne, secondBoardState);
+            db.writeEstimatedBoardState(firstSimulationId, roundOne, secondBoard);
         });
     }
 
