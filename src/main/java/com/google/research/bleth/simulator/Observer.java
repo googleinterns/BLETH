@@ -1,11 +1,16 @@
 package com.google.research.bleth.simulator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** */
 public class Observer implements IObserver {
     private final int id;
     private final MovementStrategy movementStrategy;
     private final IResolver resolver;
     private final Simulation simulation;
+
+    private List<Transmission> transmissions = new ArrayList<Transmission>(); // contains the transmissions the observer observed in the current round
 
     private Location realLocation; // the observer's location on the board, changed each time the observer moves.
 
@@ -27,12 +32,12 @@ public class Observer implements IObserver {
 
     @Override
     public void observe(Transmission beaconTransmission) {
-
+        transmissions.add(beaconTransmission);
     }
 
     @Override
     public void passInformationToResolver() {
-
+        resolver.receiveInformation(realLocation, transmissions);
     }
 
     @Override

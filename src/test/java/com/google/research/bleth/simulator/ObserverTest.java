@@ -9,19 +9,48 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.Mock;
 
+import java.util.List;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ObserverTest {
     private static final Location zeroOnZeroCoordinate = new Location(0, 0);
     private static final Location oneOnOneCoordinate = new Location(1, 1);
     private static final Location zeroOnOneCoordinate = new Location(0, 1);
     private static final Location oneOnZeroCoordinate = new Location(1, 0);
+    private static final BeaconFactory beaconFactory = new BeaconFactory();
     private static final ObserverFactory observerFactory = new ObserverFactory();
 
     @Mock
     private Simulation simulation;
 
-    @Mock
-    private IResolver resolver;
+    /**
+     * A fake implementation for IResolver that allows to test the arguments it receives when an observer calls receiveInformation.
+     */
+    private class FakeResolver implements IResolver {
+        private Location observerLocation;
+        private List<Transmission> transmissions;
+
+        @Override
+        public void receiveInformation(Location observerLocation, List<Transmission> transmissions) {
+            this.observerLocation = observerLocation;
+            this.transmissions = transmissions;
+        }
+
+        public Location getObserverLocation() {
+            return observerLocation;
+        }
+
+        public List<Transmission> getTransmissions() {
+            return transmissions;
+        }
+
+        @Override
+        public Board getBoard() {
+            return null;
+        }
+    }
+
+    private IResolver resolver = new FakeResolver();
 
     private Observer createStaticObserverOnLocation(Location initial_location) {
         return observerFactory.createObserver(initial_location, new StationaryMovementStrategy(), resolver, simulation);
@@ -29,6 +58,10 @@ public class ObserverTest {
 
     private Observer createRandomObserverOnLocation(Location initial_location) {
         return observerFactory.createObserver(initial_location, new RandomMovementStrategy(), resolver, simulation);
+    }
+
+    private Beacon createStaticBeaconOnLocation(Location initial_location) {
+        return beaconFactory.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
     }
 
     private int calculateDistance(Location oldLocation, Location newLocation) {
@@ -396,5 +429,173 @@ public class ObserverTest {
             Board board = new Board(3, 3);
             assertThat(movingObserverLocationIsUpdatedOnBoardMatrix(board, oneOnOneCoordinate)).isTrue();
         }
+    }
+
+    @Test
+    public void observerDoesNotObserveBeaconsPassesItsRightLocation() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+    }
+
+    @Test
+    public void movingObserverDoesNotObserveBeaconsPassesItsRightLocation() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        randomObserver.move();
+
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+    }
+
+    @Test
+    public void observerDoesNotObserveBeaconsPassesNoTransmission() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).isEmpty();
+    }
+
+    @Test
+    public void observerDoesNotObserveNearbyBeaconPassesNoTransmission() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission newBeaconTransmission = newBeacon.transmit();
+
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).isEmpty();
+    }
+
+    @Test
+    public void observerObservesOneBeaconInSameLocationPassesItsRightLocation() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission newBeaconTransmission = newBeacon.transmit();
+
+        randomObserver.observe(newBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+    }
+
+    @Test
+    public void observerObservesOneBeaconInDifferentLocationPassesItsRightLocation() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon newBeacon = createStaticBeaconOnLocation(oneOnZeroCoordinate);
+        Transmission newBeaconTransmission = newBeacon.transmit();
+
+        randomObserver.observe(newBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+    }
+
+    @Test
+    public void movingObserverObservesOneBeaconPassesItsRightLocation() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission newBeaconTransmission = newBeacon.transmit();
+        randomObserver.move();
+
+        randomObserver.observe(newBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+    }
+
+    @Test
+    public void observerObservesOneBeaconInSameLocationPassesTheRightTransmission() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission newBeaconTransmission = newBeacon.transmit();
+
+        randomObserver.observe(newBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(newBeaconTransmission);
+    }
+
+    @Test
+    public void observerObservesOneBeaconInDifferentLocationPassesTheRightTransmission() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon newBeacon = createStaticBeaconOnLocation(oneOnOneCoordinate);
+        Transmission newBeaconTransmission = newBeacon.transmit();
+
+        randomObserver.observe(newBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(newBeaconTransmission);
+    }
+
+    @Test
+    public void observerObservesOneBeaconOutOfTwoPassesTheRightTransmission() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission firstBeaconTransmission = firstBeacon.transmit();
+        Beacon secondBeacon = createStaticBeaconOnLocation(oneOnOneCoordinate);
+        Transmission secondBeaconTransmission = secondBeacon.transmit();
+
+        randomObserver.observe(firstBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(firstBeaconTransmission);
+    }
+
+    @Test
+    public void observerObservesTwoBeaconsPassesItsRightLocation() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(oneOnOneCoordinate);
+        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission firstBeaconTransmission = firstBeacon.transmit();
+        Beacon secondBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission secondBeaconTransmission = secondBeacon.transmit();
+
+        randomObserver.observe(firstBeaconTransmission);
+        randomObserver.observe(secondBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+    }
+
+    @Test
+    public void observerObservesTwoBeaconsPassesTheRightTransmissions() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission firstBeaconTransmission = firstBeacon.transmit();
+        Beacon secondBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission secondBeaconTransmission = secondBeacon.transmit();
+
+        randomObserver.observe(firstBeaconTransmission);
+        randomObserver.observe(secondBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(firstBeaconTransmission, secondBeaconTransmission);
     }
 }
