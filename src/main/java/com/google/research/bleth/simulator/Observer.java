@@ -3,7 +3,7 @@ package com.google.research.bleth.simulator;
 import java.util.ArrayList;
 import java.util.List;
 
-/** */
+/** Simulation's Observer, which moves on the board, observe beacons' transmissions and pass the information to its resolver. */
 public class Observer implements IObserver {
     private final int id;
     private final MovementStrategy movementStrategy;
@@ -11,7 +11,6 @@ public class Observer implements IObserver {
     private final Simulation simulation;
 
     private List<Transmission> transmissions = new ArrayList<Transmission>(); // contains the transmissions the observer observed in the current round
-
     private Location realLocation; // the observer's location on the board, changed each time the observer moves.
 
     /**

@@ -2,6 +2,7 @@ package com.google.research.bleth.simulator;
 
 import java.util.List;
 
+/** Represent a resolver. */
 public interface IResolver {
 
     /**
