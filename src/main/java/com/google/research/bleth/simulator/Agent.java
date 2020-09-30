@@ -4,7 +4,7 @@ package com.google.research.bleth.simulator;
 public interface Agent {
 
     /**
-     * @return the current agent's location on the real board.
+     * Returns the current agent's location on the real board.
      */
     Location getLocation();
 
@@ -18,4 +18,14 @@ public interface Agent {
      * Move the agent to its next location and update the board accordingly.
      */
     void move();
+
+    /**
+     * Returns a string representing of the Agent's type.
+     */
+    String getType();
+
+    /**
+     * Returns the Agent's ID.
+     */
+    int getId();
 }
