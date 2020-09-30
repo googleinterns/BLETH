@@ -2,7 +2,7 @@ package com.google.research.bleth.simulator;
 
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +34,22 @@ public class Board {
                 matrix.set(row, col, new ArrayList<Agent>());
             }
         }
+    }
+
+    /**
+     * Return number of rows.
+     * @return number of rows.
+     */
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    /**
+     * Return number of columns.
+     * @return number of columns.
+     */
+    public int getColNum() {
+        return colNum;
     }
 
     /**
@@ -80,31 +96,5 @@ public class Board {
         isLocationInvalid(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
-    }
-
-    /**
-     * return a JSON string to represent the board state.
-     * @return a JSON string. each matrix cell contains a list of string encoding agent type and id.
-     */
-    public String getState() {
-        // Create new table where each cell is a list of strings.
-        ArrayTable<Integer, Integer, ArrayList<String>> boardState =
-                ArrayTable.create(IntStream.range(0, this.rowNum).boxed().collect(Collectors.toList()),
-                                  IntStream.range(0, this.colNum).boxed().collect(Collectors.toList()));
-
-        // Fill each boardState cell with the list of the corresponding agents string ids.
-        for (int row = 0; row < this.rowNum; row++) {
-            for (int col = 0; col < this.colNum; col++) {
-                ArrayList<String> agentsIdList =
-                        this.matrix.get(row, col).stream()
-                                .map((agent) -> agent.getType() + agent.getId())
-                                .collect(Collectors.toCollection(ArrayList::new));
-                boardState.set(row, col, agentsIdList);
-            }
-        }
-
-        // Deserialize boardState into a JSON string and return.
-        Gson gson = new Gson();
-        return gson.toJson(boardState);
     }
 }
