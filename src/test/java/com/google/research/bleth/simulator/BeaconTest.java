@@ -298,7 +298,6 @@ public class BeaconTest {
         // -----
         // |   |
         // -----
-        // -----
         // |   |
         // -----
         Board board = new Board(1, 3);
