@@ -22,12 +22,12 @@ async function fetchHardCodedBoardStates() {
         // Fetch and display real board state.
         fetch('/read-hard-coded-real-board-state', {method: 'POST', body: params})
         .then(response => response.json())
-        .then(boardState => visualizeHardCodedBoardState(boardState.array, true));
+        .then(boardState => visualizeHardCodedRealBoardState(boardState.array));
 
         // Fetch and display estimated board state.
         fetch('/read-hard-coded-estimated-board-state', {method: 'POST', body: params})
         .then(response => response.json())
-        .then(boardState => visualizeHardCodedBoardState(boardState.array, false));
+        .then(boardState => visualizeHardCodedEstimatedBoardState(boardState.array));
 
         await sleep(1000);
     }
@@ -44,13 +44,12 @@ function sleep(ms) {
 /**
  * Visualize the board state on index.html page.
  * @param {boardState} board a JSON string representing the board state in a certain round of the simulation.
- * @param {boolean} isReal   if 'true' visualize the real board, otherwise visualize the estimated board.
+ * @param {boolean} tableId  the id of the table element to be updated (real or estimated table on index.html).
  */
-function visualizeHardCodedBoardState(board, isReal) {
+function visualizeHardCodedBoardState(board, tableId) {
 
     // Set table and table body
-    if (isReal) { var gameBoardTable = document.getElementById('real-game-board'); }
-    else { var gameBoardTable = document.getElementById('estimated-game-board'); }
+    var gameBoardTable = document.getElementById(tableId);
     var gameBoardTableBody = document.createElement('tbody');
 
     // Clear last state of table
@@ -74,6 +73,22 @@ function visualizeHardCodedBoardState(board, isReal) {
 
     gameBoardTable.appendChild(gameBoardTableBody);
     document.body.appendChild(gameBoardTable);  
+}
+
+/**
+ * Visualize the real board state on index.html page.
+ * @param {boardState} board a JSON string representing the board state in a certain round of the simulation.
+ */
+function visualizeHardCodedRealBoardState(board) {
+    visualizeHardCodedBoardState(board, 'real-game-board');
+}
+
+/**
+ * Visualize the estimated board state on index.html page.
+ * @param {boardState} board a JSON string representing the board state in a certain round of the simulation.
+ */
+function visualizeHardCodedEstimatedBoardState(board) {
+    visualizeHardCodedBoardState(board, 'estimated-game-board');
 }
 
 /**
