@@ -8,9 +8,9 @@ public class BeaconFactory {
 
     /**
      * Create new beacon, according to the given parameters.
-     * @param initialLocation is the location on board where the agent is placed.
-     * @param movementStrategy determines how the agent moves.
-     * @param simulation is the world the agent lives in.
+     * @param initialLocation is the location on board where the beacon is placed.
+     * @param movementStrategy determines how the beacon moves.
+     * @param simulation is the world the beacon lives in.
      */
     public Beacon createBeacon(Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
         checkNotNull(initialLocation);

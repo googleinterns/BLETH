@@ -13,7 +13,7 @@ public interface IResolver {
     void receiveInformation(Location observerLocation, List<Transmission> transmissions);
 
     /**
-     * Returns the estimated board that the resolver containing.
+     * Returns the estimated board that the resolver contains.
      */
     Board getBoard();
 }
