@@ -12,9 +12,4 @@ public interface IResolver {
      * @param transmissions is all the beacons' transmissions the observer observed in the current round.
      */
     void receiveInformation(Location observerLocation, List<Transmission> transmissions);
-
-    /**
-     * Returns the estimated board that the resolver contains.
-     */
-    Board getBoard();
 }
