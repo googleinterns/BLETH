@@ -613,7 +613,7 @@ public class ObserverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Observer fixedObserver = createObserverByAwakenessTimes(3, 0, new FixedAwakenessStrategy());
 
-        assertThat(fixedObserver.isObserverAwake()).isTrue();
+        assertThat(fixedObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -622,7 +622,7 @@ public class ObserverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Observer randomObserver = createObserverByAwakenessTimes(3, 0, new RandomAwakenessStrategy());
 
-        assertThat(randomObserver.isObserverAwake()).isTrue();
+        assertThat(randomObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -631,7 +631,7 @@ public class ObserverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Observer fixedObserver = createObserverByAwakenessTimes(3, 1, new FixedAwakenessStrategy());
 
-        assertThat(fixedObserver.isObserverAwake()).isFalse();
+        assertThat(fixedObserver.isAwake()).isFalse();
     }
 
     @Test
@@ -640,7 +640,7 @@ public class ObserverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Observer randomObserver = createObserverByAwakenessTimes(3, 1, new RandomAwakenessStrategy());
 
-        assertThat(randomObserver.isObserverAwake()).isFalse();
+        assertThat(randomObserver.isAwake()).isFalse();
     }
 
     @Test
@@ -652,7 +652,7 @@ public class ObserverTest {
 
         fixedObserver.updateAwakenessState(2);
 
-        assertThat(fixedObserver.isObserverAwake()).isTrue();
+        assertThat(fixedObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -664,7 +664,7 @@ public class ObserverTest {
 
         randomObserver.updateAwakenessState(2);
 
-        assertThat(randomObserver.isObserverAwake()).isTrue();
+        assertThat(randomObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -675,7 +675,7 @@ public class ObserverTest {
 
         fixedObserver.updateAwakenessState(1);
 
-        assertThat(fixedObserver.isObserverAwake()).isFalse();
+        assertThat(fixedObserver.isAwake()).isFalse();
     }
 
     @Test
@@ -686,7 +686,7 @@ public class ObserverTest {
 
         randomObserver.updateAwakenessState(1);
 
-        assertThat(randomObserver.isObserverAwake()).isFalse();
+        assertThat(randomObserver.isAwake()).isFalse();
     }
 
     @Test
@@ -699,7 +699,7 @@ public class ObserverTest {
 
         fixedObserver.updateAwakenessState(3);
 
-        assertThat(fixedObserver.isObserverAwake()).isTrue();
+        assertThat(fixedObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -712,7 +712,7 @@ public class ObserverTest {
 
         randomObserver.updateAwakenessState(3);
 
-        assertThat(randomObserver.isObserverAwake()).isTrue();
+        assertThat(randomObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -726,7 +726,7 @@ public class ObserverTest {
 
         fixedObserver.updateAwakenessState(3);
 
-        assertThat(fixedObserver.isObserverAwake()).isFalse();
+        assertThat(fixedObserver.isAwake()).isFalse();
     }
 
     @Test
@@ -740,7 +740,7 @@ public class ObserverTest {
 
         randomObserver.updateAwakenessState(3);
 
-        assertThat(randomObserver.isObserverAwake()).isFalse();
+        assertThat(randomObserver.isAwake()).isFalse();
     }
 
     @Test
@@ -754,7 +754,7 @@ public class ObserverTest {
 
         fixedObserver.updateAwakenessState(3);
 
-        assertThat(fixedObserver.isObserverAwake()).isTrue();
+        assertThat(fixedObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -766,7 +766,7 @@ public class ObserverTest {
         fixedObserver.updateAwakenessState(1);
         fixedObserver.updateAwakenessState(2);
 
-        assertThat(fixedObserver.isObserverAwake()).isTrue();
+        assertThat(fixedObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -778,7 +778,7 @@ public class ObserverTest {
         randomObserver.updateAwakenessState(1);
         randomObserver.updateAwakenessState(2);
 
-        assertThat(randomObserver.isObserverAwake()).isTrue();
+        assertThat(randomObserver.isAwake()).isTrue();
     }
 
     @Test
@@ -790,9 +790,9 @@ public class ObserverTest {
         fixedObserver.updateAwakenessState(1);
 
         fixedObserver.updateAwakenessState(2);
-        boolean wakesUpAtTwo = fixedObserver.isObserverAwake();
+        boolean wakesUpAtTwo = fixedObserver.isAwake();
         fixedObserver.updateAwakenessState(3);
-        boolean wakesUpAtThree = fixedObserver.isObserverAwake();
+        boolean wakesUpAtThree = fixedObserver.isAwake();
 
         assertThat(wakesUpAtTwo || wakesUpAtThree).isTrue();
     }
@@ -806,9 +806,9 @@ public class ObserverTest {
         randomObserver.updateAwakenessState(1);
 
         randomObserver.updateAwakenessState(2);
-        boolean wakesUpAtTwo = randomObserver.isObserverAwake();
+        boolean wakesUpAtTwo = randomObserver.isAwake();
         randomObserver.updateAwakenessState(3);
-        boolean wakesUpAtThree = randomObserver.isObserverAwake();
+        boolean wakesUpAtThree = randomObserver.isAwake();
 
         assertThat(wakesUpAtTwo || wakesUpAtThree).isTrue();
     }
@@ -822,9 +822,9 @@ public class ObserverTest {
         fixedObserver.updateAwakenessState(1);
 
         fixedObserver.updateAwakenessState(2);
-        boolean wakesUpAtTwo = fixedObserver.isObserverAwake();
+        boolean wakesUpAtTwo = fixedObserver.isAwake();
         fixedObserver.updateAwakenessState(3);
-        boolean wakesUpAtThree = fixedObserver.isObserverAwake();
+        boolean wakesUpAtThree = fixedObserver.isAwake();
 
         assertThat(wakesUpAtTwo && wakesUpAtThree).isFalse();
     }
@@ -838,9 +838,9 @@ public class ObserverTest {
         randomObserver.updateAwakenessState(1);
 
         randomObserver.updateAwakenessState(2);
-        boolean wakesUpAtTwo = randomObserver.isObserverAwake();
+        boolean wakesUpAtTwo = randomObserver.isAwake();
         randomObserver.updateAwakenessState(3);
-        boolean wakesUpAtThree = randomObserver.isObserverAwake();
+        boolean wakesUpAtThree = randomObserver.isAwake();
 
         assertThat(wakesUpAtTwo && wakesUpAtThree).isFalse();
     }
@@ -858,11 +858,11 @@ public class ObserverTest {
             fixedObserver.updateAwakenessState(1);
 
             fixedObserver.updateAwakenessState(2);
-            if (fixedObserver.isObserverAwake()) {
+            if (fixedObserver.isAwake()) {
                 wakesUpAtTwo = true;
             }
             fixedObserver.updateAwakenessState(3);
-            if (fixedObserver.isObserverAwake()) {
+            if (fixedObserver.isAwake()) {
                 wakesUpAtThree = true;
             }
         }
@@ -883,11 +883,11 @@ public class ObserverTest {
             randomObserver.updateAwakenessState(1);
 
             randomObserver.updateAwakenessState(2);
-            if (randomObserver.isObserverAwake()) {
+            if (randomObserver.isAwake()) {
                 wakesUpAtTwo = true;
             }
             randomObserver.updateAwakenessState(3);
-            if (randomObserver.isObserverAwake()) {
+            if (randomObserver.isAwake()) {
                 wakesUpAtThree = true;
             }
         }

@@ -15,5 +15,5 @@ public interface IObserver extends Agent {
     void passInformationToResolver();
 
     /** Returns true if the observer is active, false otherwise. */
-    boolean isObserverAwake();
+    boolean isAwake();
 }
