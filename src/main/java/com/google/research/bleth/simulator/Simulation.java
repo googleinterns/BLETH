@@ -1,31 +1,38 @@
 package com.google.research.bleth.simulator;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 
+/**
+ * An abstract class representing a BLETH simulation.
+ * Can be either a Tracing simulation or a Stalking simulation.
+ */
 public abstract class Simulation {
 
-    private final String id;            // unique simulation id
-    private int currentRound = 0;
+    private final String id;                // unique simulation id
+    protected int currentRound = 0;
     private final int maxNumberOfRounds;
     protected final int rowNum;
     protected final int colNum;
-    private Board board;                // real board
+    private Board board;                    // real board
     protected final int beaconsNum;
     protected final int observersNum;
-    protected ArrayList<Beacon> beacons = new ArrayList<Beacon>();
-    //private ArrayList<Observer> observers = new ArrayList<Observer>();
+    protected ArrayList<Beacon> beacons = new ArrayList<>();
+    //todo: protected ArrayList<Observer> observers = new ArrayList<>();
     protected final MovementStrategy beaconMovementStrategy;
     protected final MovementStrategy observerMovementStrategy;
     private IResolver resolver;
-    private final int awakenessCycle;   // size of interval in which each observer has exactly one awakeness period
-    private final double radius;        // threshold transmission radius
+    private final int awakenessCycle;       // size of interval in which each observer has exactly one awakeness period
+    private final int awakenessDuration;    // size of interval in which each observer is awake
+    private final double radius;            // threshold transmission radius
 
-    // todo: add some hashmap object to store stats - here or at sub classes
-    // todo: add db service
+    // todo: add observers awakeness strategy
+    // todo: add hashmap object to store stats
+    // todo: add db service instance
 
     protected Simulation
             (String id, int maxNumberOfRounds, int rowNum, int colNum,
-             int beaconsNum, int observersNum, IResolver resolver, int awakenessCycle, double radius,
+             int beaconsNum, int observersNum, IResolver resolver, int awakenessCycle, int awakenessDuration, double radius,
              MovementStrategy beaconMovementStrategy, MovementStrategy observerMovementStrategy) {
         this.id = id;
         this.maxNumberOfRounds = maxNumberOfRounds;
@@ -36,6 +43,7 @@ public abstract class Simulation {
         this.observersNum = observersNum;
         this.resolver = resolver;
         this.awakenessCycle = awakenessCycle;
+        this.awakenessDuration = awakenessDuration;
         this.radius = radius;
         this.beaconMovementStrategy = beaconMovementStrategy;
         this.observerMovementStrategy = observerMovementStrategy;
@@ -45,18 +53,17 @@ public abstract class Simulation {
         return board;
     }
 
-    private void increaseCurrentRound() {
-        currentRound++;
+    ImmutableList<Beacon> getBeacons() {
+        return ImmutableList.copyOf(beacons);
     }
 
     public void run() {
 
         initializeBeacons();
         initializeObservers();
-        writeRoundState();
+        writeRoundState(); // round 0 is the initial simulation state
 
-        for (int round = 1; round <= maxNumberOfRounds; round++) {
-            increaseCurrentRound();
+        for (int round = 1; round <= maxNumberOfRounds; round++, currentRound++) {
             moveAgents();
             updateObserversAwaknessState();
             beaconsToObservers();
@@ -75,7 +82,7 @@ public abstract class Simulation {
 
     void moveAgents() {
         beacons.stream().forEach(beacon -> board.placeAgent(beacon.moveTo(), beacon));
-        // observers.stream().forEach(observer -> board.placeAgent(observer.moveTo(), observer));
+        // todo: observers.stream().forEach(observer -> board.placeAgent(observer.moveTo(), observer));
     }
 
     void updateObserversAwaknessState() { }
@@ -91,4 +98,78 @@ public abstract class Simulation {
     abstract void updateSimulationStats();
 
     void writeSimulationStats() { }
+
+    public static abstract class SimulationBuilder {
+
+        protected String id;
+        protected int maxNumberOfRounds;
+        protected int rowNum;
+        protected int colNum;
+        protected int beaconsNum;
+        protected int observersNum;
+        protected MovementStrategy beaconMovementStrategy;
+        protected MovementStrategy observerMovementStrategy;
+        protected int awakenessCycle;
+        protected int awakenessDuration;
+        protected double radius;
+
+        public SimulationBuilder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public SimulationBuilder setMaxNumberOfRounds(int maxNumberOfRounds) {
+            this.maxNumberOfRounds = maxNumberOfRounds;
+            return this;
+        }
+
+        public SimulationBuilder setRowNum(int rowNum) {
+            this.rowNum = rowNum;
+            return this;
+        }
+
+        public SimulationBuilder setColNum(int colNum) {
+            this.colNum = colNum;
+            return this;
+        }
+
+        public SimulationBuilder setBeaconsNum(int beaconsNum) {
+            this.beaconsNum = beaconsNum;
+            return this;
+        }
+
+        public SimulationBuilder setObserversNum(int observersNum) {
+            this.observersNum = observersNum;
+            return this;
+        }
+
+        public SimulationBuilder setBeaconMovementStrategy(MovementStrategy beaconMovementStrategy) {
+            this.beaconMovementStrategy = beaconMovementStrategy;
+            return this;
+        }
+
+        public SimulationBuilder setObserverMovementStrategy(MovementStrategy observerMovementStrategy) {
+            this.observerMovementStrategy = observerMovementStrategy;
+            return this;
+        }
+
+        public SimulationBuilder setAwakenessCycle(int awakenessCycle) {
+            this.awakenessCycle = awakenessCycle;
+            return this;
+        }
+
+        public SimulationBuilder setAwakenessDuration(int awakenessDuration) {
+            this.awakenessDuration = awakenessDuration;
+            return this;
+        }
+
+        public SimulationBuilder setRadius(double radius) {
+            this.radius = radius;
+            return this;
+        }
+
+        public abstract Simulation build() throws Exception;
+
+        public abstract boolean validateSimulation(Simulation simulation) throws Exception;
+    }
 }
