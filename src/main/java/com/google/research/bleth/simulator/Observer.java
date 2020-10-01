@@ -10,11 +10,11 @@ public class Observer implements IObserver {
     private final IResolver resolver;
     private final Simulation simulation;
 
-    private List<Transmission> transmissions = new ArrayList<Transmission>(); // contains the transmissions the observer observed in the current round
     private Location realLocation; // the observer's location on the board, changed each time the observer moves.
+    private List<Transmission> transmissions = new ArrayList<Transmission>(); // contains the transmissions the observer observed in the current round
 
     private final int awakenessDuration;
-    private int nextAwakenessTime;
+    private int nextAwakeningTime;
     private int nextAwakenessIntervalStart = 0;
     private boolean isAwake = false;
     private AwakenessStrategy awakenessStrategy;
@@ -39,7 +39,7 @@ public class Observer implements IObserver {
         this.simulation = simulation;
 
         this.awakenessDuration = awakenessDuration;
-        this.nextAwakenessTime = firstAwakenessTime;
+        this.nextAwakeningTime = firstAwakenessTime;
         this.awakenessStrategy = awakenessStrategy;
     }
 
@@ -88,18 +88,18 @@ public class Observer implements IObserver {
     /**
      * Activate the observer if the current round is the start of its current awakeness time
      * and turn it off if it's the end of its current awakeness time.
+     * The function is called for every round between 1 and the last round without skipping.
      * @param currentRound is the the current round of the simulation.
      */
     public void updateAwakenessState(int currentRound) {
-        if (!isAwake && currentRound == nextAwakenessTime) {
+        if (!isAwake && currentRound >= nextAwakeningTime) {
             isAwake = true;
-        } else if (isAwake && currentRound == nextAwakenessTime + awakenessDuration) {
+        } else if (isAwake && currentRound == nextAwakeningTime + awakenessDuration) {
             isAwake = false;
-
             // determines when the observer wakes up next according to its awakeness strategy.
             nextAwakenessIntervalStart += simulation.getAwakenessCycle();
-            nextAwakenessTime = awakenessStrategy.nextTime(nextAwakenessIntervalStart,
-                                simulation.getAwakenessCycle(), awakenessDuration, nextAwakenessTime);
+            nextAwakeningTime = awakenessStrategy.nextTime(nextAwakenessIntervalStart,
+                                simulation.getAwakenessCycle(), awakenessDuration, nextAwakeningTime);
         }
     }
 }
