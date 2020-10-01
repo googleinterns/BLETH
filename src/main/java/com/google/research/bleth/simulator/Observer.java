@@ -53,7 +53,8 @@ public class Observer implements IObserver {
 
     @Override
     public void passInformationToResolver() {
-        resolver.receiveInformation(realLocation, transmissions);
+        resolver.receiveInformation(realLocation, new ArrayList<>(transmissions));
+        transmissions.clear();
     }
 
     @Override

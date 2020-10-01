@@ -608,6 +608,39 @@ public class ObserverTest {
     }
 
     @Test
+    public void transmissionsIsEmptyAfterObserverPassThem() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission firstBeaconTransmission = firstBeacon.transmit();
+
+        randomObserver.observe(firstBeaconTransmission);
+        randomObserver.passInformationToResolver();
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).isEmpty();
+    }
+
+    @Test
+    public void transmissionsRefillAfterObserverPassThem() {
+        Board board = new Board(2, 2);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Transmission firstBeaconTransmission = firstBeacon.transmit();
+        Beacon secondBeacon = createStaticBeaconOnLocation(oneOnOneCoordinate);
+        Transmission secondBeaconTransmission = secondBeacon.transmit();
+
+        randomObserver.observe(firstBeaconTransmission);
+        randomObserver.passInformationToResolver();
+        randomObserver.observe(secondBeaconTransmission);
+        randomObserver.passInformationToResolver();
+
+        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(secondBeaconTransmission);
+    }
+
+    @Test
     public void fixedAwakenessObserverWithFirstAwakenessTimeZeroStartsAwake() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
