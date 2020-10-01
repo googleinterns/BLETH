@@ -19,6 +19,6 @@ public class RandomAwakenessStrategy implements AwakenessStrategy {
         if (awakenessCycle == awakenessDuration) {
             return 0;
         }
-        return nextIntervalStart + random.nextInt(awakenessCycle - awakenessDuration);
+        return nextIntervalStart + random.nextInt(awakenessCycle - awakenessDuration + 1);
     }
 }
