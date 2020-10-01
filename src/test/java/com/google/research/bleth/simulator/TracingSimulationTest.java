@@ -15,6 +15,7 @@ public class TracingSimulationTest {
     private static final int numberOfObserversEqualsZero = 0;
 
     private static final int awakenessCycleEqualsTwo = 2;
+    private static final int awakenessdURATIONEqualsOne = 1;
     private static final double radiusEqualsOne = 1.0;
 
     public class moveUp implements MovementStrategy {
@@ -39,7 +40,6 @@ public class TracingSimulationTest {
                 }
             }
         }
-
         return expectedBoard;
     }
 
@@ -56,10 +56,13 @@ public class TracingSimulationTest {
     }
 
     @Test
-    public void initializeTwoBeaconsBeaconsContainerShouldEqualTwo() {
-        TracingSimulation simulation = new TracingSimulation
-                (simulationId, maxRoundsEqualsTwo, 2, 2, numberOfBeaconsEqualsTwo,
-                 numberOfObserversEqualsZero, awakenessCycleEqualsTwo, radiusEqualsOne, moveUp, stationary);
+    public void initializeTwoBeaconsBeaconsContainerShouldEqualTwo() throws Exception {
+        Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsZero)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessdURATIONEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary)
+                .build();
 
         simulation.initializeBeacons();
 
@@ -67,21 +70,28 @@ public class TracingSimulationTest {
     }
 
     @Test
-    public void runSimulationWithMaxRoundNumberTwoCurrentRoundNumberShouldBeTwo() {
-        TracingSimulation simulation = new TracingSimulation
-                (simulationId, maxRoundsEqualsTwo, 2, 2, numberOfBeaconsEqualsTwo,
-                        numberOfObserversEqualsZero, awakenessCycleEqualsTwo, radiusEqualsOne, moveUp, stationary);
+    public void runSimulationWithMaxRoundNumberTwoCurrentRoundNumberShouldBeTwo() throws Exception {
+        Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsZero)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessdURATIONEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary)
+                .build();
 
         simulation.run();
 
-        assertThat(simulation.currentRound).isEqualTo(2);
+        assertThat(simulation.currentRound).isEqualTo(maxRoundsEqualsTwo);
     }
 
     @Test
-    public void moveAgentsDeterministicMovementStrategyBoardShouldEqualExpectedBoard() {
-        TracingSimulation simulation = new TracingSimulation
-                (simulationId, maxRoundsEqualsTwo, 2, 2, numberOfBeaconsEqualsTwo,
-                        numberOfObserversEqualsZero, awakenessCycleEqualsTwo, radiusEqualsOne, moveUp, stationary);
+    public void moveAgentsDeterministicMovementStrategyBoardShouldEqualExpectedBoard() throws Exception {
+        Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsZero)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessdURATIONEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary)
+                .build();
+
         Board boardWhenSimulationInitialized = simulation.getBoard();
         Board expectedBoardAfterSingleRound = buildExpectedBoard(boardWhenSimulationInitialized, 2, 2);
 
