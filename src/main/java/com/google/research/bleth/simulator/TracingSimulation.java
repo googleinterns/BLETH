@@ -4,13 +4,10 @@ import java.util.Random;
 
 /**
  * A simulation in which the global resolver estimates beacons real locations based on information received from observers.
- * Beacons are moving on the board and transmitting their unique static IDs each round.
- * Location estimation occurs each round and based on both previous estimations and newly received information.
- *
- * Running a tracing simulation includes:
- * 1. performing all simulation logic
- * 2. writing to db real and estimated board states at the end of each round
- * 3. writing to db statistical data at the end of the simulation
+ * Beacons transmit their unique static IDs each round.
+ * Agents move according to a movement strategy.
+ * Observers change their awakeness states according to an awakeness strategy.
+ * Location estimation occurs each round and are based on both previous estimations and newly received information.
  */
 public class TracingSimulation extends Simulation {
 
@@ -38,6 +35,9 @@ public class TracingSimulation extends Simulation {
 
     }
 
+    /**
+     * An abstract builder class designed to separate the construction of a tracing simulation from its representation.
+     */
     public static class TracingSimulationBuilder extends SimulationBuilder {
 
         @Override
