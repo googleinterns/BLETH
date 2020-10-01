@@ -16,6 +16,9 @@ public class RandomAwakenessStrategy implements AwakenessStrategy {
      */
     @Override
     public int nextTime(int nextIntervalStart, int awakenessCycle, int awakenessDuration, int lastAwakeningTime) {
+        if (awakenessCycle == awakenessDuration) {
+            return 0;
+        }
         return nextIntervalStart + random.nextInt(awakenessCycle - awakenessDuration);
     }
 }

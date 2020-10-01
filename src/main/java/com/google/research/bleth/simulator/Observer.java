@@ -40,6 +40,9 @@ public class Observer implements IObserver {
 
         this.awakenessDuration = awakenessDuration;
         this.nextAwakeningTime = firstAwakenessTime;
+        if (nextAwakeningTime == 0) {
+            isAwake = true;
+        }
         this.awakenessStrategy = awakenessStrategy;
     }
 
@@ -92,14 +95,15 @@ public class Observer implements IObserver {
      * @param currentRound is the the current round of the simulation.
      */
     public void updateAwakenessState(int currentRound) {
-        if (!isAwake && currentRound >= nextAwakeningTime) {
-            isAwake = true;
-        } else if (isAwake && currentRound == nextAwakeningTime + awakenessDuration) {
+        if (isAwake && currentRound == nextAwakeningTime + awakenessDuration) {
             isAwake = false;
             // determines when the observer wakes up next according to its awakeness strategy.
             nextAwakenessIntervalStart += simulation.getAwakenessCycle();
             nextAwakeningTime = awakenessStrategy.nextTime(nextAwakenessIntervalStart,
-                                simulation.getAwakenessCycle(), awakenessDuration, nextAwakeningTime);
+                    simulation.getAwakenessCycle(), awakenessDuration, nextAwakeningTime);
+        }
+        if (!isAwake && currentRound >= nextAwakeningTime) {
+            isAwake = true;
         }
     }
 }
