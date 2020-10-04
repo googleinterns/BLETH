@@ -1,5 +1,7 @@
 package com.google.research.bleth.simulator;
 
+import java.util.Objects;
+
 /** A location on board. */
 public class Location {
     public final int row;
@@ -20,6 +22,11 @@ public class Location {
         }
         Location location = (Location) o;
         return row == location.row && col == location.col;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
     }
 
     /**

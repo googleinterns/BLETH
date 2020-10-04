@@ -24,4 +24,9 @@ public class Transmission {
         Transmission that = (Transmission) o;
         return advertisement == that.advertisement;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(advertisement);
+    }
 }
