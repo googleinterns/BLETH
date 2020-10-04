@@ -273,16 +273,12 @@ public abstract class Simulation {
         /**
          * Construct a simulation object.
          * @return a new Simulation object constructed with the builder parameters.
-         * @throws Exception
          */
-        public abstract Simulation build() throws Exception;
+        public abstract Simulation build();
 
         /**
-         * Validate all simulation attributes.
-         * @param simulation a simulation to check if valid.
-         * @return true if valid.
-         * @throws Exception
+         * Validate all simulation builder arguments are legal.
          */
-        public abstract boolean validateSimulation(Simulation simulation) throws Exception;
+        public abstract void validateArguments();
     }
 }

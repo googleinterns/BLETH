@@ -1,5 +1,8 @@
 package com.google.research.bleth.simulator;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Random;
 
 /**
@@ -41,18 +44,29 @@ public class TracingSimulation extends Simulation {
     public static class TracingSimulationBuilder extends SimulationBuilder {
 
         @Override
-        public Simulation build() throws Exception {
-            TracingSimulation simulation = new TracingSimulation(this);
-            validateSimulation(simulation);
-            return simulation;
+        public Simulation build() {
+            validateArguments();
+            return new TracingSimulation(this);
         }
 
-        // todo: implement
-        // todo: specify exception type
         @Override
-        public boolean validateSimulation(Simulation simulation) throws Exception {
-            // validation logic
-            return true;
+        public void validateArguments() {
+            // todo: validate simulation id is unique
+            checkArgument(rowNum > 0 && colNum > 0,
+                    "Board dimensions must be positive.");
+            checkArgument(beaconsNum > 0 && observersNum > 0,
+                    "Number of beacons and number of observers must be positive.");
+            checkArgument(radius > 0,
+                    "Transmission radius must be positive.");
+            checkArgument(maxNumberOfRounds > 0,
+                    "Maximum number of rounds must be positive.");
+            checkArgument(awakenessDuration > 0 && awakenessCycle > 0,
+                    "Awakeness cycle and duration must be positive.");
+            checkArgument(awakenessCycle > awakenessDuration,
+                    "Awakeness cycle must be larger than awakeness duration.");
+            checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
+            checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
+            // todo: validate observer awakeness strategy has been set
         }
     }
 }

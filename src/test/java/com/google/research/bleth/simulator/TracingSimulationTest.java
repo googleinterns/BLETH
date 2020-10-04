@@ -1,8 +1,9 @@
 package com.google.research.bleth.simulator;
 
-import org.junit.Test;
-
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.Test;
 
 public class TracingSimulationTest {
 
@@ -12,11 +13,16 @@ public class TracingSimulationTest {
     private static final String simulationId = "test-sim-id-1";
     private static final int maxRoundsEqualsTwo = 2;
     private static final int numberOfBeaconsEqualsTwo = 2;
-    private static final int numberOfObserversEqualsZero = 0;
+    private static final int numberOfObserversEqualsTwo = 2;
 
     private static final int awakenessCycleEqualsTwo = 2;
-    private static final int awakenessdURATIONEqualsOne = 1;
+    private static final int awakenessDurationEqualsOne = 1;
     private static final double radiusEqualsOne = 1.0;
+
+    private static final int illegalBoardDimension = 0;
+    private static final int illegalNumberOfAgents = 0;
+    private static final int illegalMaxRounds = 0;
+    private static final int illegalRadius = -1;
 
     public class moveUp implements MovementStrategy {
 
@@ -56,11 +62,11 @@ public class TracingSimulationTest {
     }
 
     @Test
-    public void initializeTwoBeaconsBeaconsContainerShouldEqualTwo() throws Exception {
+    public void initializeTwoBeaconsBeaconsContainerShouldEqualTwo() {
         Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
                 .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
-                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsZero)
-                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessdURATIONEqualsOne)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
                 .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary)
                 .build();
 
@@ -70,11 +76,11 @@ public class TracingSimulationTest {
     }
 
     @Test
-    public void runSimulationWithMaxRoundNumberTwoCurrentRoundNumberShouldBeTwo() throws Exception {
+    public void runSimulationWithMaxRoundNumberTwoCurrentRoundNumberShouldBeTwo() {
         Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
                 .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
-                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsZero)
-                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessdURATIONEqualsOne)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
                 .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary)
                 .build();
 
@@ -84,11 +90,11 @@ public class TracingSimulationTest {
     }
 
     @Test
-    public void moveAgentsDeterministicMovementStrategyBoardShouldEqualExpectedBoard() throws Exception {
+    public void moveAgentsDeterministicMovementStrategyBoardShouldEqualExpectedBoard() {
         Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
                 .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
-                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsZero)
-                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessdURATIONEqualsOne)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
                 .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary)
                 .build();
 
@@ -99,5 +105,115 @@ public class TracingSimulationTest {
         Board boardAfterMovement = simulation.getBoard();
 
         assertThat(boardsEqual(boardAfterMovement, expectedBoardAfterSingleRound, 2, 2)).isTrue();
+    }
+
+    @Test
+    public void setIllegalBoardDimensionInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(illegalBoardDimension)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);
+
+        assertThrows(IllegalArgumentException.class, builder::build);
+    }
+
+    @Test
+    public void setIllegalMaxRoundsInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(illegalMaxRounds).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);
+
+        assertThrows(IllegalArgumentException.class, builder::build);
+    }
+
+    @Test
+    public void setIllegalRadiusInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(illegalRadius).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);
+
+        assertThrows(IllegalArgumentException.class, builder::build);
+    }
+
+    @Test
+    public void setIllegalNumberOfAgentsInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(illegalNumberOfAgents)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);
+
+        assertThrows(IllegalArgumentException.class, builder::build);
+    }
+
+    @Test
+    public void skipSettingBeaconMovementStrategyInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setObserverMovementStrategy(stationary);
+
+        assertThrows(NullPointerException.class, builder::build);
+    }
+
+    @Test
+    public void skipSettingObserverMovementStrategyInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp);
+
+        assertThrows(NullPointerException.class, builder::build);
+    }
+
+    @Test
+    public void skipSettingBoardDimensionInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);;
+
+        assertThrows(IllegalArgumentException.class, builder::build);
+    }
+
+    @Test
+    public void skipSettingNumberOfAgentsInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);;
+
+        assertThrows(IllegalArgumentException.class, builder::build);
+    }
+
+    @Test
+    public void skipSettingMaxRoundsNumberInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setRadius(radiusEqualsOne).setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);;
+
+        assertThrows(IllegalArgumentException.class, builder::build);
+    }
+
+    @Test
+    public void skipSettingRadiusInBuilderShouldThrowException() {
+        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+                .setId(simulationId).setMaxNumberOfRounds(maxRoundsEqualsTwo).setRowNum(2).setColNum(2)
+                .setBeaconsNum(numberOfBeaconsEqualsTwo).setObserversNum(numberOfObserversEqualsTwo)
+                .setAwakenessCycle(awakenessCycleEqualsTwo).setAwakenessDuration(awakenessDurationEqualsOne)
+                .setBeaconMovementStrategy(moveUp).setObserverMovementStrategy(stationary);;
+
+        assertThrows(IllegalArgumentException.class, builder::build);
     }
 }
