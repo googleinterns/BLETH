@@ -103,8 +103,8 @@ public abstract class Simulation {
      * Move all agents according to their movement strategies and update the real board.
      */
     void moveAgents() {
-        beacons.stream().forEach(beacon -> board.placeAgent(beacon.moveTo(), beacon));
-        // todo: observers.stream().forEach(observer -> board.placeAgent(observer.moveTo(), observer));
+        beacons.stream().forEach(beacon -> board.moveAgent(beacon.getLocation(), beacon.moveTo(), beacon));
+        // todo: move observers
     }
 
     /**
