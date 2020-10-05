@@ -36,6 +36,20 @@ public class Board {
     }
 
     /**
+     * @return number of rows.
+     */
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    /**
+     * @return number of columns.
+     */
+    public int getColNum() {
+        return colNum;
+    }
+
+    /**
      * Check if a location is within the board boundaries.
      * @param location is the location to check if valid.
      * @throws NullPointerException if the location is null.
