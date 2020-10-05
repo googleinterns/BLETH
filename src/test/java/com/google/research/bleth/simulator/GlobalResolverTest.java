@@ -61,7 +61,7 @@ public class GlobalResolverTest {
     }
 
     @Test
-    public void firstEstimateWithoutReceiveInformation_DoesNotUpdateEstimatedBoard() {
+    public void firstEstimateWithoutReceiveInformation_EstimatedBoardIsEmpty() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
@@ -74,7 +74,7 @@ public class GlobalResolverTest {
     }
 
     @Test
-    public void firstEstimateWithoutInformation_DoesNotUpdateEstimatedBoard() {
+    public void firstEstimateWithoutTransmissions_EstimatedBoardIsEmpty() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
@@ -88,7 +88,7 @@ public class GlobalResolverTest {
     }
 
     @Test
-    public void firstEstimateWithInformationFromOneObserverOnSameLocationAsBeacon_UpdateEstimatedBoardAccordingToItsLocation() {
+    public void firstEstimateWithInformationFromObserverOnSameLocationAsBeacon_UpdateEstimatedBoardAccordingToItsLocation() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(oneOnOneCoordinate);
@@ -96,7 +96,6 @@ public class GlobalResolverTest {
         GlobalResolver resolver = GlobalResolver.createResolver(simulation);
 
         resolver.receiveInformation(zeroOnZeroCoordinate, ImmutableList.of(beacon.transmit()));
-
         resolver.estimate();
 
         assertThat(resolver.getBoard().getAgentsOnLocation(zeroOnZeroCoordinate)).containsExactly(beacon);
@@ -104,7 +103,7 @@ public class GlobalResolverTest {
     }
 
     @Test
-    public void firstEstimateWithInformationFromOneObserverOnDifferentLocationThanBeacon_UpdateEstimatedBoardAccordingToItsLocation() {
+    public void firstEstimateWithInformationFromObserverOnDifferentLocationThanBeacon_UpdateEstimatedBoardAccordingToItsLocation() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
@@ -239,20 +238,33 @@ public class GlobalResolverTest {
     }
 
     @Test
-    public void secondEstimateForUnlocatedBeacon_UpdateAccordingToTheNewLocationsOnly() {
+    public void secondEstimateForUnlocatedBeacon_UpdateAccordingToTheObserverLocationOnly() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon firstBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
-        Beacon secondBeacon = createRandomBeaconOnLocation(oneOnOneCoordinate);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(firstBeacon, secondBeacon));
+        Beacon beacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
         GlobalResolver resolver = GlobalResolver.createResolver(simulation);
-        resolver.receiveInformation(zeroOnOneCoordinate, ImmutableList.of(firstBeacon.transmit()));
+
+        resolver.receiveInformation(oneOnOneCoordinate, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        resolver.receiveInformation(oneOnOneCoordinate, ImmutableList.of(secondBeacon.transmit()));
+        assertThat(resolver.getBoard().getAgentsOnLocation(oneOnOneCoordinate)).containsExactly(beacon);
+    }
+
+    @Test
+    public void transmissionsFromPreviousRoundsIsDeleted() {
+        Board board = new Board(5, 5);
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Beacon beacon = createRandomBeaconOnLocation(oneOnZeroCoordinate);
+        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
+        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        resolver.receiveInformation(zeroOnZeroCoordinate, ImmutableList.of(beacon.transmit()));
+        resolver.receiveInformation(zeroOnZeroCoordinate, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(zeroOnOneCoordinate)).containsExactly(firstBeacon);
-        assertThat(resolver.getBoard().getAgentsOnLocation(oneOnOneCoordinate)).containsExactly(secondBeacon);
+        resolver.receiveInformation(new Location(4, 4), ImmutableList.of(beacon.transmit()));
+        resolver.estimate();
+
+        assertThat(resolver.getBoard().getAgentsOnLocation(twoOnTwoCoordinate)).containsExactly(beacon);
     }
 }
