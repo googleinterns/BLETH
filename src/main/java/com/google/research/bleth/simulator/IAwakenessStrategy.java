@@ -4,12 +4,15 @@ package com.google.research.bleth.simulator;
 public interface IAwakenessStrategy {
 
     /**
-     * Determine when the observer wakes up next.
-     * @param nextIntervalStart is the first round in which the observer can wake up again.
-     * @param awakenessCycle is the duration of each awakeness cycle - an observer can wake up once such cycle.
-     * @param awakenessDuration is the number of rounds that the observer is awake each time it wakes up.
-     * @param lastAwakeningTime is the last round the observer woke up.
-     * @return the next round in which the observer wakes up.
+     * Activate the observer if the current round is the start of its current awakeness time
+     * and turn it off if it's the end of its current awakeness time.
+     * The function is called for every round between 1 and the last round without skipping.
+     * @param currentRound is the the current round of the simulation.
      */
-    int nextTime(int nextIntervalStart, int awakenessCycle, int awakenessDuration, int lastAwakeningTime);
+    void updateAwakenessState(int currentRound);
+
+    /**
+     * Returns true if the beacon is activated, false otherwise.
+     */
+    boolean isAwake();
 }

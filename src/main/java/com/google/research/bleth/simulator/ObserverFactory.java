@@ -12,22 +12,19 @@ public class ObserverFactory {
      * @param IMovementStrategy determines how the observer moves.
      * @param resolver is the resolver that the observer belongs to.
      * @param simulation is the world the observer lives in.
-     * @param awakenessDuration is the duration of each awakeness interval.
-     * @param firstAwakenessTime is the first time the observer wakes up.
-     * @param IAwakenessStrategy determines when the observer wakes up.
+     * @param awakenessStrategy determines when the observer is activated.
      * @return
      */
-    public Observer createObserver(Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver, Simulation simulation,
-                                   int awakenessDuration, int firstAwakenessTime, IAwakenessStrategy IAwakenessStrategy) {
+    public Observer createObserver(Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver,
+                                   Simulation simulation, IAwakenessStrategy awakenessStrategy) {
         checkNotNull(initialLocation);
         checkNotNull(IMovementStrategy);
         checkNotNull(resolver);
         checkNotNull(simulation);
-        checkNotNull(IAwakenessStrategy);
+        checkNotNull(awakenessStrategy);
         simulation.getBoard().validateLocation(initialLocation);
 
-        Observer newObserver = new Observer(observerId++, initialLocation, IMovementStrategy, resolver, simulation,
-                awakenessDuration, firstAwakenessTime, IAwakenessStrategy);
+        Observer newObserver = new Observer(observerId++, initialLocation, IMovementStrategy, resolver, simulation, awakenessStrategy);
         simulation.getBoard().placeAgent(initialLocation, newObserver);
         return newObserver;
     }

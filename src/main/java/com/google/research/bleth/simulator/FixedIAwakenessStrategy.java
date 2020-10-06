@@ -2,18 +2,41 @@ package com.google.research.bleth.simulator;
 
 /** A fixed awakeness strategy for an observer - the observer wakes up at the same difference from the start of the awakeness interval. */
 public class FixedIAwakenessStrategy implements IAwakenessStrategy {
+    private final int awakenessCycleDuration;
+    private final int awakenessDuration;
+    private int nextAwakeningTime;
+    private int nextAwakenessIntervalStart = 0;
+    private boolean awake = false;
 
     /**
-     * Determine when the observer wakes up next according to the last time, at the same difference
-     * from the awakeness interval's start as last time.
-     * @param nextIntervalStart is the first round in which the observer can wake up again.
-     * @param awakenessCycle is the duration of each awakeness cycle - an observer can wake up once such cycle.
+     * Create a new fixed awakeness strategy.
+     * @param awakenessCycleDuration is the duration of each awakeness cycle. An observer can wake up once in a cycle.
      * @param awakenessDuration is the number of rounds that the observer is awake each time it wakes up.
-     * @param lastAwakeningTime is the last round the observer woke up.
-     * @return the next round in which the observer wakes up.
+     * @param firstAwakenessTime is the first time eht observer wakes up.
      */
+    FixedIAwakenessStrategy(int awakenessCycleDuration, int awakenessDuration, int firstAwakenessTime) {
+        this.awakenessCycleDuration = awakenessCycleDuration;
+        this.awakenessDuration = awakenessDuration;
+        this.nextAwakeningTime = firstAwakenessTime;
+        if (nextAwakeningTime == 0) {
+            awake = true;
+        }
+    }
+
     @Override
-    public int nextTime(int nextIntervalStart, int awakenessCycle, int awakenessDuration, int lastAwakeningTime) {
-        return lastAwakeningTime + awakenessCycle;
+    public boolean isAwake() {
+        return awake;
+    }
+
+    @Override
+    public void updateAwakenessState(int currentRound) {
+        if (awake && currentRound >= nextAwakeningTime + awakenessDuration) {
+            awake = false;
+            nextAwakenessIntervalStart += awakenessCycleDuration;
+            nextAwakeningTime += awakenessCycleDuration;
+        }
+        if (!awake && currentRound >= nextAwakeningTime) {
+            awake = true;
+        }
     }
 }
