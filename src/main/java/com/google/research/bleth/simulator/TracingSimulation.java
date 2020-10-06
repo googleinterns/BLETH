@@ -16,9 +16,22 @@ public class TracingSimulation extends Simulation {
 
     private TracingSimulation(TracingSimulationBuilder builder) {
 
-        super(builder.id, builder.maxNumberOfRounds, builder.rowNum, builder.colNum,
-                builder.beaconsNum, builder.observersNum, new GlobalResolver(), builder.awakenessCycle,
-                builder.awakenessDuration, builder.radius, builder.beaconMovementStrategy, builder.observerMovementStrategy);
+        super(builder.id, builder.maxNumberOfRounds, builder.rowNum,
+                builder.colNum, builder.beaconsNum, builder.observersNum,
+                builder.resolver, builder.awakenessCycle, builder.awakenessDuration,
+                builder.radius, builder.beaconMovementStrategy, builder.observerMovementStrategy,
+                builder.awakenessStrategy, builder.realBoard, builder.initializedFromExisting,
+                builder.beacons, builder.observers);
+    }
+
+    private TracingSimulation(TracingSimulationBuilderFromExisting builder) {
+
+        super(builder.id, builder.maxNumberOfRounds, builder.rowNum,
+                builder.colNum, builder.beaconsNum, builder.observersNum,
+                builder.resolver, builder.awakenessCycle, builder.awakenessDuration,
+                builder.radius, builder.beaconMovementStrategy, builder.observerMovementStrategy,
+                builder.awakenessStrategy, builder.realBoard, builder.initializedFromExisting,
+                builder.beacons, builder.observers);
     }
 
     @Override
@@ -34,18 +47,15 @@ public class TracingSimulation extends Simulation {
     }
 
     @Override
-    void updateSimulationStats() {
+    void updateSimulationStats() { }
 
-    }
-
-    /**
-     * An abstract builder class designed to separate the construction of a tracing simulation from its representation.
-     */
     public static class TracingSimulationBuilder extends SimulationBuilder {
 
         @Override
         public Simulation build() {
             validateArguments();
+            this.realBoard = new Board(this.rowNum, this.colNum);
+            this.resolver = new GlobalResolver(); // todo: add rowNum and colNum to constructor
             return new TracingSimulation(this);
         }
 
@@ -66,7 +76,45 @@ public class TracingSimulation extends Simulation {
                     "Awakeness cycle must be larger than awakeness duration.");
             checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
             checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
-            // todo: validate observer awakeness strategy has been set
+            checkNotNull(awakenessStrategy, "No awakeness strategy has been set.");
+        }
+    }
+
+    public static class TracingSimulationBuilderFromExisting extends SimulationBuilderFromExisting {
+
+        @Override
+        public Simulation build() {
+            validateArguments();
+            this.rowNum = this.realBoard.getRowNum();
+            this.colNum = this.realBoard.getColNum();
+            this.beaconsNum = beacons.size();
+            this.observersNum = observers.size();
+            return new TracingSimulation(this);
+        }
+
+        @Override
+        public void validateArguments() {
+            // todo: validate simulation id is unique
+            checkNotNull(realBoard);
+            checkNotNull(resolver);
+            checkArgument(resolver instanceof GlobalResolver,
+                    "Tracing simulation resolver must be a global resolver.");
+            checkArgument(realBoard.getRowNum() == resolver.getBoard().getRowNum() &&
+                    realBoard.getColNum() == resolver.getBoard().getColNum(),
+                    "Real and estimated board dimensions must agree.");
+            checkArgument(!beacons.isEmpty() && !observers.isEmpty(),
+                    "Number of beacons and number of observers must be positive.");
+            checkArgument(radius > 0,
+                    "Transmission radius must be positive.");
+            checkArgument(maxNumberOfRounds > 0,
+                    "Maximum number of rounds must be positive.");
+            checkArgument(awakenessDuration > 0 && awakenessCycle > 0,
+                    "Awakeness cycle and duration must be positive.");
+            checkArgument(awakenessCycle > awakenessDuration,
+                    "Awakeness cycle must be larger than awakeness duration.");
+            checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
+            checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
+            checkNotNull(awakenessStrategy, "No awakeness strategy has been set.");
         }
     }
 }
