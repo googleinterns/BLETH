@@ -11,44 +11,14 @@ import org.mockito.Mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BeaconTest {
-    private static final Location zeroOnZeroCoordinate = new Location(0, 0);
-    private static final Location oneOnOneCoordinate = new Location(1, 1);
-    private static final Location zeroOnOneCoordinate = new Location(0, 1);
-    private static final Location oneOnZeroCoordinate = new Location(1, 0);
-    private static final BeaconFactory beaconFactory = new BeaconFactory();
+    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
+    private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
+    private static final Location ZERO_ON_ONE_COORDINATE = new Location(0, 1);
+    private static final Location ONE_ON_ZERO_COORDINATE = new Location(1, 0);
+    private static final BeaconFactory BEACON_FACTORY = new BeaconFactory();
 
     @Mock
     private Simulation simulation;
-
-    private Beacon createStaticBeaconOnLocation(Location initial_location) {
-        return beaconFactory.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
-    }
-
-    private Beacon createRandomBeaconOnLocation(Location initial_location) {
-        return beaconFactory.createBeacon(initial_location, new RandomMovementStrategy(), simulation);
-    }
-
-    private int calculateDistance(Location oldLocation, Location newLocation) {
-        return Math.abs(newLocation.row - oldLocation.row) + Math.abs(newLocation.col - oldLocation.col);
-    }
-
-    private boolean isMovementOfCorneredBeaconIsValid(Board board, Location corner) {
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(corner);
-
-        Location nextLocation = randomBeacon.moveTo();
-
-        return simulation.getBoard().isLocationValid(nextLocation) && calculateDistance(corner, nextLocation) <= 1;
-    }
-
-    private boolean movingBeaconLocationIsUpdatedOnBoardMatrix(Board board, Location initialLocation) {
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(initialLocation);
-
-        randomBeacon.move();
-
-        return simulation.getBoard().getAgentsOnLocation(randomBeacon.getLocation()).contains(randomBeacon);
-    }
 
     @Test
     public void createBeaconOutsideTheBoardThrowsException() {
@@ -56,7 +26,7 @@ public class BeaconTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            beaconFactory.createBeacon(new Location(0, -1), new RandomMovementStrategy(), simulation);
+            BEACON_FACTORY.createBeacon(new Location(0, -1), new RandomMovementStrategy(), simulation);
         });
     }
 
@@ -64,7 +34,7 @@ public class BeaconTest {
     public void staticBeaconTransmitStaticId() {
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon beacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
     }
@@ -73,7 +43,7 @@ public class BeaconTest {
     public void randomBeaconTransmitStaticId() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(oneOnOneCoordinate);
+        Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
 
         assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
     }
@@ -82,29 +52,29 @@ public class BeaconTest {
     public void newBeaconLocationIsUpdatedOnBoardMatrix() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
 
-        assertThat(simulation.getBoard().getAgentsOnLocation(zeroOnOneCoordinate)).contains(randomBeacon);
+        assertThat(simulation.getBoard().getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).contains(randomBeacon);
     }
 
     @Test
     public void newBeaconLocationIsUpdated() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnOneCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
     public void staticBeaconNextMoveIsToItsLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon staticBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon staticBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = staticBeacon.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -114,11 +84,11 @@ public class BeaconTest {
         // ------
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -130,11 +100,11 @@ public class BeaconTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(oneOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ONE_ON_ZERO_COORDINATE);
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -146,11 +116,11 @@ public class BeaconTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation).isEqualTo(oneOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ONE_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -160,11 +130,11 @@ public class BeaconTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnOneCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
@@ -174,22 +144,22 @@ public class BeaconTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
 
         Location newLocation = randomBeacon.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
     public void moveStaticBeaconStayOnItsLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon staticBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon staticBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         staticBeacon.move();
 
-        assertThat(staticBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(staticBeacon.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -199,11 +169,11 @@ public class BeaconTest {
         // -----
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -215,11 +185,11 @@ public class BeaconTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(oneOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ONE_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -231,11 +201,11 @@ public class BeaconTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(oneOnZeroCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ONE_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -245,11 +215,11 @@ public class BeaconTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnOneCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
@@ -259,22 +229,22 @@ public class BeaconTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
     public void randomBeaconMoveExactlyOneStep() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(oneOnOneCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(calculateDistance(randomBeacon.getLocation(), oneOnOneCoordinate)).isEqualTo(1);
+        assertThat(calculateDistance(randomBeacon.getLocation(), ONE_ON_ONE_COORDINATE)).isEqualTo(1);
     }
 
     @Test
@@ -284,11 +254,11 @@ public class BeaconTest {
         // -------------
         Board board = new Board(1, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(calculateDistance(randomBeacon.getLocation(), zeroOnOneCoordinate)).isEqualTo(1);
+        assertThat(calculateDistance(randomBeacon.getLocation(), ZERO_ON_ONE_COORDINATE)).isEqualTo(1);
     }
 
     @Test
@@ -302,18 +272,18 @@ public class BeaconTest {
         // -----
         Board board = new Board(1, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
 
-        assertThat(calculateDistance(randomBeacon.getLocation(), zeroOnZeroCoordinate)).isEqualTo(1);
+        assertThat(calculateDistance(randomBeacon.getLocation(), ZERO_ON_ZERO_COORDINATE)).isEqualTo(1);
     }
 
     @Test
     public void upLeftCorneredBeaconsMoveToValidLocations() {
         for (int i = 0; i < 1000; i++) {
             Board board = new Board(3, 3);
-            assertThat(isMovementOfCorneredBeaconIsValid(board, zeroOnZeroCoordinate)).isTrue();
+            assertThat(isMovementOfCorneredBeaconIsValid(board, ZERO_ON_ZERO_COORDINATE)).isTrue();
         }
     }
 
@@ -350,12 +320,12 @@ public class BeaconTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(oneOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ONE_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(oneOnZeroCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ONE_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -367,12 +337,12 @@ public class BeaconTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -382,12 +352,12 @@ public class BeaconTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -397,19 +367,49 @@ public class BeaconTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon randomBeacon = createRandomBeaconOnLocation(zeroOnOneCoordinate);
+        Beacon randomBeacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
 
         randomBeacon.move();
         randomBeacon.move();
 
-        assertThat(randomBeacon.getLocation()).isEqualTo(zeroOnOneCoordinate);
+        assertThat(randomBeacon.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
     public void movingBeaconsLocationsAreUpdatedOnBoardMatrix() {
         for (int i = 0; i < 1000; i++) {
             Board board = new Board(3, 3);
-            assertThat(movingBeaconLocationIsUpdatedOnBoardMatrix(board, oneOnOneCoordinate)).isTrue();
+            assertThat(movingBeaconLocationIsUpdatedOnBoardMatrix(board, ONE_ON_ONE_COORDINATE)).isTrue();
         }
+    }
+
+    private Beacon createStaticBeaconOnLocation(Location initial_location) {
+        return BEACON_FACTORY.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
+    }
+
+    private Beacon createRandomBeaconOnLocation(Location initial_location) {
+        return BEACON_FACTORY.createBeacon(initial_location, new RandomMovementStrategy(), simulation);
+    }
+
+    private int calculateDistance(Location oldLocation, Location newLocation) {
+        return Math.abs(newLocation.row - oldLocation.row) + Math.abs(newLocation.col - oldLocation.col);
+    }
+
+    private boolean isMovementOfCorneredBeaconIsValid(Board board, Location corner) {
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Beacon randomBeacon = createRandomBeaconOnLocation(corner);
+
+        Location nextLocation = randomBeacon.moveTo();
+
+        return simulation.getBoard().isLocationValid(nextLocation) && calculateDistance(corner, nextLocation) <= 1;
+    }
+
+    private boolean movingBeaconLocationIsUpdatedOnBoardMatrix(Board board, Location initialLocation) {
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Beacon randomBeacon = createRandomBeaconOnLocation(initialLocation);
+
+        randomBeacon.move();
+
+        return simulation.getBoard().getAgentsOnLocation(randomBeacon.getLocation()).contains(randomBeacon);
     }
 }

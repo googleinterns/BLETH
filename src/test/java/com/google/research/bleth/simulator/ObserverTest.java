@@ -9,89 +9,19 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.Mock;
 
-import java.util.List;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ObserverTest {
-    private static final Location zeroOnZeroCoordinate = new Location(0, 0);
-    private static final Location oneOnOneCoordinate = new Location(1, 1);
-    private static final Location zeroOnOneCoordinate = new Location(0, 1);
-    private static final Location oneOnZeroCoordinate = new Location(1, 0);
-    private static final BeaconFactory beaconFactory = new BeaconFactory();
-    private static final ObserverFactory observerFactory = new ObserverFactory();
+    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
+    private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
+    private static final Location ZERO_ON_ONE_COORDINATE = new Location(0, 1);
+    private static final Location ONE_ON_ZERO_COORDINATE = new Location(1, 0);
+    private static final BeaconFactory BEACON_FACTORY = new BeaconFactory();
+    private static final ObserverFactory OBSERVER_FACTORY = new ObserverFactory();
 
     @Mock
     private Simulation simulation;
 
-    /**
-     * A fake implementation for IResolver that allows to test the arguments it receives when an observer calls receiveInformation.
-     */
-    private class FakeResolver implements IResolver {
-        private Location observerLocation;
-        private List<Transmission> transmissions;
-
-        @Override
-        public void receiveInformation(Location observerLocation, List<Transmission> transmissions) {
-            this.observerLocation = observerLocation;
-            this.transmissions = transmissions;
-        }
-
-        public Location getObserverLocation() {
-            return observerLocation;
-        }
-
-        public List<Transmission> getTransmissions() {
-            return transmissions;
-        }
-
-        @Override
-        public Board getBoard() {
-            return null;
-        }
-    }
-
     private IResolver resolver = new FakeResolver();
-
-    private Observer createStaticObserverOnLocation(Location initial_location) {
-        return observerFactory.createObserver(initial_location, new StationaryMovementStrategy(), resolver, simulation,
-        1, 1, new FixedAwakenessStrategy());
-    }
-
-    private Observer createRandomObserverOnLocation(Location initial_location) {
-        return observerFactory.createObserver(initial_location, new RandomMovementStrategy(), resolver, simulation,
-                1, 1, new FixedAwakenessStrategy());
-    }
-
-    private Observer createObserverByAwakenessTimes(int awakenessDuration, int firstAwakenessTime, AwakenessStrategy awakenessStrategy) {
-        return observerFactory.createObserver(zeroOnZeroCoordinate, new RandomMovementStrategy(), resolver, simulation,
-                awakenessDuration, firstAwakenessTime, awakenessStrategy);
-    }
-
-    private Beacon createStaticBeaconOnLocation(Location initial_location) {
-        return beaconFactory.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
-    }
-
-    private int calculateDistance(Location oldLocation, Location newLocation) {
-        return Math.abs(newLocation.row - oldLocation.row) + Math.abs(newLocation.col - oldLocation.col);
-    }
-
-    private boolean isMovementOfCorneredObserverIsValid(Board board, Location corner) {
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(corner);
-
-        Location nextLocation = randomObserver.moveTo();
-
-        return simulation.getBoard().isLocationValid(nextLocation) && calculateDistance(corner, nextLocation) <= 1;
-    }
-
-    private boolean movingObserverLocationIsUpdatedOnBoardMatrix(Board board, Location initialLocation) {
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(initialLocation);
-
-        randomObserver.move();
-
-        return simulation.getBoard().getAgentsOnLocation(randomObserver.getLocation()).contains(randomObserver);
-    }
 
     @Test
     public void createObserverOutsideTheBoardThrowsException() {
@@ -99,7 +29,7 @@ public class ObserverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            observerFactory.createObserver(new Location(0, -1), new RandomMovementStrategy(), resolver, simulation,
+            OBSERVER_FACTORY.createObserver(new Location(0, -1), new RandomMovementStrategy(), resolver, simulation,
                     1, 0, new FixedAwakenessStrategy());
         });
     }
@@ -108,29 +38,29 @@ public class ObserverTest {
     public void newObserverLocationIsUpdatedOnBoardMatrix() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
 
-        assertThat(simulation.getBoard().getAgentsOnLocation(zeroOnOneCoordinate)).contains(randomObserver);
+        assertThat(simulation.getBoard().getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).contains(randomObserver);
     }
 
     @Test
     public void newObserverLocationIsUpdated() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnOneCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
     public void staticObserverNextMoveIsToItsLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer staticObserver = createStaticObserverOnLocation(zeroOnZeroCoordinate);
+        Observer staticObserver = createStaticObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = staticObserver.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -140,11 +70,11 @@ public class ObserverTest {
         // ------
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = randomObserver.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -156,11 +86,11 @@ public class ObserverTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
 
         Location newLocation = randomObserver.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -172,11 +102,11 @@ public class ObserverTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = randomObserver.moveTo();
 
-        assertThat(newLocation).isEqualTo(oneOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ONE_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -186,11 +116,11 @@ public class ObserverTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         Location newLocation = randomObserver.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnOneCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
@@ -200,22 +130,22 @@ public class ObserverTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
 
         Location newLocation = randomObserver.moveTo();
 
-        assertThat(newLocation).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
     public void moveStaticObserverStayOnItsLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer staticObserver = createStaticObserverOnLocation(zeroOnZeroCoordinate);
+        Observer staticObserver = createStaticObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         staticObserver.move();
 
-        assertThat(staticObserver.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(staticObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -225,11 +155,11 @@ public class ObserverTest {
         // -----
         Board board = new Board(1, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -241,11 +171,11 @@ public class ObserverTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -257,11 +187,11 @@ public class ObserverTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(oneOnZeroCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ONE_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -271,11 +201,11 @@ public class ObserverTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnOneCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
@@ -285,22 +215,22 @@ public class ObserverTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
     public void randomObserverMoveExactlyOneStep() {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ONE_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(calculateDistance(randomObserver.getLocation(), oneOnOneCoordinate)).isEqualTo(1);
+        assertThat(calculateDistance(randomObserver.getLocation(), ONE_ON_ONE_COORDINATE)).isEqualTo(1);
     }
 
     @Test
@@ -310,11 +240,11 @@ public class ObserverTest {
         // -------------
         Board board = new Board(1, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(calculateDistance(randomObserver.getLocation(), zeroOnOneCoordinate)).isEqualTo(1);
+        assertThat(calculateDistance(randomObserver.getLocation(), ZERO_ON_ONE_COORDINATE)).isEqualTo(1);
     }
 
     @Test
@@ -328,18 +258,18 @@ public class ObserverTest {
         // -----
         Board board = new Board(1, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomObserver.move();
 
-        assertThat(calculateDistance(randomObserver.getLocation(), zeroOnZeroCoordinate)).isEqualTo(1);
+        assertThat(calculateDistance(randomObserver.getLocation(), ZERO_ON_ZERO_COORDINATE)).isEqualTo(1);
     }
 
     @Test
     public void upLeftCorneredObserversMoveToValidLocations() {
         for (int i = 0; i < 1000; i++) {
             Board board = new Board(3, 3);
-            assertThat(isMovementOfCorneredObserverIsValid(board, zeroOnZeroCoordinate)).isTrue();
+            assertThat(isMovementOfCorneredObserverIsValid(board, ZERO_ON_ZERO_COORDINATE)).isTrue();
         }
     }
 
@@ -376,12 +306,12 @@ public class ObserverTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
 
         randomObserver.move();
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(oneOnZeroCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ONE_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -393,12 +323,12 @@ public class ObserverTest {
         // -----
         Board board = new Board(2, 1);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomObserver.move();
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -408,12 +338,12 @@ public class ObserverTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
 
         randomObserver.move();
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnZeroCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
     }
 
     @Test
@@ -423,19 +353,19 @@ public class ObserverTest {
         // ----------
         Board board = new Board(1, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
 
         randomObserver.move();
         randomObserver.move();
 
-        assertThat(randomObserver.getLocation()).isEqualTo(zeroOnOneCoordinate);
+        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
     public void movingObserversLocationsAreUpdatedOnBoardMatrix() {
         for (int i = 0; i < 1000; i++) {
             Board board = new Board(3, 3);
-            assertThat(movingObserverLocationIsUpdatedOnBoardMatrix(board, oneOnOneCoordinate)).isTrue();
+            assertThat(movingObserverLocationIsUpdatedOnBoardMatrix(board, ONE_ON_ONE_COORDINATE)).isTrue();
         }
     }
 
@@ -443,7 +373,7 @@ public class ObserverTest {
     public void observerDoesNotObserveBeaconsPassesItsRightLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
 
         randomObserver.passInformationToResolver();
 
@@ -454,7 +384,7 @@ public class ObserverTest {
     public void movingObserverDoesNotObserveBeaconsPassesItsRightLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
         randomObserver.move();
 
         randomObserver.passInformationToResolver();
@@ -466,7 +396,7 @@ public class ObserverTest {
     public void observerDoesNotObserveBeaconsPassesNoTransmission() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
 
         randomObserver.passInformationToResolver();
 
@@ -477,8 +407,8 @@ public class ObserverTest {
     public void observerDoesNotObserveNearbyBeaconPassesNoTransmission() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnZeroCoordinate);
-        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
+        Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission newBeaconTransmission = newBeacon.transmit();
 
         randomObserver.passInformationToResolver();
@@ -490,8 +420,8 @@ public class ObserverTest {
     public void observerObservesOneBeaconInSameLocationPassesItsRightLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission newBeaconTransmission = newBeacon.transmit();
 
         randomObserver.observe(newBeaconTransmission);
@@ -504,8 +434,8 @@ public class ObserverTest {
     public void observerObservesOneBeaconInDifferentLocationPassesItsRightLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon newBeacon = createStaticBeaconOnLocation(oneOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon newBeacon = createStaticBeaconOnLocation(ONE_ON_ZERO_COORDINATE);
         Transmission newBeaconTransmission = newBeacon.transmit();
 
         randomObserver.observe(newBeaconTransmission);
@@ -518,8 +448,8 @@ public class ObserverTest {
     public void movingObserverObservesOneBeaconPassesItsRightLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission newBeaconTransmission = newBeacon.transmit();
         randomObserver.move();
 
@@ -533,8 +463,8 @@ public class ObserverTest {
     public void observerObservesOneBeaconInSameLocationPassesTheRightTransmission() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon newBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission newBeaconTransmission = newBeacon.transmit();
 
         randomObserver.observe(newBeaconTransmission);
@@ -547,8 +477,8 @@ public class ObserverTest {
     public void observerObservesOneBeaconInDifferentLocationPassesTheRightTransmission() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon newBeacon = createStaticBeaconOnLocation(oneOnOneCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon newBeacon = createStaticBeaconOnLocation(ONE_ON_ONE_COORDINATE);
         Transmission newBeaconTransmission = newBeacon.transmit();
 
         randomObserver.observe(newBeaconTransmission);
@@ -561,10 +491,10 @@ public class ObserverTest {
     public void observerObservesOneBeaconOutOfTwoPassesTheRightTransmission() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
-        Beacon secondBeacon = createStaticBeaconOnLocation(oneOnOneCoordinate);
+        Beacon secondBeacon = createStaticBeaconOnLocation(ONE_ON_ONE_COORDINATE);
         Transmission secondBeaconTransmission = secondBeacon.transmit();
 
         randomObserver.observe(firstBeaconTransmission);
@@ -577,10 +507,10 @@ public class ObserverTest {
     public void observerObservesTwoBeaconsPassesItsRightLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(oneOnOneCoordinate);
-        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ONE_COORDINATE);
+        Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
-        Beacon secondBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon secondBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission secondBeaconTransmission = secondBeacon.transmit();
 
         randomObserver.observe(firstBeaconTransmission);
@@ -594,10 +524,10 @@ public class ObserverTest {
     public void observerObservesTwoBeaconsPassesTheRightTransmissions() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
-        Beacon secondBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Beacon secondBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission secondBeaconTransmission = secondBeacon.transmit();
 
         randomObserver.observe(firstBeaconTransmission);
@@ -611,8 +541,8 @@ public class ObserverTest {
     public void transmissionsIsEmptyAfterObserverPassThem() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
 
         randomObserver.observe(firstBeaconTransmission);
@@ -626,10 +556,10 @@ public class ObserverTest {
     public void transmissionsRefillAfterObserverPassThem() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(zeroOnZeroCoordinate);
-        Beacon firstBeacon = createStaticBeaconOnLocation(zeroOnZeroCoordinate);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
+        Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
-        Beacon secondBeacon = createStaticBeaconOnLocation(oneOnOneCoordinate);
+        Beacon secondBeacon = createStaticBeaconOnLocation(ONE_ON_ONE_COORDINATE);
         Transmission secondBeaconTransmission = secondBeacon.transmit();
 
         randomObserver.observe(firstBeaconTransmission);
@@ -926,5 +856,46 @@ public class ObserverTest {
         }
 
         assertThat(wakesUpAtTwo && wakesUpAtThree).isTrue();
+    }
+
+    private Observer createStaticObserverOnLocation(Location initial_location) {
+        return OBSERVER_FACTORY.createObserver(initial_location, new StationaryMovementStrategy(), resolver, simulation,
+                1, 1, new FixedAwakenessStrategy());
+    }
+
+    private Observer createRandomObserverOnLocation(Location initial_location) {
+        return OBSERVER_FACTORY.createObserver(initial_location, new RandomMovementStrategy(), resolver, simulation,
+                1, 1, new FixedAwakenessStrategy());
+    }
+
+    private Observer createObserverByAwakenessTimes(int awakenessDuration, int firstAwakenessTime, AwakenessStrategy awakenessStrategy) {
+        return OBSERVER_FACTORY.createObserver(ZERO_ON_ZERO_COORDINATE, new RandomMovementStrategy(), resolver, simulation,
+                awakenessDuration, firstAwakenessTime, awakenessStrategy);
+    }
+
+    private Beacon createStaticBeaconOnLocation(Location initial_location) {
+        return BEACON_FACTORY.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
+    }
+
+    private int calculateDistance(Location oldLocation, Location newLocation) {
+        return Math.abs(newLocation.row - oldLocation.row) + Math.abs(newLocation.col - oldLocation.col);
+    }
+
+    private boolean isMovementOfCorneredObserverIsValid(Board board, Location corner) {
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(corner);
+
+        Location nextLocation = randomObserver.moveTo();
+
+        return simulation.getBoard().isLocationValid(nextLocation) && calculateDistance(corner, nextLocation) <= 1;
+    }
+
+    private boolean movingObserverLocationIsUpdatedOnBoardMatrix(Board board, Location initialLocation) {
+        Mockito.when(simulation.getBoard()).thenReturn(board);
+        Observer randomObserver = createRandomObserverOnLocation(initialLocation);
+
+        randomObserver.move();
+
+        return simulation.getBoard().getAgentsOnLocation(randomObserver.getLocation()).contains(randomObserver);
     }
 }
