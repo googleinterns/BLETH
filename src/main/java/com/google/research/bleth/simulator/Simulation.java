@@ -111,7 +111,7 @@ public abstract class Simulation {
      */
     void moveAgents() {
         beacons.stream().forEach(beacon -> board.moveAgent(beacon.getLocation(), beacon.moveTo(), beacon));
-        // todo: move observers
+        observers.stream().forEach(observer -> board.moveAgent(observer.getLocation(), observer.moveTo(), observer));
     }
 
     /**
