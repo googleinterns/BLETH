@@ -1,7 +1,7 @@
 package com.google.research.bleth.simulator;
 
 /** Represent an observer. */
-public interface IObserver extends Agent {
+public interface IObserver extends IAgent {
 
     /**
      * Add a transmission to the transmissions the observer observed so far in the current round.

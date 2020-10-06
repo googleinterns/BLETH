@@ -6,7 +6,7 @@ import java.util.List;
 /** Simulation's Observer, which moves on the board, observe beacons' transmissions and pass the information to its resolver. */
 public class Observer implements IObserver {
     private final int id;
-    private final MovementStrategy movementStrategy;
+    private final IMovementStrategy IMovementStrategy;
     private final IResolver resolver;
     private final Simulation simulation;
 
@@ -17,24 +17,24 @@ public class Observer implements IObserver {
     private int nextAwakeningTime;
     private int nextAwakenessIntervalStart = 0;
     private boolean awake = false;
-    private AwakenessStrategy awakenessStrategy;
+    private IAwakenessStrategy IAwakenessStrategy;
 
     /**
      * Create new Beacon with consecutive serial number.
      * @param id is a unique ID.
      * @param initialLocation is the location on board where the agent is placed.
-     * @param movementStrategy determines how the observer moves.
+     * @param IMovementStrategy determines how the observer moves.
      * @param resolver is the resolver that the observer belongs to.
      * @param simulation is the world the agent lives in.
      * @param awakenessDuration is the duration of each awakeness interval.
      * @param firstAwakenessTime is the first time the observer wakes up.
-     * @param awakenessStrategy determines when the observer wakes up.
+     * @param IAwakenessStrategy determines when the observer wakes up.
      */
-    Observer(int id, Location initialLocation, MovementStrategy movementStrategy, IResolver resolver, Simulation simulation,
-             int awakenessDuration, int firstAwakenessTime, AwakenessStrategy awakenessStrategy) {
+    Observer(int id, Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver, Simulation simulation,
+             int awakenessDuration, int firstAwakenessTime, IAwakenessStrategy IAwakenessStrategy) {
         this.id = id;
         realLocation = initialLocation;
-        this.movementStrategy = movementStrategy;
+        this.IMovementStrategy = IMovementStrategy;
         this.resolver = resolver;
         this.simulation = simulation;
 
@@ -43,7 +43,7 @@ public class Observer implements IObserver {
         if (nextAwakeningTime == 0) {
             awake = true;
         }
-        this.awakenessStrategy = awakenessStrategy;
+        this.IAwakenessStrategy = IAwakenessStrategy;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class Observer implements IObserver {
 
     @Override
     public Location moveTo() {
-        return movementStrategy.moveTo(simulation.getBoard(), realLocation);
+        return IMovementStrategy.moveTo(simulation.getBoard(), realLocation);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class Observer implements IObserver {
             awake = false;
             // determines when the observer wakes up next according to its awakeness strategy.
             nextAwakenessIntervalStart += simulation.getAwakenessCycle();
-            nextAwakeningTime = awakenessStrategy.nextTime(nextAwakenessIntervalStart,
+            nextAwakeningTime = IAwakenessStrategy.nextTime(nextAwakenessIntervalStart,
                     simulation.getAwakenessCycle(), awakenessDuration, nextAwakeningTime);
         }
         if (!awake && currentRound >= nextAwakeningTime) {

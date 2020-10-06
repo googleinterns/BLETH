@@ -1,7 +1,7 @@
 package com.google.research.bleth.simulator;
 
 /** Represent the awakeness strategy of an observer. */
-public interface AwakenessStrategy {
+public interface IAwakenessStrategy {
 
     /**
      * Determine when the observer wakes up next.

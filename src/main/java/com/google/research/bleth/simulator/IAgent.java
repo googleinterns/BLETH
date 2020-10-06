@@ -1,7 +1,7 @@
 package com.google.research.bleth.simulator;
 
 /** Represent both observer and beacon. */
-public interface Agent {
+public interface IAgent {
 
     /**
      * Returns the current agent's location on the real board.

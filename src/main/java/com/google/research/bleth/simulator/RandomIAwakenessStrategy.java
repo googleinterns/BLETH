@@ -1,11 +1,13 @@
 package com.google.research.bleth.simulator;
 
-/** A fixed awakeness strategy for an observer - the observer wakes up at the same difference from the start of the awakeness interval. */
-public class FixedAwakenessStrategy implements AwakenessStrategy {
+import java.util.Random;
+
+/** A random awakeness strategy for an observer - the observer wakes up at random time each awakeness cycle. */
+public class RandomIAwakenessStrategy implements IAwakenessStrategy {
+    private Random random = new Random();
 
     /**
-     * Determine when the observer wakes up next according to the last time, at the same difference
-     * from the awakeness interval's start as last time.
+     * Determine when the observer wakes up next randomly within the next awakeness cycle.
      * @param nextIntervalStart is the first round in which the observer can wake up again.
      * @param awakenessCycle is the duration of each awakeness cycle - an observer can wake up once such cycle.
      * @param awakenessDuration is the number of rounds that the observer is awake each time it wakes up.
@@ -14,6 +16,9 @@ public class FixedAwakenessStrategy implements AwakenessStrategy {
      */
     @Override
     public int nextTime(int nextIntervalStart, int awakenessCycle, int awakenessDuration, int lastAwakeningTime) {
-        return lastAwakeningTime + awakenessCycle;
+        if (awakenessCycle == awakenessDuration) {
+            return 0;
+        }
+        return nextIntervalStart + random.nextInt(awakenessCycle - awakenessDuration + 1);
     }
 }

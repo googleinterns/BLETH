@@ -29,8 +29,8 @@ public class ObserverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            OBSERVER_FACTORY.createObserver(new Location(0, -1), new RandomMovementStrategy(), resolver, simulation,
-                    1, 0, new FixedAwakenessStrategy());
+            OBSERVER_FACTORY.createObserver(new Location(0, -1), new RandomIMovementStrategy(), resolver, simulation,
+                    1, 0, new FixedIAwakenessStrategy());
         });
     }
     
@@ -574,7 +574,7 @@ public class ObserverTest {
     public void fixedAwakenessObserverWithFirstAwakenessTimeZeroStartsAwake() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer fixedObserver = createObserverByAwakenessTimes(3, 0, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(3, 0, new FixedIAwakenessStrategy());
 
         assertThat(fixedObserver.isAwake()).isTrue();
     }
@@ -583,7 +583,7 @@ public class ObserverTest {
     public void randomAwakenessObserverWithFirstAwakenessTimeZeroStartsAwake() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createObserverByAwakenessTimes(3, 0, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(3, 0, new RandomIAwakenessStrategy());
 
         assertThat(randomObserver.isAwake()).isTrue();
     }
@@ -592,7 +592,7 @@ public class ObserverTest {
     public void fixedAwakenessObserverWithFirstAwakenessTimeOneStartsAsleep() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer fixedObserver = createObserverByAwakenessTimes(3, 1, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(3, 1, new FixedIAwakenessStrategy());
 
         assertThat(fixedObserver.isAwake()).isFalse();
     }
@@ -601,7 +601,7 @@ public class ObserverTest {
     public void randomAwakenessObserverWithFirstAwakenessTimeOneStartsAsleep() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createObserverByAwakenessTimes(3, 1, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(3, 1, new RandomIAwakenessStrategy());
 
         assertThat(randomObserver.isAwake()).isFalse();
     }
@@ -610,7 +610,7 @@ public class ObserverTest {
     public void fixedAwakenessObserverWakesUpAtRoundTwo() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer fixedObserver = createObserverByAwakenessTimes(3, 2, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(3, 2, new FixedIAwakenessStrategy());
         fixedObserver.updateAwakenessState(1);
 
         fixedObserver.updateAwakenessState(2);
@@ -622,7 +622,7 @@ public class ObserverTest {
     public void randomAwakenessObserverWakesUpAtRoundTwo() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createObserverByAwakenessTimes(3, 2, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(3, 2, new RandomIAwakenessStrategy());
         randomObserver.updateAwakenessState(1);
 
         randomObserver.updateAwakenessState(2);
@@ -634,7 +634,7 @@ public class ObserverTest {
     public void fixedAwakenessObserverThatWakesUpAtRoundTwoSleepsAtRoundOne() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer fixedObserver = createObserverByAwakenessTimes(3, 2, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(3, 2, new FixedIAwakenessStrategy());
 
         fixedObserver.updateAwakenessState(1);
 
@@ -645,7 +645,7 @@ public class ObserverTest {
     public void randomAwakenessObserverThatWakesUpAtRoundTwoSleepsAtRoundOne() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createObserverByAwakenessTimes(3, 2, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(3, 2, new RandomIAwakenessStrategy());
 
         randomObserver.updateAwakenessState(1);
 
@@ -656,7 +656,7 @@ public class ObserverTest {
     public void fixedAwakenessObserverThatWakesUpAtRoundTwoForTwoRoundsIsAwakeAtRoundThree() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer fixedObserver = createObserverByAwakenessTimes(2, 2, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(2, 2, new FixedIAwakenessStrategy());
         fixedObserver.updateAwakenessState(1);
         fixedObserver.updateAwakenessState(2);
 
@@ -669,7 +669,7 @@ public class ObserverTest {
     public void randomAwakenessObserverThatWakesUpAtRoundTwoForTwoRoundsIsAwakeAtRoundThree() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createObserverByAwakenessTimes(2, 2, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(2, 2, new RandomIAwakenessStrategy());
         randomObserver.updateAwakenessState(1);
         randomObserver.updateAwakenessState(2);
 
@@ -683,7 +683,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(10);
-        Observer fixedObserver = createObserverByAwakenessTimes(2, 1, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(2, 1, new FixedIAwakenessStrategy());
         fixedObserver.updateAwakenessState(1);
         fixedObserver.updateAwakenessState(2);
 
@@ -697,7 +697,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(10);
-        Observer randomObserver = createObserverByAwakenessTimes(2, 1, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(2, 1, new RandomIAwakenessStrategy());
         randomObserver.updateAwakenessState(1);
         randomObserver.updateAwakenessState(2);
 
@@ -711,7 +711,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(2);
-        Observer fixedObserver = createObserverByAwakenessTimes(1, 1, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(1, 1, new FixedIAwakenessStrategy());
         fixedObserver.updateAwakenessState(1);
         fixedObserver.updateAwakenessState(2);
 
@@ -725,7 +725,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(2);
-        Observer fixedObserver = createObserverByAwakenessTimes(2, 0, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(2, 0, new FixedIAwakenessStrategy());
         fixedObserver.updateAwakenessState(1);
         fixedObserver.updateAwakenessState(2);
 
@@ -737,7 +737,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(2);
-        Observer randomObserver = createObserverByAwakenessTimes(2, 0, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(2, 0, new RandomIAwakenessStrategy());
         randomObserver.updateAwakenessState(1);
         randomObserver.updateAwakenessState(2);
 
@@ -749,7 +749,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(2);
-        Observer fixedObserver = createObserverByAwakenessTimes(1, 0, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(1, 0, new FixedIAwakenessStrategy());
         fixedObserver.updateAwakenessState(1);
 
         fixedObserver.updateAwakenessState(2);
@@ -765,7 +765,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(2);
-        Observer randomObserver = createObserverByAwakenessTimes(1, 0, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(1, 0, new RandomIAwakenessStrategy());
         randomObserver.updateAwakenessState(1);
 
         randomObserver.updateAwakenessState(2);
@@ -781,7 +781,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(2);
-        Observer fixedObserver = createObserverByAwakenessTimes(1, 0, new FixedAwakenessStrategy());
+        Observer fixedObserver = createObserverByAwakenessTimes(1, 0, new FixedIAwakenessStrategy());
         fixedObserver.updateAwakenessState(1);
 
         fixedObserver.updateAwakenessState(2);
@@ -797,7 +797,7 @@ public class ObserverTest {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Mockito.when(simulation.getAwakenessCycle()).thenReturn(2);
-        Observer randomObserver = createObserverByAwakenessTimes(1, 0, new RandomAwakenessStrategy());
+        Observer randomObserver = createObserverByAwakenessTimes(1, 0, new RandomIAwakenessStrategy());
         randomObserver.updateAwakenessState(1);
 
         randomObserver.updateAwakenessState(2);
@@ -817,7 +817,7 @@ public class ObserverTest {
         boolean wakesUpAtThree = false;
 
         for (int i = 0; i < 1000; i++) {
-            Observer fixedObserver = createObserverByAwakenessTimes(1, 0, new FixedAwakenessStrategy());
+            Observer fixedObserver = createObserverByAwakenessTimes(1, 0, new FixedIAwakenessStrategy());
             fixedObserver.updateAwakenessState(1);
 
             fixedObserver.updateAwakenessState(2);
@@ -842,7 +842,7 @@ public class ObserverTest {
         boolean wakesUpAtThree = false;
 
         for (int i = 0; i < 1000; i++) {
-            Observer randomObserver = createObserverByAwakenessTimes(1, 0, new RandomAwakenessStrategy());
+            Observer randomObserver = createObserverByAwakenessTimes(1, 0, new RandomIAwakenessStrategy());
             randomObserver.updateAwakenessState(1);
 
             randomObserver.updateAwakenessState(2);
@@ -859,22 +859,22 @@ public class ObserverTest {
     }
 
     private Observer createStaticObserverOnLocation(Location initial_location) {
-        return OBSERVER_FACTORY.createObserver(initial_location, new StationaryMovementStrategy(), resolver, simulation,
-                1, 1, new FixedAwakenessStrategy());
+        return OBSERVER_FACTORY.createObserver(initial_location, new StationaryIMovementStrategy(), resolver, simulation,
+                1, 1, new FixedIAwakenessStrategy());
     }
 
     private Observer createRandomObserverOnLocation(Location initial_location) {
-        return OBSERVER_FACTORY.createObserver(initial_location, new RandomMovementStrategy(), resolver, simulation,
-                1, 1, new FixedAwakenessStrategy());
+        return OBSERVER_FACTORY.createObserver(initial_location, new RandomIMovementStrategy(), resolver, simulation,
+                1, 1, new FixedIAwakenessStrategy());
     }
 
-    private Observer createObserverByAwakenessTimes(int awakenessDuration, int firstAwakenessTime, AwakenessStrategy awakenessStrategy) {
-        return OBSERVER_FACTORY.createObserver(ZERO_ON_ZERO_COORDINATE, new RandomMovementStrategy(), resolver, simulation,
-                awakenessDuration, firstAwakenessTime, awakenessStrategy);
+    private Observer createObserverByAwakenessTimes(int awakenessDuration, int firstAwakenessTime, IAwakenessStrategy IAwakenessStrategy) {
+        return OBSERVER_FACTORY.createObserver(ZERO_ON_ZERO_COORDINATE, new RandomIMovementStrategy(), resolver, simulation,
+                awakenessDuration, firstAwakenessTime, IAwakenessStrategy);
     }
 
     private Beacon createStaticBeaconOnLocation(Location initial_location) {
-        return BEACON_FACTORY.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
+        return BEACON_FACTORY.createBeacon(initial_location, new StationaryIMovementStrategy(), simulation);
     }
 
     private int calculateDistance(Location oldLocation, Location newLocation) {

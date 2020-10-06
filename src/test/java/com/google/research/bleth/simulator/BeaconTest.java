@@ -26,7 +26,7 @@ public class BeaconTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            BEACON_FACTORY.createBeacon(new Location(0, -1), new RandomMovementStrategy(), simulation);
+            BEACON_FACTORY.createBeacon(new Location(0, -1), new RandomIMovementStrategy(), simulation);
         });
     }
 
@@ -384,11 +384,11 @@ public class BeaconTest {
     }
 
     private Beacon createStaticBeaconOnLocation(Location initial_location) {
-        return BEACON_FACTORY.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
+        return BEACON_FACTORY.createBeacon(initial_location, new StationaryIMovementStrategy(), simulation);
     }
 
     private Beacon createRandomBeaconOnLocation(Location initial_location) {
-        return BEACON_FACTORY.createBeacon(initial_location, new RandomMovementStrategy(), simulation);
+        return BEACON_FACTORY.createBeacon(initial_location, new RandomIMovementStrategy(), simulation);
     }
 
     private int calculateDistance(Location oldLocation, Location newLocation) {
