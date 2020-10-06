@@ -10,96 +10,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class RandomAwakenessStrategyTest extends AwakenessStrategyTest {
 
     @Test
-    public void observerWithFirstAwakenessTimeZeroStartsAwake() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(5, 3, 0);
-
-        assertThat(awakenessStrategy.isAwake()).isTrue();
-    }
-
-    @Test
-    public void observerWithFirstAwakenessTimeOneStartsAsleep() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(5, 3, 1);
-
-        assertThat(awakenessStrategy.isAwake()).isFalse();
-    }
-
-    @Test
-    public void observerWakesUpAtRoundTwo() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(5, 3, 2);
-        awakenessStrategy.updateAwakenessState(1);
-
-        awakenessStrategy.updateAwakenessState(2);
-
-        assertThat(awakenessStrategy.isAwake()).isTrue();
-    }
-
-    @Test
-    public void observerThatWakesUpAtRoundTwoSleepsAtRoundOne() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(5, 3, 2);
-
-        awakenessStrategy.updateAwakenessState(1);
-
-        assertThat(awakenessStrategy.isAwake()).isFalse();
-    }
-
-    @Test
-    public void observerThatWakesUpAtRoundTwoForTwoRoundsIsAwakeAtRoundThree() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(5, 2, 2);
-        awakenessStrategy.updateAwakenessState(1);
-        awakenessStrategy.updateAwakenessState(2);
-
-        awakenessStrategy.updateAwakenessState(3);
-
-        assertThat(awakenessStrategy.isAwake()).isTrue();
-    }
-
-    @Test
-    public void observerThatWakesUpAtRoundOneForTwoRoundsAsleepAtRoundThree() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(10, 2, 1);
-        awakenessStrategy.updateAwakenessState(1);
-        awakenessStrategy.updateAwakenessState(2);
-
-        awakenessStrategy.updateAwakenessState(3);
-
-        assertThat(awakenessStrategy.isAwake()).isFalse();
-    }
-
-    @Test
-    public void observerThatWakesUpAtRoundZeroAndIsAwakeForAWholeCycleStaysAwake() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(2, 2, 0);
-        awakenessStrategy.updateAwakenessState(1);
-        awakenessStrategy.updateAwakenessState(2);
-
-        assertThat(awakenessStrategy.isAwake()).isTrue();
-    }
-
-    @Test
-    public void observerWakesUpAtTheSecondCycle() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(2, 1, 0);
-        awakenessStrategy.updateAwakenessState(1);
-
-        awakenessStrategy.updateAwakenessState(2);
-        boolean wakesUpAtTwo = awakenessStrategy.isAwake();
-        awakenessStrategy.updateAwakenessState(3);
-        boolean wakesUpAtThree = awakenessStrategy.isAwake();
-
-        assertThat(wakesUpAtTwo || wakesUpAtThree).isTrue();
-    }
-
-    @Test
-    public void observerWakesUpExactlyOnceAtTheSecondCycle() {
-        IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(2, 1, 0);
-        awakenessStrategy.updateAwakenessState(1);
-
-        awakenessStrategy.updateAwakenessState(2);
-        boolean wakesUpAtTwo = awakenessStrategy.isAwake();
-        awakenessStrategy.updateAwakenessState(3);
-        boolean wakesUpAtThree = awakenessStrategy.isAwake();
-
-        assertThat(wakesUpAtTwo && wakesUpAtThree).isFalse();
-    }
-
-    @Test
     public void awakenessTimeIsNotFixed() {
         boolean wakesUpAtTwo = false;
         boolean wakesUpAtThree = false;
@@ -119,5 +29,9 @@ public class RandomAwakenessStrategyTest extends AwakenessStrategyTest {
         }
 
         assertThat(wakesUpAtTwo && wakesUpAtThree).isTrue();
+    }
+
+    IAwakenessStrategy createAwakenessStrategy(int awakenessCycleDuration, int awakenessDuration, int firstAwakenessTime) {
+        return new RandomAwakenessStrategy(awakenessCycleDuration, awakenessDuration, firstAwakenessTime);
     }
 }
