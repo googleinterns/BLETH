@@ -120,20 +120,6 @@ public abstract class Simulation {
         protected double radius;
 
         /**
-         * Create and initialize simulation observers using a factory, and store them in observers container.
-         * initializes the observers movement strategy according to the strategy passed to the builder.
-         * initializes the observers awakeness strategy according to the strategy factory passed to the builder.
-         */
-        abstract void initializeObservers();
-
-        /**
-         * Create and initialize simulation beacons using a factory, and store them in observers container.
-         * Create simple beacons for a tracing simulation and swapping beacons for a stalking simulation.
-         * initializes the beacons movement strategy according to the strategy passed to the builder.
-         */
-        abstract void initializeBeacons();
-
-        /**
          * Set simulation id.
          * @param id is a unique simulation id.
          * @return this, to provide chaining.
@@ -234,15 +220,29 @@ public abstract class Simulation {
         }
 
         /**
+         * Validate all simulation builder arguments are legal.
+         */
+        public abstract void validateArguments();
+
+        /**
+         * Create and initialize simulation observers using a factory, and store them in observers container.
+         * initializes the observers movement strategy according to the strategy passed to the builder.
+         * initializes the observers awakeness strategy according to the strategy factory passed to the builder.
+         */
+        abstract void initializeObservers();
+
+        /**
+         * Create and initialize simulation beacons using a factory, and store them in observers container.
+         * Create simple beacons for a tracing simulation and swapping beacons for a stalking simulation.
+         * initializes the beacons movement strategy according to the strategy passed to the builder.
+         */
+        abstract void initializeBeacons();
+
+        /**
          * Construct a simulation object.
          * @return a new Simulation object constructed with the builder parameters.
          */
         public abstract Simulation build();
-
-        /**
-         * Validate all simulation builder arguments are legal.
-         */
-        public abstract void validateArguments();
     }
 
     /**
@@ -367,14 +367,14 @@ public abstract class Simulation {
         }
 
         /**
+         * Validate all simulation builder arguments are legal.
+         */
+        public abstract void validateArguments();
+
+        /**
          * Construct a simulation object.
          * @return a new Simulation object constructed with the builder parameters.
          */
         public abstract Simulation build();
-
-        /**
-         * Validate all simulation builder arguments are legal.
-         */
-        public abstract void validateArguments();
     }
 }
