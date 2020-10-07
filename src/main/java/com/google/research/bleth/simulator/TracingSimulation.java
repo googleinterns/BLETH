@@ -3,8 +3,6 @@ package com.google.research.bleth.simulator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.Random;
-
 /**
  * A simulation in which the global resolver estimates beacons real locations based on information received from observers.
  * Beacons transmit their unique static IDs each round.
@@ -16,34 +14,14 @@ public class TracingSimulation extends Simulation {
 
     private TracingSimulation(TracingSimulationBuilder builder) {
 
-        super(builder.id, builder.maxNumberOfRounds, builder.rowNum,
-                builder.colNum, builder.beaconsNum, builder.observersNum,
-                builder.resolver, builder.awakenessCycle, builder.awakenessDuration,
-                builder.radius, builder.beaconMovementStrategy, builder.observerMovementStrategy,
-                builder.awakenessStrategy, builder.realBoard, builder.initializedFromExisting,
+        super(builder.id, builder.maxNumberOfRounds, builder.resolver, builder.radius, builder.realBoard,
                 builder.beacons, builder.observers);
     }
 
     private TracingSimulation(TracingSimulationBuilderFromExisting builder) {
 
-        super(builder.id, builder.maxNumberOfRounds, builder.rowNum,
-                builder.colNum, builder.beaconsNum, builder.observersNum,
-                builder.resolver, builder.awakenessCycle, builder.awakenessDuration,
-                builder.radius, builder.beaconMovementStrategy, builder.observerMovementStrategy,
-                builder.awakenessStrategy, builder.realBoard, builder.initializedFromExisting,
+        super(builder.id, builder.maxNumberOfRounds, builder.resolver, builder.radius, builder.realBoard,
                 builder.beacons, builder.observers);
-    }
-
-    @Override
-    void initializeBeacons() {
-        BeaconFactory factory = new BeaconFactory();
-        Random rand = new Random();
-        for (int i = 0; i < beaconsNum; i++) {
-            // Generate random initial location.
-            Location initialLocation = new Location(rand.nextInt(this.rowNum), rand.nextInt(this.colNum));
-            // Add beacon.
-            beacons.add(factory.createBeacon(initialLocation, this.beaconMovementStrategy, this));
-        }
     }
 
     @Override
@@ -52,10 +30,18 @@ public class TracingSimulation extends Simulation {
     public static class TracingSimulationBuilder extends SimulationBuilder {
 
         @Override
+        void initializeObservers() { }
+
+        @Override
+        void initializeBeacons() { }
+
+        @Override
         public Simulation build() {
             validateArguments();
+            initializeBeacons();
+            initializeObservers();
             this.realBoard = new Board(this.rowNum, this.colNum);
-            this.resolver = new GlobalResolver(); // todo: add rowNum and colNum to constructor
+            this.resolver = new GlobalResolver(this.rowNum, this.colNum);
             return new TracingSimulation(this);
         }
 
@@ -70,13 +56,9 @@ public class TracingSimulation extends Simulation {
                     "Transmission radius must be positive.");
             checkArgument(maxNumberOfRounds > 0,
                     "Maximum number of rounds must be positive.");
-            checkArgument(awakenessDuration > 0 && awakenessCycle > 0,
-                    "Awakeness cycle and duration must be positive.");
-            checkArgument(awakenessCycle > awakenessDuration,
-                    "Awakeness cycle must be larger than awakeness duration.");
             checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
             checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
-            checkNotNull(awakenessStrategy, "No awakeness strategy has been set.");
+            checkNotNull(awakenessStrategyFactory, "No awakeness strategy factory has been set.");
         }
     }
 
@@ -108,13 +90,9 @@ public class TracingSimulation extends Simulation {
                     "Transmission radius must be positive.");
             checkArgument(maxNumberOfRounds > 0,
                     "Maximum number of rounds must be positive.");
-            checkArgument(awakenessDuration > 0 && awakenessCycle > 0,
-                    "Awakeness cycle and duration must be positive.");
-            checkArgument(awakenessCycle > awakenessDuration,
-                    "Awakeness cycle must be larger than awakeness duration.");
             checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
             checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
-            checkNotNull(awakenessStrategy, "No awakeness strategy has been set.");
+            checkNotNull(awakenessStrategyFactory, "No awakeness strategy factory has been set.");
         }
     }
 }

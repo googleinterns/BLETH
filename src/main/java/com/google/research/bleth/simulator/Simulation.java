@@ -1,8 +1,7 @@
 package com.google.research.bleth.simulator;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * An abstract class representing a BLETH simulation.
@@ -13,47 +12,22 @@ public abstract class Simulation {
     private final String id;
     protected int currentRound = 0;
     private final int maxNumberOfRounds;
-    protected final int rowNum;
-    protected final int colNum;
     private Board board;
-    protected final int beaconsNum;
-    protected final int observersNum;
     protected ArrayList<Beacon> beacons;
     protected ArrayList<Observer> observers;
-    protected final MovementStrategy beaconMovementStrategy;
-    protected final MovementStrategy observerMovementStrategy;
-    protected final AwakenessStrategy awakenessStrategy;
     private IResolver resolver;
-    private final int awakenessCycle;       // size of interval in which each observer has exactly one awakeness period
-    private final int awakenessDuration;    // size of interval in which each observer is awake
-    private final double radius;            // threshold transmission radius
-    protected boolean initializedFromExisting;
-    // todo: add hashmap object to store stats
-    // todo: add db service instance
+    private final double radius;
+    private HashMap<String, Double> stats = new HashMap<>();
 
     // A protected constructor used by the concrete simulation classes' constructors.
     protected Simulation
-    (String id, int maxNumberOfRounds, int rowNum,
-     int colNum, int beaconsNum, int observersNum,
-     IResolver resolver, int awakenessCycle, int awakenessDuration,
-     double radius, MovementStrategy beaconMovementStrategy, MovementStrategy observerMovementStrategy,
-     AwakenessStrategy awakenessStrategy, Board realBoard, boolean initializedFromExisting,
+    (String id, int maxNumberOfRounds, IResolver resolver, double radius, Board realBoard,
      ArrayList<Beacon> beacons, ArrayList<Observer> observers) {
         this.id = id;
         this.maxNumberOfRounds = maxNumberOfRounds;
-        this.rowNum = rowNum;
-        this.colNum = colNum;
         this.board = realBoard;
-        this.beaconsNum = beaconsNum;
-        this.observersNum = observersNum;
         this.resolver = resolver;
-        this.awakenessCycle = awakenessCycle;
-        this.awakenessDuration = awakenessDuration;
         this.radius = radius;
-        this.beaconMovementStrategy = beaconMovementStrategy;
-        this.observerMovementStrategy = observerMovementStrategy;
-        this.awakenessStrategy = awakenessStrategy;
-        this.initializedFromExisting = initializedFromExisting;
         this.beacons = beacons;
         this.observers = observers;
     }
@@ -67,21 +41,9 @@ public abstract class Simulation {
     }
 
     /**
-     * Return an immutable copy of the simulation's beacons list.
-     * @return ImmutableList containing the simulation's beacons
-     */
-    ImmutableList<Beacon> getBeacons() {
-        return ImmutableList.copyOf(beacons);
-    }
-
-    /**
      * Run entire simulation logic, including writing data to db.
      */
     public void run() {
-        if (!initializedFromExisting) {
-            initializeBeacons();
-            initializeObservers();
-        }
         writeRoundState(); // round 0 is the initial simulation state
         for (int round = 1; round <= maxNumberOfRounds; round++, currentRound++) {
             moveAgents();
@@ -96,23 +58,9 @@ public abstract class Simulation {
     }
 
     /**
-     * Create and initialize simulation observers using a factory, and store them in observers container.
-     */
-    void initializeObservers() { }
-
-    /**
-     * Create and initialize simulation observers using a factory, and store them in observers container.
-     * Create simple beacons for a tracing simulation and swapping beacons for a stalking simulation.
-     */
-    abstract void initializeBeacons();
-
-    /**
      * Move all agents according to their movement strategies and update the real board.
      */
-    void moveAgents() {
-        beacons.stream().forEach(beacon -> board.moveAgent(beacon.getLocation(), beacon.moveTo(), beacon));
-        observers.stream().forEach(observer -> board.moveAgent(observer.getLocation(), observer.moveTo(), observer));
-    }
+    void moveAgents() { }
 
     /**
      * Update all observers awakeness states according to their awakeness strategies.
@@ -166,13 +114,24 @@ public abstract class Simulation {
         protected int observersNum;
         protected ArrayList<Beacon> beacons = new ArrayList<>();
         protected ArrayList<Observer> observers = new ArrayList<>();
-        protected MovementStrategy beaconMovementStrategy;
-        protected MovementStrategy observerMovementStrategy;
-        protected AwakenessStrategy awakenessStrategy;
-        protected int awakenessCycle;
-        protected int awakenessDuration;
+        protected IMovementStrategy beaconMovementStrategy;
+        protected IMovementStrategy observerMovementStrategy;
+        protected AwakenessStrategyFactory awakenessStrategyFactory;
         protected double radius;
-        protected boolean initializedFromExisting = false;
+
+        /**
+         * Create and initialize simulation observers using a factory, and store them in observers container.
+         * initializes the observers movement strategy according to the strategy passed to the builder.
+         * initializes the observers awakeness strategy according to the strategy factory passed to the builder.
+         */
+        abstract void initializeObservers();
+
+        /**
+         * Create and initialize simulation beacons using a factory, and store them in observers container.
+         * Create simple beacons for a tracing simulation and swapping beacons for a stalking simulation.
+         * initializes the beacons movement strategy according to the strategy passed to the builder.
+         */
+        abstract void initializeBeacons();
 
         /**
          * Set simulation id.
@@ -239,7 +198,7 @@ public abstract class Simulation {
          * @param beaconMovementStrategy is the movement strategy for all beacons.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setBeaconMovementStrategy(MovementStrategy beaconMovementStrategy) {
+        public SimulationBuilder setBeaconMovementStrategy(IMovementStrategy beaconMovementStrategy) {
             this.beaconMovementStrategy = beaconMovementStrategy;
             return this;
         }
@@ -249,38 +208,18 @@ public abstract class Simulation {
          * @param observerMovementStrategy is the movement strategy for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setObserverMovementStrategy(MovementStrategy observerMovementStrategy) {
+        public SimulationBuilder setObserverMovementStrategy(IMovementStrategy observerMovementStrategy) {
             this.observerMovementStrategy = observerMovementStrategy;
             return this;
         }
 
         /**
-         * Set the observers' awakeness strategy.
-         * @param awakenessStrategy is the awakeness strategy for all observers.
+         * Set the observers' awakeness strategy factory, used for generating awakeness strategies for all observers.
+         * @param awakenessStrategyFactory is the awakeness strategy factory for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setAwakenessStrategy(AwakenessStrategy awakenessStrategy) {
-            this.awakenessStrategy = awakenessStrategy;
-            return this;
-        }
-
-        /**
-         * Set the observers' awakeness cycle - size of interval in which each observer has exactly one awakeness period.
-         * @param awakenessCycle is the awakeness cycle for all observers.
-         * @return this, to provide chaining.
-         */
-        public SimulationBuilder setAwakenessCycle(int awakenessCycle) {
-            this.awakenessCycle = awakenessCycle;
-            return this;
-        }
-
-        /**
-         * Set the observers' awakeness duration - size of interval in which each observer is awake.
-         * @param awakenessDuration is the awakeness duration for all observers.
-         * @return this, to provide chaining.
-         */
-        public SimulationBuilder setAwakenessDuration(int awakenessDuration) {
-            this.awakenessDuration = awakenessDuration;
+        public SimulationBuilder setAwakenessStrategyFactory(AwakenessStrategyFactory awakenessStrategyFactory) {
+            this.awakenessStrategyFactory = awakenessStrategyFactory;
             return this;
         }
 
@@ -322,13 +261,10 @@ public abstract class Simulation {
         protected int observersNum;
         protected ArrayList<Beacon> beacons = new ArrayList<>();
         protected ArrayList<Observer> observers = new ArrayList<>();
-        protected MovementStrategy beaconMovementStrategy;
-        protected MovementStrategy observerMovementStrategy;
-        protected AwakenessStrategy awakenessStrategy;
-        protected int awakenessCycle;
-        protected int awakenessDuration;
+        protected IMovementStrategy beaconMovementStrategy;
+        protected IMovementStrategy observerMovementStrategy;
+        protected AwakenessStrategyFactory awakenessStrategyFactory;
         protected double radius;
-        protected boolean initializedFromExisting = true;
 
         /**
          * Set simulation id.
@@ -395,7 +331,7 @@ public abstract class Simulation {
          * @param beaconMovementStrategy is the movement strategy for all beacons.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setBeaconMovementStrategy(MovementStrategy beaconMovementStrategy) {
+        public SimulationBuilderFromExisting setBeaconMovementStrategy(IMovementStrategy beaconMovementStrategy) {
             this.beaconMovementStrategy = beaconMovementStrategy;
             return this;
         }
@@ -405,38 +341,18 @@ public abstract class Simulation {
          * @param observerMovementStrategy is the movement strategy for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setObserverMovementStrategy(MovementStrategy observerMovementStrategy) {
+        public SimulationBuilderFromExisting setObserverMovementStrategy(IMovementStrategy observerMovementStrategy) {
             this.observerMovementStrategy = observerMovementStrategy;
             return this;
         }
 
         /**
-         * Set the observers' awakeness strategy.
-         * @param awakenessStrategy is the awakeness strategy for all observers.
+         * Set the observers' awakeness strategy factory, used for generating awakeness strategies for all observers.
+         * @param awakenessStrategyFactory is the awakeness strategy factory for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setAwakenessStrategy(AwakenessStrategy awakenessStrategy) {
-            this.awakenessStrategy = awakenessStrategy;
-            return this;
-        }
-
-        /**
-         * Set the observers' awakeness cycle - size of interval in which each observer has exactly one awakeness period.
-         * @param awakenessCycle is the awakeness cycle for all observers.
-         * @return this, to provide chaining.
-         */
-        public SimulationBuilderFromExisting setAwakenessCycle(int awakenessCycle) {
-            this.awakenessCycle = awakenessCycle;
-            return this;
-        }
-
-        /**
-         * Set the observers' awakeness duration - size of interval in which each observer is awake.
-         * @param awakenessDuration is the awakeness duration for all observers.
-         * @return this, to provide chaining.
-         */
-        public SimulationBuilderFromExisting setAwakenessDuration(int awakenessDuration) {
-            this.awakenessDuration = awakenessDuration;
+        public SimulationBuilderFromExisting setAwakenessStrategyFactory(AwakenessStrategyFactory awakenessStrategyFactory) {
+            this.awakenessStrategyFactory = awakenessStrategyFactory;
             return this;
         }
 
