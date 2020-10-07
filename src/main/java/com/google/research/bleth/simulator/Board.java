@@ -88,25 +88,25 @@ public class Board {
     /**
      * Place an agent on board if the given location is valid.
      * @param newLocation is the location where the agent will be placed.
-     * @param IAgent is the Agent which placed on the board.
+     * @param agent is the Agent which placed on the board.
      */
-    public void placeAgent(Location newLocation, IAgent IAgent) {
-        checkNotNull(IAgent);
+    public void placeAgent(Location newLocation, IAgent agent) {
+        checkNotNull(agent);
         validateLocation(newLocation);
-        matrix.get(newLocation.row, newLocation.col).add(IAgent);
+        matrix.get(newLocation.row, newLocation.col).add(agent);
     }
 
     /**
      * Remove an agent from its current location on board and place it on new location.
      * @param oldLocation is the agent's current location.
      * @param newLocation is the location where the agent will be placed.
-     * @param IAgent is the Agent which moves from oldLocation to newLocation.
+     * @param agent is the Agent which moves from oldLocation to newLocation.
      */
-    public void moveAgent(Location oldLocation, Location newLocation, IAgent IAgent) {
-        checkNotNull(IAgent);
+    public void moveAgent(Location oldLocation, Location newLocation, IAgent agent) {
+        checkNotNull(agent);
         validateLocation(newLocation);
         validateLocation(oldLocation);
-        matrix.get(oldLocation.row, oldLocation.col).remove(IAgent);
-        placeAgent(newLocation, IAgent);
+        matrix.get(oldLocation.row, oldLocation.col).remove(agent);
+        placeAgent(newLocation, agent);
     }
 }
