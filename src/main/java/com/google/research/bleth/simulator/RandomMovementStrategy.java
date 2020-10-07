@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /** A random movement strategy for an agent. */
-public class RandomMovementStrategy implements MovementStrategy {
+public class RandomMovementStrategy implements IMovementStrategy {
 
     private final static List<Direction> directions =
             ImmutableList.copyOf(Direction.values());

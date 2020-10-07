@@ -1,4 +1,4 @@
 package com.google.research.bleth.simulator;
 
-public interface AwakenessStrategy {
+public interface IAwakenessStrategy {
 }

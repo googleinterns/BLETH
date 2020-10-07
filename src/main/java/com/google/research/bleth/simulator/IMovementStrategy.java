@@ -1,7 +1,7 @@
 package com.google.research.bleth.simulator;
 
 /** Represent the movement strategy of an agent. */
-public interface MovementStrategy {
+public interface IMovementStrategy {
 
     /**
      * Determine the next location of an agent, based on its current location on the board and its strategy.

@@ -9,16 +9,16 @@ public class BeaconFactory {
     /**
      * Create new beacon, according to the given parameters.
      * @param initialLocation is the location on board where the agent is placed.
-     * @param movementStrategy determines how the agent moves.
+     * @param IMovementStrategy determines how the agent moves.
      * @param simulation is the world the agent lives in.
      */
-    public Beacon createBeacon(Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
+    public Beacon createBeacon(Location initialLocation, IMovementStrategy IMovementStrategy, Simulation simulation) {
         checkNotNull(initialLocation);
-        checkNotNull(movementStrategy);
+        checkNotNull(IMovementStrategy);
         checkNotNull(simulation);
         simulation.getBoard().validateLocation(initialLocation);
 
-        Beacon newBeacon = new Beacon(beaconId++, initialLocation, movementStrategy, simulation);
+        Beacon newBeacon = new Beacon(beaconId++, initialLocation, IMovementStrategy, simulation);
         simulation.getBoard().placeAgent(initialLocation, newBeacon);
         return newBeacon;
     }

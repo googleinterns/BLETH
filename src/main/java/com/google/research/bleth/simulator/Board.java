@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class Board {
     private final int rowNum;
     private final int colNum;
-    private ArrayTable<Integer, Integer, ArrayList<Agent>> matrix;
+    private ArrayTable<Integer, Integer, ArrayList<IAgent>> matrix;
 
     /**
      * Create an empty board for storing agents' locations.
@@ -30,7 +30,7 @@ public class Board {
                                    IntStream.range(0, cols).boxed().collect(Collectors.toList()));
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                matrix.set(row, col, new ArrayList<Agent>());
+                matrix.set(row, col, new ArrayList<IAgent>());
             }
         }
     }
@@ -80,7 +80,7 @@ public class Board {
      * @param location is the requested location to retrieve all the agents that located on it.
      * @return an immutable copy of the list of all agents which located on location.
      */
-    public List<Agent> getAgentsOnLocation(Location location) {
+    public List<IAgent> getAgentsOnLocation(Location location) {
         validateLocation(location);
         return ImmutableList.copyOf(matrix.get(location.row, location.col));
     }
@@ -88,25 +88,25 @@ public class Board {
     /**
      * Place an agent on board if the given location is valid.
      * @param newLocation is the location where the agent will be placed.
-     * @param agent is the Agent which placed on the board.
+     * @param IAgent is the Agent which placed on the board.
      */
-    public void placeAgent(Location newLocation, Agent agent) {
-        checkNotNull(agent);
+    public void placeAgent(Location newLocation, IAgent IAgent) {
+        checkNotNull(IAgent);
         validateLocation(newLocation);
-        matrix.get(newLocation.row, newLocation.col).add(agent);
+        matrix.get(newLocation.row, newLocation.col).add(IAgent);
     }
 
     /**
      * Remove an agent from its current location on board and place it on new location.
      * @param oldLocation is the agent's current location.
      * @param newLocation is the location where the agent will be placed.
-     * @param agent is the Agent which moves from oldLocation to newLocation.
+     * @param IAgent is the Agent which moves from oldLocation to newLocation.
      */
-    public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
-        checkNotNull(agent);
+    public void moveAgent(Location oldLocation, Location newLocation, IAgent IAgent) {
+        checkNotNull(IAgent);
         validateLocation(newLocation);
         validateLocation(oldLocation);
-        matrix.get(oldLocation.row, oldLocation.col).remove(agent);
-        placeAgent(newLocation, agent);
+        matrix.get(oldLocation.row, oldLocation.col).remove(IAgent);
+        placeAgent(newLocation, IAgent);
     }
 }
