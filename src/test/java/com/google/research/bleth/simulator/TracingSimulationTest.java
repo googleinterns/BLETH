@@ -1,6 +1,5 @@
 package com.google.research.bleth.simulator;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.Test;
@@ -15,9 +14,9 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class TracingSimulationTest {
 
-    private static final MovementStrategy MOVE_UP = new moveUp();
-    private static final MovementStrategy STATIONARY = new StationaryMovementStrategy();
-    private static final AwakenessStrategy DUMMY_AWAKENESS_STRATEGY = new DummyAwakenessStrategy();
+    private static final IMovementStrategy MOVE_UP = new moveUp();
+    private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
+    private static final AwakenessStrategyFactory DUMMY_AWAKENESS_STRATEGY_FACTORY = new AwakenessStrategyFactory();
 
     private static final String SIMULATION_ID = "test-sim-id-1";
     private static final int BOARD_DIMENSION_EQUALS_TWO = 2;
@@ -25,9 +24,6 @@ public class TracingSimulationTest {
     private static final int MAX_ROUNDS_EQUALS_TWO = 2;
     private static final int NUMBER_OF_BEACONS_EQUALS_TWO = 2;
     private static final int NUMBER_OF_OBSERVERS_EQUALS_TWO = 2;
-
-    private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
-    private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
     private static final double RADIUS_EQUALS_ONE = 1.0;
 
     private static final int ILLEGAL_BOARD_DIMENSION = 0;
@@ -61,12 +57,10 @@ public class TracingSimulationTest {
                 .setColNum(ILLEGAL_BOARD_DIMENSION)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
@@ -80,12 +74,10 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
@@ -99,12 +91,10 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(ILLEGAL_RADIUS)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
@@ -118,12 +108,10 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(ILLEGAL_NUMBER_OF_AGENTS)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
@@ -137,11 +125,9 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(NullPointerException.class, builder::build);
     }
@@ -155,17 +141,15 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(NullPointerException.class, builder::build);
     }
 
     @Test
-    public void skipSettingAwakenessStrategyInBuilderShouldThrowException() {
+    public void skipSettingAwakenessStrategyFactoryInBuilderShouldThrowException() {
         Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
@@ -173,8 +157,6 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY);
@@ -190,12 +172,10 @@ public class TracingSimulationTest {
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
@@ -208,12 +188,10 @@ public class TracingSimulationTest {
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
@@ -226,12 +204,10 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
@@ -245,46 +221,14 @@ public class TracingSimulationTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY);
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY);
 
         assertThrows(IllegalArgumentException.class, builder::build);
     }
 
     // Test cases focused on building a TracingSimulation from existing.
-
-    @Test
-    public void initSimulationFromExistingNumberOfBeaconsShouldBeUpdated() {
-        Board realBoard = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
-        Board estimatedBoard = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
-        ArrayList<Beacon> beacons = new ArrayList<>();
-        beacons.add(beacon1);
-        beacons.add(beacon2);
-        ArrayList<Observer> observers = new ArrayList<>();
-        observers.add(observer1);
-        observers.add(observer2);
-        Mockito.when(resolver.getBoard()).thenReturn(estimatedBoard);
-
-        Simulation simulation = new TracingSimulation.TracingSimulationBuilderFromExisting()
-                .setId(SIMULATION_ID)
-                .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
-                .setRadius(RADIUS_EQUALS_ONE)
-                .setRealBoard(realBoard)
-                .setResolver(resolver)
-                .setBeacons(beacons)
-                .setObservers(observers)
-                .build();
-
-        assertThat(simulation.beaconsNum).isEqualTo(NUMBER_OF_BEACONS_EQUALS_TWO);
-    }
 
     @Test
     public void initSimulationFromExistingWithNonGlobalResolverShouldThrowException() {
@@ -299,11 +243,9 @@ public class TracingSimulationTest {
         Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(realBoard)
                 .setResolver(new FakeResolver())
@@ -328,11 +270,9 @@ public class TracingSimulationTest {
         Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(realBoard)
                 .setResolver(resolver)
@@ -355,11 +295,9 @@ public class TracingSimulationTest {
         Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(board)
                 .setBeacons(beacons)
@@ -375,11 +313,9 @@ public class TracingSimulationTest {
         Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(board)
                 .setResolver(resolver);
@@ -399,11 +335,9 @@ public class TracingSimulationTest {
         Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setResolver(resolver)
                 .setBeacons(beacons)
@@ -412,84 +346,9 @@ public class TracingSimulationTest {
         assertThrows(NullPointerException.class, builder::build);
     }
 
-    // Test cases focused on Tracing Simulation logic.
+    // Helper classes.
 
-    @Test
-    public void initializeTwoBeaconsBeaconsContainerShouldEqualTwo() {
-        Simulation simulation = new TracingSimulation
-                .TracingSimulationBuilder()
-                .setId(SIMULATION_ID)
-                .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
-                .setColNum(BOARD_DIMENSION_EQUALS_TWO)
-                .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
-                .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setRadius(RADIUS_EQUALS_ONE)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
-                .build();
-
-        simulation.initializeBeacons();
-
-        assertThat(simulation.getBeacons().size()).isEqualTo(NUMBER_OF_BEACONS_EQUALS_TWO);
-    }
-
-    @Test
-    public void runSimulationWithMaxRoundNumberTwoCurrentRoundNumberShouldBeTwo() {
-        Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
-                .setId(SIMULATION_ID)
-                .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
-                .setColNum(BOARD_DIMENSION_EQUALS_TWO)
-                .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
-                .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setRadius(RADIUS_EQUALS_ONE)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
-                .build();
-
-        simulation.run();
-
-        assertThat(simulation.currentRound).isEqualTo(MAX_ROUNDS_EQUALS_TWO);
-    }
-
-    @Test
-    public void moveAgentsDeterministicMovementStrategyBoardShouldEqualExpectedBoard() {
-        Simulation simulation = new TracingSimulation.TracingSimulationBuilder()
-                .setId(SIMULATION_ID)
-                .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
-                .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
-                .setColNum(BOARD_DIMENSION_EQUALS_TWO)
-                .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
-                .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setRadius(RADIUS_EQUALS_ONE)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategy(DUMMY_AWAKENESS_STRATEGY)
-                .build();
-
-        simulation.initializeBeacons();
-        Board boardWhenSimulationInitialized = simulation.getBoard();
-        Board expectedBoardAfterSingleRound =
-                buildExpectedBoard(boardWhenSimulationInitialized, BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
-        simulation.moveAgents();
-        Board boardAfterMovement = simulation.getBoard();
-
-        assertThat(boardsEqual(boardAfterMovement, expectedBoardAfterSingleRound,
-                BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO)).isTrue();
-    }
-
-    // Helper methods.
-
-    private static class moveUp implements MovementStrategy {
+    private static class moveUp implements IMovementStrategy {
 
         @Override
         public Location moveTo(Board board, Location currentLocation) {
@@ -501,34 +360,7 @@ public class TracingSimulationTest {
         }
     }
 
-    private static class DummyAwakenessStrategy implements AwakenessStrategy { }
-
-    private Board buildExpectedBoard(Board originalBoard, int rowNum, int colNum) {
-
-        Board expectedBoard = new Board(rowNum, colNum);
-        for (int row = 0; row < rowNum; row++) {
-            for (int col = 0; col < colNum; col++) {
-                for (Agent agent : originalBoard.getAgentsOnLocation(new Location(row, col))) {
-                    expectedBoard.placeAgent(agent.moveTo(), agent);
-                }
-            }
-        }
-        return expectedBoard;
-    }
-
-    private boolean boardsEqual(Board actual, Board expected, int rowNum, int colNum) {
-        for (int row = 0; row < rowNum; row++) {
-            for (int col = 0; col < colNum; col++) {
-                Location loc = new Location(row, col);
-                if (!actual.getAgentsOnLocation(loc).equals(expected.getAgentsOnLocation(loc))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private class FakeResolver implements IResolver {
+    private static class FakeResolver implements IResolver {
         @Override
         public void receiveInformation(Location observerLocation, List<Transmission> transmissions) {
 
