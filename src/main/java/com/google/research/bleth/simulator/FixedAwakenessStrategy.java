@@ -5,14 +5,13 @@ public class FixedAwakenessStrategy implements IAwakenessStrategy {
     private final int awakenessCycleDuration;
     private final int awakenessDuration;
     private int nextAwakeningTime;
-    private int nextAwakenessIntervalStart = 0;
     private boolean awake = false;
 
     /**
      * Create a new fixed awakeness strategy.
      * @param awakenessCycleDuration is the duration of each awakeness cycle. An observer can wake up once in a cycle.
      * @param awakenessDuration is the number of rounds that the observer is awake each time it wakes up.
-     * @param firstAwakenessTime is the first time eht observer wakes up.
+     * @param firstAwakenessTime is the first time the observer wakes up.
      */
     FixedAwakenessStrategy(int awakenessCycleDuration, int awakenessDuration, int firstAwakenessTime) {
         this.awakenessCycleDuration = awakenessCycleDuration;
@@ -32,7 +31,6 @@ public class FixedAwakenessStrategy implements IAwakenessStrategy {
     public void updateAwakenessState(int currentRound) {
         if (awake && currentRound >= nextAwakeningTime + awakenessDuration) {
             awake = false;
-            nextAwakenessIntervalStart += awakenessCycleDuration;
             nextAwakeningTime += awakenessCycleDuration;
         }
         if (!awake && currentRound >= nextAwakeningTime) {

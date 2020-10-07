@@ -53,17 +53,6 @@ public class ObserverTest {
     }
 
     @Test
-    public void staticObserverNextMoveIsToItsLocation() {
-        Board board = new Board(2, 2);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer staticObserver = createStaticObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-        Location newLocation = staticObserver.moveTo();
-
-        assertThat(newLocation).isEqualTo(ZERO_ON_ZERO_COORDINATE);
-    }
-
-    @Test
     public void moveStaticObserverStayOnItsLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);

@@ -12,10 +12,10 @@ public class Observer implements IObserver {
     private final IAwakenessStrategy awakenessStrategy;
 
     private Location realLocation; // the observer's location on the board, changed each time the observer moves.
-    private List<Transmission> transmissions = new ArrayList<Transmission>(); // contains the transmissions the observer observed in the current round
+    private List<Transmission> transmissions = new ArrayList<>(); // contains the transmissions the observer observed in the current round
 
     /**
-     * Create new Beacon with consecutive serial number.
+     * Create new observer with consecutive serial number.
      * @param id is a unique ID.
      * @param initialLocation is the location on board where the agent is placed.
      * @param IMovementStrategy determines how the observer moves.
