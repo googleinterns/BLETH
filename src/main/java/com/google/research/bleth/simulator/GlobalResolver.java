@@ -49,7 +49,7 @@ public final class GlobalResolver implements IGlobalResolver {
             if (beaconsToEstimatedLocations.containsKey(beacon)) {
                 currentRoundTransmissions.put(transmission, beaconsToEstimatedLocations.get(beacon));
             }
-            Location newLocation = calculateNewLocation(beacon);
+            Location newLocation = estimateNewLocation(beacon);
 
             if (!beaconsToEstimatedLocations.keySet().contains(beacon)) {
                 estimatedBoard.placeAgent(newLocation, beacon);
@@ -73,7 +73,7 @@ public final class GlobalResolver implements IGlobalResolver {
         this.beaconsToTransmissions = beaconsToTransmissions;
     }
 
-    private Location calculateNewLocation(Beacon beacon) {
+    private Location estimateNewLocation(Beacon beacon) {
         List<Location> locations = (List<Location>) currentRoundTransmissions.get(beacon.transmit());
         int newRow = (int) Math.round((locations.stream().mapToDouble(location -> location.row).average().getAsDouble()));
         int newCol = (int) Math.round((locations.stream().mapToDouble(location -> location.col).average().getAsDouble()));
