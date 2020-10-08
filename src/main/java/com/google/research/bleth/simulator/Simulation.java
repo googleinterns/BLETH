@@ -1,7 +1,10 @@
 package com.google.research.bleth.simulator;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * An abstract class representing a BLETH simulation.
@@ -10,11 +13,11 @@ import java.util.HashMap;
 public abstract class Simulation {
 
     private final String id;
-    protected int currentRound = 0;
+    private int currentRound = 0;
     private final int maxNumberOfRounds;
     private Board board;
-    protected ArrayList<Beacon> beacons;
-    protected ArrayList<Observer> observers;
+    protected final ImmutableList<Beacon> beacons;
+    protected final ImmutableList<Observer> observers;
     private IResolver resolver;
     private final double radius;
     private HashMap<String, Double> stats = new HashMap<>();
@@ -22,14 +25,14 @@ public abstract class Simulation {
     // A protected constructor used by the concrete simulation classes' constructors.
     protected Simulation
     (String id, int maxNumberOfRounds, IResolver resolver, double radius, Board realBoard,
-     ArrayList<Beacon> beacons, ArrayList<Observer> observers) {
+     List<Beacon> beacons, List<Observer> observers) {
         this.id = id;
         this.maxNumberOfRounds = maxNumberOfRounds;
         this.board = realBoard;
         this.resolver = resolver;
         this.radius = radius;
-        this.beacons = beacons;
-        this.observers = observers;
+        this.beacons = ImmutableList.copyOf(beacons);
+        this.observers = ImmutableList.copyOf(observers);
     }
 
     /**
@@ -84,7 +87,7 @@ public abstract class Simulation {
     void resolverEstimate() { }
 
     /**
-     * Write current-round real and estimated board states to db.
+     * Write current-round state of the simulation to db.
      */
     void writeRoundState() { }
 
@@ -112,8 +115,8 @@ public abstract class Simulation {
         protected IResolver resolver;
         protected int beaconsNum;
         protected int observersNum;
-        protected ArrayList<Beacon> beacons = new ArrayList<>();
-        protected ArrayList<Observer> observers = new ArrayList<>();
+        protected List<Beacon> beacons = new ArrayList<>();
+        protected List<Observer> observers = new ArrayList<>();
         protected IMovementStrategy beaconMovementStrategy;
         protected IMovementStrategy observerMovementStrategy;
         protected AwakenessStrategyFactory awakenessStrategyFactory;
@@ -222,19 +225,19 @@ public abstract class Simulation {
         /**
          * Validate all simulation builder arguments are legal.
          */
-        public abstract void validateArguments();
+        abstract void validateArguments();
 
         /**
          * Create and initialize simulation observers using a factory, and store them in observers container.
-         * initializes the observers movement strategy according to the strategy passed to the builder.
-         * initializes the observers awakeness strategy according to the strategy factory passed to the builder.
+         * Initializes the observers movement strategy according to the strategy passed to the builder.
+         * Initializes the observers awakeness strategy according to the strategy factory passed to the builder.
          */
         abstract void initializeObservers();
 
         /**
          * Create and initialize simulation beacons using a factory, and store them in observers container.
          * Create simple beacons for a tracing simulation and swapping beacons for a stalking simulation.
-         * initializes the beacons movement strategy according to the strategy passed to the builder.
+         * Initializes the beacons movement strategy according to the strategy passed to the builder.
          */
         abstract void initializeBeacons();
 
@@ -259,8 +262,8 @@ public abstract class Simulation {
         protected IResolver resolver;
         protected int beaconsNum;
         protected int observersNum;
-        protected ArrayList<Beacon> beacons = new ArrayList<>();
-        protected ArrayList<Observer> observers = new ArrayList<>();
+        protected List<Beacon> beacons = new ArrayList<>();
+        protected List<Observer> observers = new ArrayList<>();
         protected IMovementStrategy beaconMovementStrategy;
         protected IMovementStrategy observerMovementStrategy;
         protected AwakenessStrategyFactory awakenessStrategyFactory;
@@ -311,7 +314,7 @@ public abstract class Simulation {
          * @param beacons is the list of beacons.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setBeacons(ArrayList<Beacon> beacons) {
+        public SimulationBuilderFromExisting setBeacons(List<Beacon> beacons) {
             this.beacons = beacons;
             return this;
         }
@@ -321,7 +324,7 @@ public abstract class Simulation {
          * @param observers is the list of observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setObservers(ArrayList<Observer> observers) {
+        public SimulationBuilderFromExisting setObservers(List<Observer> observers) {
             this.observers = observers;
             return this;
         }
@@ -369,7 +372,7 @@ public abstract class Simulation {
         /**
          * Validate all simulation builder arguments are legal.
          */
-        public abstract void validateArguments();
+        abstract void validateArguments();
 
         /**
          * Construct a simulation object.

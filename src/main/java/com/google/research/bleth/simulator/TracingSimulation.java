@@ -4,13 +4,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A simulation in which the global resolver estimates beacons real locations based on information received from observers.
+ * A simulation in which the global resolver estimates beacons' real locations based on information received from observers.
  * Beacons transmit their unique static IDs each round.
  * Agents move according to a movement strategy.
  * Observers change their awakeness states according to an awakeness strategy.
  * Location estimation occurs each round and are based on both previous estimations and newly received information.
  */
 public class TracingSimulation extends Simulation {
+
+    @Override
+    void updateSimulationStats() { }
 
     private TracingSimulation(TracingSimulationBuilder builder) {
 
@@ -24,13 +27,10 @@ public class TracingSimulation extends Simulation {
                 builder.beacons, builder.observers);
     }
 
-    @Override
-    void updateSimulationStats() { }
-
     public static class TracingSimulationBuilder extends SimulationBuilder {
 
         @Override
-        public void validateArguments() {
+        void validateArguments() {
             // todo: validate simulation id is unique
             checkArgument(rowNum > 0 && colNum > 0,
                     "Board dimensions must be positive.");
@@ -65,7 +65,7 @@ public class TracingSimulation extends Simulation {
     public static class TracingSimulationBuilderFromExisting extends SimulationBuilderFromExisting {
 
         @Override
-        public void validateArguments() {
+        void validateArguments() {
             // todo: validate simulation id is unique
             checkNotNull(realBoard);
             checkNotNull(resolver);
