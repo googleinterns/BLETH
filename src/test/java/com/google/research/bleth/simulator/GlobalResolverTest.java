@@ -22,25 +22,12 @@ public class GlobalResolverTest {
     private Simulation simulation;
 
     @Test
-    public void estimatedBoardHasTheSameDimensionsAsRealBoard() {
-        Board board = new Board(2, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of());
-
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
-
-        assertThat(resolver.getBoard().getRowsNum()).isEqualTo(2);
-        assertThat(resolver.getBoard().getColsNum()).isEqualTo(3);
-    }
-
-    @Test
     public void estimatedBoardInitializedEmpty() {
         Board board = new Board(2, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
 
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(2, 3, ImmutableList.of(beacon));
 
         assertThat(isBoardEmpty(resolver.getBoard())).isTrue();
     }
@@ -50,8 +37,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.estimate();
 
@@ -63,8 +49,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of());
         resolver.estimate();
@@ -77,8 +62,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
@@ -92,8 +76,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
@@ -108,8 +91,7 @@ public class GlobalResolverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon firstBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Beacon secondBeacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(firstBeacon, secondBeacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(firstBeacon, secondBeacon));
 
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(firstBeacon.transmit(), secondBeacon.transmit()));
         resolver.estimate();
@@ -124,8 +106,7 @@ public class GlobalResolverTest {
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon firstBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
         Beacon secondBeacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(firstBeacon, secondBeacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(firstBeacon, secondBeacon));
 
         resolver.receiveInformation(ZERO_ON_ONE_COORDINATE, ImmutableList.of(firstBeacon.transmit()));
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(secondBeacon.transmit()));
@@ -140,8 +121,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.receiveInformation(TWO_ON_TWO_COORDINATE, ImmutableList.of(beacon.transmit()));
@@ -157,8 +137,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
@@ -174,8 +153,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
@@ -192,8 +170,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
@@ -212,8 +189,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
@@ -227,8 +203,7 @@ public class GlobalResolverTest {
         Board board = new Board(3, 3);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
@@ -241,8 +216,7 @@ public class GlobalResolverTest {
         Board board = new Board(5, 5);
         Mockito.when(simulation.getBoard()).thenReturn(board);
         Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ZERO_COORDINATE);
-        Mockito.when(simulation.getBeacons()).thenReturn(ImmutableList.of(beacon));
-        GlobalResolver resolver = GlobalResolver.createResolver(simulation);
+        GlobalResolver resolver = GlobalResolver.createResolver(5, 5, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();

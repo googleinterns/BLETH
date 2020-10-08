@@ -13,7 +13,6 @@ import java.util.Map;
 /** Tracing Simulation's Resolver, which receives information from its observers and estimate the beacons' locations according to it. */
 public final class GlobalResolver implements IGlobalResolver {
     private Board estimatedBoard;
-    private final Simulation simulation;
     private Multimap<Transmission, Location> currentRoundTransmissions = ArrayListMultimap.create();
     private HashBiMap<Beacon, Transmission> beaconsToTransmissions;
     private Map<Beacon, Location> beaconsToEstimatedLocations = new HashMap<>();
@@ -21,16 +20,18 @@ public final class GlobalResolver implements IGlobalResolver {
     /**
      * A wrapper method to create new global resolver for a specific simulation.
      * The new resolver has a board for storing the estimated beacons' locations.
-     * @param simulation is the world the resolver exists in.
+     * @param rowsNum is number of rows of the simulation's board.
+     * @param colsNum is number of columns of the simulation's board.
+     * @param beacons is a list of the simulation's beacons.
      */
-    public static GlobalResolver createResolver(Simulation simulation) {
-        checkNotNull(simulation);
-        Board board = new Board(simulation.getBoard().getRowsNum(), simulation.getBoard().getColsNum());
+    public static GlobalResolver createResolver(int rowsNum, int colsNum, List<Beacon> beacons) {
+        checkNotNull(beacons);
+        Board board = new Board(rowsNum, colsNum);
         HashBiMap<Beacon, Transmission> beaconsToTransmissions = HashBiMap.create();
-        for (Beacon beacon : simulation.getBeacons()) {
+        for (Beacon beacon : beacons) {
             beaconsToTransmissions.put(beacon, beacon.transmit());
         }
-        return new GlobalResolver(simulation, board, beaconsToTransmissions);
+        return new GlobalResolver(board, beaconsToTransmissions);
     }
 
     @Override
@@ -67,8 +68,7 @@ public final class GlobalResolver implements IGlobalResolver {
         return estimatedBoard;
     }
 
-    private GlobalResolver(Simulation simulation, Board estimatedBoard, HashBiMap<Beacon, Transmission> beaconsToTransmissions) {
-        this.simulation = simulation;
+    private GlobalResolver(Board estimatedBoard, HashBiMap<Beacon, Transmission> beaconsToTransmissions) {
         this.estimatedBoard = estimatedBoard;
         this.beaconsToTransmissions = beaconsToTransmissions;
     }
