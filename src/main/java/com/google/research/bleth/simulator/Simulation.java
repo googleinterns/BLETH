@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class Simulation {
 
     private final String id;
-    private int currentRound = 0;
+    private int currentRound;
     private final int maxNumberOfRounds;
     private Board board;
     protected final ImmutableList<Beacon> beacons;
@@ -24,7 +24,7 @@ public abstract class Simulation {
 
     // A protected constructor used by the concrete simulation classes' constructors.
     protected Simulation
-    (String id, int maxNumberOfRounds, IResolver resolver, double radius, Board realBoard,
+    (String id, int currentRound, int maxNumberOfRounds, IResolver resolver, double radius, Board realBoard,
      List<Beacon> beacons, List<Observer> observers) {
         this.id = id;
         this.maxNumberOfRounds = maxNumberOfRounds;
@@ -47,8 +47,11 @@ public abstract class Simulation {
      * Run entire simulation logic, including writing data to db.
      */
     public void run() {
-        writeRoundState(); // round 0 is the initial simulation state
-        for (int round = 1; round <= maxNumberOfRounds; round++, currentRound++) {
+        if (currentRound == 0) {
+            writeRoundState(); // round 0 is the initial simulation state
+            currentRound++;
+        }
+        while (currentRound <= maxNumberOfRounds) {
             moveAgents();
             updateObserversAwaknessState();
             beaconsToObservers();
@@ -56,6 +59,7 @@ public abstract class Simulation {
             resolverEstimate();
             writeRoundState();
             updateSimulationStats();
+            currentRound++;
         }
         writeSimulationStats();
     }
@@ -103,11 +107,12 @@ public abstract class Simulation {
 
     /**
      * An abstract builder class designed to separate the construction of a simulation from its representation.
-     * Designated for the construction of a new simulation, based on simulation given by an end-user.
+     * Designated for the construction of a new simulation, based on parameters given by an end-user.
      */
     public static abstract class SimulationBuilder {
 
         protected String id;
+        protected int currentRound = 0;
         protected int maxNumberOfRounds;
         protected int rowNum;
         protected int colNum;
@@ -255,6 +260,7 @@ public abstract class Simulation {
     public static abstract class SimulationBuilderFromExisting {
 
         protected String id;
+        protected int currentRound = 0;
         protected int maxNumberOfRounds;
         protected int rowNum;
         protected int colNum;
@@ -280,8 +286,18 @@ public abstract class Simulation {
         }
 
         /**
-         * Set maximum number of rounds in simulation.
-         * @param maxNumberOfRounds is the maximum number of rounds in simulation.
+         * Set initial round index.
+         * @param currentRound is the round index to start the new simulation run from.
+         * @return this, to provide chaining.
+         */
+        public SimulationBuilderFromExisting setCurrentRound(int currentRound) {
+            this.currentRound = currentRound;
+            return this;
+        }
+
+        /**
+         * Set maximum number of rounds in simulation as the index of the last simulation round.
+         * @param maxNumberOfRounds is the maximum number of rounds in simulation (index of last round).
          * @return this, to provide chaining.
          */
         public SimulationBuilderFromExisting setMaxNumberOfRounds(int maxNumberOfRounds) {
