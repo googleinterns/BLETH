@@ -17,14 +17,14 @@ public class TracingSimulation extends Simulation {
 
     private TracingSimulation(TracingSimulationBuilder builder) {
 
-        super(builder.id, builder.maxNumberOfRounds, builder.resolver, builder.radius, builder.realBoard,
-                builder.beacons, builder.observers);
+        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
+                builder.realBoard, builder.beacons, builder.observers);
     }
 
     private TracingSimulation(TracingSimulationBuilderFromExisting builder) {
 
-        super(builder.id, builder.maxNumberOfRounds, builder.resolver, builder.radius, builder.realBoard,
-                builder.beacons, builder.observers);
+        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
+                builder.realBoard, builder.beacons, builder.observers);
     }
 
     public static class TracingSimulationBuilder extends SimulationBuilder {
@@ -78,8 +78,11 @@ public class TracingSimulation extends Simulation {
                     "Number of beacons and number of observers must be positive.");
             checkArgument(radius > 0,
                     "Transmission radius must be positive.");
-            checkArgument(maxNumberOfRounds > 0,
-                    "Maximum number of rounds must be positive.");
+            checkArgument(currentRound >= 0,
+                    "Current round index must be non-negative.");
+            checkArgument(currentRound <= maxNumberOfRounds,
+                    "Current round index must be less of equal to the index of last round " +
+                            "(i.e. max number of rounds).");
             checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
             checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
             checkNotNull(awakenessStrategyFactory, "No awakeness strategy factory has been set.");

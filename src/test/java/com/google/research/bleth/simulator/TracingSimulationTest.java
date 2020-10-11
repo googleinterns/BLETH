@@ -22,6 +22,7 @@ public class TracingSimulationTest {
     private static final int BOARD_DIMENSION_EQUALS_TWO = 2;
     private static final int BOARD_DIMENSION_EQUALS_THREE = 3;
     private static final int MAX_ROUNDS_EQUALS_TWO = 2;
+    private static final int CURRENT_ROUND_EQUALS_THREE = 3;
     private static final int NUMBER_OF_BEACONS_EQUALS_TWO = 2;
     private static final int NUMBER_OF_OBSERVERS_EQUALS_TWO = 2;
     private static final double RADIUS_EQUALS_ONE = 1.0;
@@ -344,6 +345,34 @@ public class TracingSimulationTest {
                 .setObservers(observers);
 
         assertThrows(NullPointerException.class, builder::build);
+    }
+
+    @Test
+    public void initSimulationFromExistingCurrentRoundBiggerThanMaxRoundShouldThrowException() {
+        Board board = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        Board estimatedBoard = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        Mockito.when(resolver.getBoard()).thenReturn(estimatedBoard);
+        ArrayList<Beacon> beacons = new ArrayList<>();
+        beacons.add(beacon1);
+        beacons.add(beacon2);
+        ArrayList<Observer> observers = new ArrayList<>();
+        observers.add(observer1);
+        observers.add(observer2);
+
+        Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
+                .setId(SIMULATION_ID)
+                .setCurrentRound(CURRENT_ROUND_EQUALS_THREE)
+                .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
+                .setBeaconMovementStrategy(MOVE_UP)
+                .setObserverMovementStrategy(STATIONARY)
+                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
+                .setRadius(RADIUS_EQUALS_ONE)
+                .setRealBoard(board)
+                .setResolver(resolver)
+                .setBeacons(beacons)
+                .setObservers(observers);
+
+        assertThrows(IllegalArgumentException.class, builder::build);
     }
 
     // Helper classes.
