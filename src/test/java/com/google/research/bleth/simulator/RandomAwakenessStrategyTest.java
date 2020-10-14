@@ -31,7 +31,7 @@ public class RandomAwakenessStrategyTest extends AwakenessStrategyTest {
         assertThat(wakesUpAtTwo && wakesUpAtThree).isTrue();
     }
 
-    IAwakenessStrategy createAwakenessStrategy(int awakenessCycleDuration, int awakenessDuration, int firstAwakenessTime) {
+    RandomAwakenessStrategy createAwakenessStrategy(int awakenessCycleDuration, int awakenessDuration, int firstAwakenessTime) {
         return new RandomAwakenessStrategy(awakenessCycleDuration, awakenessDuration, firstAwakenessTime);
     }
 }

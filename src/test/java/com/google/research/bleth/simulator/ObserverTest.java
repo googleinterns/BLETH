@@ -10,7 +10,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.Mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ObserverTest {
+public class ObserverTest extends IAgentTest {
     private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
     private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
     private static final Location ZERO_ON_ONE_COORDINATE = new Location(0, 1);
@@ -33,269 +33,12 @@ public class ObserverTest {
                     new FixedAwakenessStrategy(5, 1, 0));
         });
     }
-    
-    @Test
-    public void newObserverLocationIsUpdatedOnBoardMatrix() {
-        Board board = new Board(2, 2);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
-
-        assertThat(simulation.getBoard().getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).contains(randomObserver);
-    }
-
-    @Test
-    public void newObserverLocationIsUpdated() {
-        Board board = new Board(2, 2);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
-
-        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
-    }
-
-    @Test
-    public void moveStaticObserverStayOnItsLocation() {
-        Board board = new Board(2, 2);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer staticObserver = createStaticObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-        staticObserver.move();
-
-        assertThat(staticObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
-    }
-
-    @Test
-    public void randomObserverSurroundedByFourDirectionsStayOnItsLocation() {
-        // -----
-        // | O |
-        // -----
-        Board board = new Board(1, 1);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-        randomObserver.move();
-
-        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
-    }
-
-    @Test
-    public void randomObserverMoveExactlyOneStep() {
-        for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
-            Mockito.when(simulation.getBoard()).thenReturn(board);
-            Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ONE_COORDINATE);
-
-            randomObserver.move();
-
-            assertThat(calculateDistance(randomObserver.getLocation(), ONE_ON_ONE_COORDINATE)).isEqualTo(1);
-        }
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMoveExactlyOneStepToTheRight() {
-        // -------------
-        // | O |   |   |
-        // -------------
-        Board board = new Board(1, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-        randomObserver.move();
-
-        assertThat(board.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomObserver);
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMoveExactlyOneStepToTheLeft() {
-        // -------------
-        // |   |   | O |
-        // -------------
-        Board board = new Board(1, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(new Location(0, 2));
-
-        randomObserver.move();
-
-        assertThat(board.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomObserver);
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMoveExactlyOneStepDown() {
-        // -----
-        // | O |
-        // -----
-        // |   |
-        // -----
-        // |   |
-        // -----
-        Board board = new Board(3, 1);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-        randomObserver.move();
-
-        assertThat(board.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomObserver);
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMoveExactlyOneStepUp() {
-        // -----
-        // |   |
-        // -----
-        // |   |
-        // -----
-        // | O |
-        // -----
-        Board board = new Board(3, 1);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(new Location(2, 0));
-
-        randomObserver.move();
-
-        assertThat(board.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomObserver);
-    }
-
-    @Test
-    public void upLeftCorneredObserversMoveToValidLocations() {
-        for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
-            Mockito.when(simulation.getBoard()).thenReturn(board);
-            Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-            Location nextLocation = randomObserver.moveTo();
-
-            assertThat(simulation.getBoard().isLocationValid(nextLocation)).isTrue();
-            assertThat(calculateDistance(ZERO_ON_ZERO_COORDINATE, nextLocation)).isEqualTo(1);
-        }
-    }
-
-    @Test
-    public void upRightCorneredObserversMoveToValidLocations() {
-        Location upRightCorner = new Location(0, 2);
-
-        for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
-            Mockito.when(simulation.getBoard()).thenReturn(board);
-            Observer randomObserver = createRandomObserverOnLocation(upRightCorner);
-
-            Location nextLocation = randomObserver.moveTo();
-
-            assertThat(simulation.getBoard().isLocationValid(nextLocation)).isTrue();
-            assertThat(calculateDistance(upRightCorner, nextLocation)).isEqualTo(1);
-        }
-    }
-
-    @Test
-    public void bottomLeftCorneredObserversMoveToValidLocations() {
-        Location bottomLeftCorner = new Location(2, 0);
-        for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
-            Mockito.when(simulation.getBoard()).thenReturn(board);
-            Observer randomObserver = createRandomObserverOnLocation(bottomLeftCorner);
-
-            Location nextLocation = randomObserver.moveTo();
-
-            assertThat(simulation.getBoard().isLocationValid(nextLocation)).isTrue();
-            assertThat(calculateDistance(bottomLeftCorner, nextLocation)).isEqualTo(1);
-        }
-    }
-
-    @Test
-    public void bottomRightCorneredObserversMoveToValidLocations() {
-        Location bottomRightCorner = new Location(2, 2);
-        for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
-            Mockito.when(simulation.getBoard()).thenReturn(board);
-            Observer randomObserver = createRandomObserverOnLocation(bottomRightCorner);
-
-            Location nextLocation = randomObserver.moveTo();
-
-            assertThat(simulation.getBoard().isLocationValid(nextLocation)).isTrue();
-            assertThat(calculateDistance(bottomRightCorner, nextLocation)).isEqualTo(1);
-        }
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMovesTwiceUpAndDown() {
-        // -----
-        // |   |
-        // -----
-        // | O |
-        // -----
-        Board board = new Board(2, 1);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
-
-        randomObserver.move();
-        randomObserver.move();
-
-        assertThat(randomObserver.getLocation()).isEqualTo(ONE_ON_ZERO_COORDINATE);
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMovesTwiceDownAndUp() {
-        // -----
-        // | O |
-        // -----
-        // |   |
-        // -----
-        Board board = new Board(2, 1);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-        randomObserver.move();
-        randomObserver.move();
-
-        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMovesTwiceRightAndLeft() {
-        // ----------
-        // | O |    |
-        // ----------
-        Board board = new Board(1, 2);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE);
-
-        randomObserver.move();
-        randomObserver.move();
-
-        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ZERO_COORDINATE);
-    }
-
-    @Test
-    public void randomObserverSurroundedByThreeDirectionsMovesTwiceLeftAndRight() {
-        // ----------
-        // |   | O  |
-        // ----------
-        Board board = new Board(1, 2);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
-
-        randomObserver.move();
-        randomObserver.move();
-
-        assertThat(randomObserver.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
-    }
-
-    @Test
-    public void movingObserversLocationsAreUpdatedOnBoardMatrix() {
-        for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
-            Mockito.when(simulation.getBoard()).thenReturn(board);
-            Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ONE_COORDINATE);
-
-            randomObserver.move();
-
-            assertThat(board.getAgentsOnLocation(randomObserver.getLocation())).containsExactly(randomObserver);
-        }
-    }
 
     @Test
     public void observerDoesNotObserveBeaconsPassesItsRightLocation() {
         Board board = new Board(2, 2);
         Mockito.when(simulation.getBoard()).thenReturn(board);
-        Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE);
+        Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE);
 
         randomObserver.passInformationToResolver();
 
@@ -492,21 +235,20 @@ public class ObserverTest {
         assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(secondBeaconTransmission);
     }
 
-    private Observer createStaticObserverOnLocation(Location initial_location) {
-        return OBSERVER_FACTORY.createObserver(initial_location, new StationaryMovementStrategy(), resolver, simulation,
-                new FixedAwakenessStrategy(5, 1, 0));
-    }
+    Observer createRandomAgentOnLocation(Location initialLocation, Simulation simulation) {
+        return OBSERVER_FACTORY.createObserver(initialLocation, new RandomMovementStrategy(), resolver, simulation,
+                new FixedAwakenessStrategy(5, 1, 0));    }
 
-    private Observer createRandomObserverOnLocation(Location initial_location) {
-        return OBSERVER_FACTORY.createObserver(initial_location, new RandomMovementStrategy(), resolver, simulation,
+    Observer createStaticAgentOnLocation(Location initialLocation, Simulation simulation) {
+        return OBSERVER_FACTORY.createObserver(initialLocation, new StationaryMovementStrategy(), resolver, simulation,
+                new FixedAwakenessStrategy(5, 1, 0));    }
+
+    private Observer createRandomObserverOnLocation(Location initialLocation) {
+        return OBSERVER_FACTORY.createObserver(initialLocation, new RandomMovementStrategy(), resolver, simulation,
                 new FixedAwakenessStrategy(5, 1, 0));
     }
 
     private Beacon createStaticBeaconOnLocation(Location initial_location) {
         return BEACON_FACTORY.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);
-    }
-
-    private int calculateDistance(Location oldLocation, Location newLocation) {
-        return Math.abs(newLocation.row - oldLocation.row) + Math.abs(newLocation.col - oldLocation.col);
     }
 }
