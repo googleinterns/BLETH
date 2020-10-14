@@ -10,24 +10,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Observers change their awakeness states according to an awakeness strategy.
  * Location estimation occurs each round and are based on both previous estimations and newly received information.
  */
-public class TracingSimulation extends Simulation {
+public class TracingSimulation extends AbstractSimulation {
 
     @Override
     void updateSimulationStats() { }
 
-    private TracingSimulation(TracingSimulationBuilder builder) {
-
-        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
-                builder.realBoard, builder.beacons, builder.observers);
-    }
-
-    private TracingSimulation(TracingSimulationBuilderFromExisting builder) {
-
-        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
-                builder.realBoard, builder.beacons, builder.observers);
-    }
-
-    public static class TracingSimulationBuilder extends SimulationBuilder {
+    public static class Builder extends AbstractSimulation.Builder {
 
         @Override
         void validateArguments() {
@@ -52,7 +40,7 @@ public class TracingSimulation extends Simulation {
         void initializeBeacons() { }
 
         @Override
-        public Simulation build() {
+        public AbstractSimulation build() {
             validateArguments();
             initializeBeacons();
             initializeObservers();
@@ -62,7 +50,7 @@ public class TracingSimulation extends Simulation {
         }
     }
 
-    public static class TracingSimulationBuilderFromExisting extends SimulationBuilderFromExisting {
+    public static class BuilderFromExisting extends AbstractSimulation.BuilderFromExisting {
 
         @Override
         void validateArguments() {
@@ -89,7 +77,7 @@ public class TracingSimulation extends Simulation {
         }
 
         @Override
-        public Simulation build() {
+        public AbstractSimulation build() {
             validateArguments();
             this.rowNum = this.realBoard.getRowNum();
             this.colNum = this.realBoard.getColNum();
@@ -97,5 +85,15 @@ public class TracingSimulation extends Simulation {
             this.observersNum = observers.size();
             return new TracingSimulation(this);
         }
+    }
+
+    private TracingSimulation(Builder builder) {
+        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
+                builder.realBoard, builder.beacons, builder.observers);
+    }
+
+    private TracingSimulation(BuilderFromExisting builder) {
+        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
+                builder.realBoard, builder.beacons, builder.observers);
     }
 }

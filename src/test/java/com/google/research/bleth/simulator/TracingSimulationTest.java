@@ -51,7 +51,7 @@ public class TracingSimulationTest {
 
     @Test
     public void setIllegalBoardDimensionInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -68,7 +68,7 @@ public class TracingSimulationTest {
 
     @Test
     public void setIllegalMaxRoundsInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(ILLEGAL_MAX_ROUNDS)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -85,7 +85,7 @@ public class TracingSimulationTest {
 
     @Test
     public void setIllegalRadiusInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -102,7 +102,7 @@ public class TracingSimulationTest {
 
     @Test
     public void setIllegalNumberOfAgentsInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -119,7 +119,7 @@ public class TracingSimulationTest {
 
     @Test
     public void skipSettingBeaconMovementStrategyInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -135,7 +135,7 @@ public class TracingSimulationTest {
 
     @Test
     public void skipSettingObserverMovementStrategyInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -151,7 +151,7 @@ public class TracingSimulationTest {
 
     @Test
     public void skipSettingAwakenessStrategyFactoryInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -167,7 +167,7 @@ public class TracingSimulationTest {
 
     @Test
     public void skipSettingBoardDimensionInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -183,7 +183,7 @@ public class TracingSimulationTest {
 
     @Test
     public void skipSettingNumberOfAgentsInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -199,7 +199,7 @@ public class TracingSimulationTest {
 
     @Test
     public void skipSettingMaxRoundsNumberInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -215,7 +215,7 @@ public class TracingSimulationTest {
 
     @Test
     public void skipSettingRadiusInBuilderShouldThrowException() {
-        Simulation.SimulationBuilder builder = new TracingSimulation.TracingSimulationBuilder()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
@@ -241,7 +241,7 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
+        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
@@ -268,7 +268,7 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
+        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
@@ -293,7 +293,7 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
+        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
@@ -311,7 +311,7 @@ public class TracingSimulationTest {
     public void initSimulationFromExistingWithoutAgentsShouldThrowException() {
         Board board = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
 
-        Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
+        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
@@ -333,7 +333,7 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
+        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
@@ -359,7 +359,7 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        Simulation.SimulationBuilderFromExisting builder = new TracingSimulation.TracingSimulationBuilderFromExisting()
+        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
                 .setId(SIMULATION_ID)
                 .setCurrentRound(CURRENT_ROUND_EQUALS_THREE)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)

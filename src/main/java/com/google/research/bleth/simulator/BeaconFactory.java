@@ -12,7 +12,7 @@ public class BeaconFactory {
      * @param movementStrategy determines how the agent moves.
      * @param simulation is the world the agent lives in.
      */
-    public Beacon createBeacon(Location initialLocation, IMovementStrategy movementStrategy, Simulation simulation) {
+    public Beacon createBeacon(Location initialLocation, IMovementStrategy movementStrategy, AbstractSimulation simulation) {
         checkNotNull(initialLocation);
         checkNotNull(movementStrategy);
         checkNotNull(simulation);

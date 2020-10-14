@@ -18,7 +18,7 @@ public class BeaconTest {
     private static final BeaconFactory beaconFactory = new BeaconFactory();
 
     @Mock
-    private Simulation simulation;
+    private AbstractSimulation simulation;
 
     private Beacon createStaticBeaconOnLocation(Location initial_location) {
         return beaconFactory.createBeacon(initial_location, new StationaryMovementStrategy(), simulation);

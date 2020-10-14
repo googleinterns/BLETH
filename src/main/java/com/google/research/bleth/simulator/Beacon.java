@@ -4,7 +4,7 @@ package com.google.research.bleth.simulator;
 public class Beacon implements IBeacon {
     private final int id;
     private final IMovementStrategy movementStrategy;
-    private final Simulation simulation;
+    private final AbstractSimulation simulation;
 
     private Location realLocation; // the beacon's location on the board, changed each time the beacon moves.
 
@@ -15,7 +15,7 @@ public class Beacon implements IBeacon {
      * @param movementStrategy determines how the agent moves.
      * @param simulation is the world the agent lives in.
      */
-    Beacon(int id, Location initialLocation, IMovementStrategy movementStrategy, Simulation simulation) {
+    Beacon(int id, Location initialLocation, IMovementStrategy movementStrategy, AbstractSimulation simulation) {
         this.id = id;
         realLocation = initialLocation;
         this.movementStrategy = movementStrategy;

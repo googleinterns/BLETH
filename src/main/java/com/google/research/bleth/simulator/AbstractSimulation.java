@@ -10,7 +10,7 @@ import java.util.List;
  * An abstract class representing a BLETH simulation.
  * Can be either a Tracing simulation or a Stalking simulation.
  */
-public abstract class Simulation {
+public abstract class AbstractSimulation {
 
     private final String id;
     private int currentRound;
@@ -23,7 +23,7 @@ public abstract class Simulation {
     private HashMap<String, Double> stats = new HashMap<>();
 
     // A protected constructor used by the concrete simulation classes' constructors.
-    protected Simulation
+    protected AbstractSimulation
     (String id, int currentRound, int maxNumberOfRounds, IResolver resolver, double radius, Board realBoard,
      List<Beacon> beacons, List<Observer> observers) {
         this.id = id;
@@ -109,7 +109,7 @@ public abstract class Simulation {
      * An abstract builder class designed to separate the construction of a simulation from its representation.
      * Designated for the construction of a new simulation, based on parameters given by an end-user.
      */
-    public static abstract class SimulationBuilder {
+    public static abstract class Builder {
 
         protected String id;
         protected int currentRound = 0;
@@ -132,7 +132,7 @@ public abstract class Simulation {
          * @param id is a unique simulation id.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setId(String id) {
+        public Builder setId(String id) {
             this.id = id;
             return this;
         }
@@ -142,7 +142,7 @@ public abstract class Simulation {
          * @param maxNumberOfRounds is the maximum number of rounds in simulation.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setMaxNumberOfRounds(int maxNumberOfRounds) {
+        public Builder setMaxNumberOfRounds(int maxNumberOfRounds) {
             this.maxNumberOfRounds = maxNumberOfRounds;
             return this;
         }
@@ -152,7 +152,7 @@ public abstract class Simulation {
          * @param rowNum is the number of rows in simulation.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setRowNum(int rowNum) {
+        public Builder setRowNum(int rowNum) {
             this.rowNum = rowNum;
             return this;
         }
@@ -162,7 +162,7 @@ public abstract class Simulation {
          * @param colNum is the number of columns in simulation.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setColNum(int colNum) {
+        public Builder setColNum(int colNum) {
             this.colNum = colNum;
             return this;
         }
@@ -172,7 +172,7 @@ public abstract class Simulation {
          * @param beaconsNum is the number of beacons in simulation.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setBeaconsNum(int beaconsNum) {
+        public Builder setBeaconsNum(int beaconsNum) {
             this.beaconsNum = beaconsNum;
             return this;
         }
@@ -182,7 +182,7 @@ public abstract class Simulation {
          * @param observersNum is the number of observers in simulation.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setObserversNum(int observersNum) {
+        public Builder setObserversNum(int observersNum) {
             this.observersNum = observersNum;
             return this;
         }
@@ -192,7 +192,7 @@ public abstract class Simulation {
          * @param beaconMovementStrategy is the movement strategy for all beacons.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setBeaconMovementStrategy(IMovementStrategy beaconMovementStrategy) {
+        public Builder setBeaconMovementStrategy(IMovementStrategy beaconMovementStrategy) {
             this.beaconMovementStrategy = beaconMovementStrategy;
             return this;
         }
@@ -202,7 +202,7 @@ public abstract class Simulation {
          * @param observerMovementStrategy is the movement strategy for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setObserverMovementStrategy(IMovementStrategy observerMovementStrategy) {
+        public Builder setObserverMovementStrategy(IMovementStrategy observerMovementStrategy) {
             this.observerMovementStrategy = observerMovementStrategy;
             return this;
         }
@@ -212,7 +212,7 @@ public abstract class Simulation {
          * @param awakenessStrategyFactory is the awakeness strategy factory for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setAwakenessStrategyFactory(AwakenessStrategyFactory awakenessStrategyFactory) {
+        public Builder setAwakenessStrategyFactory(AwakenessStrategyFactory awakenessStrategyFactory) {
             this.awakenessStrategyFactory = awakenessStrategyFactory;
             return this;
         }
@@ -222,7 +222,7 @@ public abstract class Simulation {
          * @param radius is the threshold transmission radius
          * @return this, to provide chaining.
          */
-        public SimulationBuilder setRadius(double radius) {
+        public Builder setRadius(double radius) {
             this.radius = radius;
             return this;
         }
@@ -250,14 +250,14 @@ public abstract class Simulation {
          * Construct a simulation object.
          * @return a new Simulation object constructed with the builder parameters.
          */
-        public abstract Simulation build();
+        public abstract AbstractSimulation build();
     }
 
     /**
      * An abstract builder class designed to separate the construction of a simulation from its representation.
      * Designated for the construction of a simulation based on old simulation state read from the db.
      */
-    public static abstract class SimulationBuilderFromExisting {
+    public static abstract class BuilderFromExisting {
 
         protected String id;
         protected int currentRound = 0;
@@ -280,7 +280,7 @@ public abstract class Simulation {
          * @param id is a unique simulation id.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setId(String id) {
+        public BuilderFromExisting setId(String id) {
             this.id = id;
             return this;
         }
@@ -290,7 +290,7 @@ public abstract class Simulation {
          * @param currentRound is the round index to start the new simulation run from.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setCurrentRound(int currentRound) {
+        public BuilderFromExisting setCurrentRound(int currentRound) {
             this.currentRound = currentRound;
             return this;
         }
@@ -300,7 +300,7 @@ public abstract class Simulation {
          * @param maxNumberOfRounds is the maximum number of rounds in simulation (index of last round).
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setMaxNumberOfRounds(int maxNumberOfRounds) {
+        public BuilderFromExisting setMaxNumberOfRounds(int maxNumberOfRounds) {
             this.maxNumberOfRounds = maxNumberOfRounds;
             return this;
         }
@@ -310,7 +310,7 @@ public abstract class Simulation {
          * @param realBoard is the real board.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setRealBoard(Board realBoard) {
+        public BuilderFromExisting setRealBoard(Board realBoard) {
             this.realBoard = realBoard;
             return this;
         }
@@ -320,7 +320,7 @@ public abstract class Simulation {
          * @param resolver is the resolver.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setResolver(IResolver resolver) {
+        public BuilderFromExisting setResolver(IResolver resolver) {
             this.resolver = resolver;
             return this;
         }
@@ -330,7 +330,7 @@ public abstract class Simulation {
          * @param beacons is the list of beacons.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setBeacons(List<Beacon> beacons) {
+        public BuilderFromExisting setBeacons(List<Beacon> beacons) {
             this.beacons = beacons;
             return this;
         }
@@ -340,7 +340,7 @@ public abstract class Simulation {
          * @param observers is the list of observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setObservers(List<Observer> observers) {
+        public BuilderFromExisting setObservers(List<Observer> observers) {
             this.observers = observers;
             return this;
         }
@@ -350,7 +350,7 @@ public abstract class Simulation {
          * @param beaconMovementStrategy is the movement strategy for all beacons.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setBeaconMovementStrategy(IMovementStrategy beaconMovementStrategy) {
+        public BuilderFromExisting setBeaconMovementStrategy(IMovementStrategy beaconMovementStrategy) {
             this.beaconMovementStrategy = beaconMovementStrategy;
             return this;
         }
@@ -360,7 +360,7 @@ public abstract class Simulation {
          * @param observerMovementStrategy is the movement strategy for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setObserverMovementStrategy(IMovementStrategy observerMovementStrategy) {
+        public BuilderFromExisting setObserverMovementStrategy(IMovementStrategy observerMovementStrategy) {
             this.observerMovementStrategy = observerMovementStrategy;
             return this;
         }
@@ -370,7 +370,7 @@ public abstract class Simulation {
          * @param awakenessStrategyFactory is the awakeness strategy factory for all observers.
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setAwakenessStrategyFactory(AwakenessStrategyFactory awakenessStrategyFactory) {
+        public BuilderFromExisting setAwakenessStrategyFactory(AwakenessStrategyFactory awakenessStrategyFactory) {
             this.awakenessStrategyFactory = awakenessStrategyFactory;
             return this;
         }
@@ -380,7 +380,7 @@ public abstract class Simulation {
          * @param radius is the threshold transmission radius
          * @return this, to provide chaining.
          */
-        public SimulationBuilderFromExisting setRadius(double radius) {
+        public BuilderFromExisting setRadius(double radius) {
             this.radius = radius;
             return this;
         }
@@ -394,6 +394,6 @@ public abstract class Simulation {
          * Construct a simulation object.
          * @return a new Simulation object constructed with the builder parameters.
          */
-        public abstract Simulation build();
+        public abstract AbstractSimulation build();
     }
 }
