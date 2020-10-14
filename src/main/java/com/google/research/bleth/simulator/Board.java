@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /** A container for all the agents, representing their locations, either real or estimated. */
-public class Board {
+public abstract class Board {
     private final int rowNum;
     private final int colNum;
     private ArrayTable<Integer, Integer, ArrayList<IAgent>> matrix;
@@ -109,4 +109,7 @@ public class Board {
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
     }
+
+    /** Returns the type of the board, either real or estimated. */
+    public abstract String getType();
 }

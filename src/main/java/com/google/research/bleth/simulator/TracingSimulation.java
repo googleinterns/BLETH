@@ -44,7 +44,7 @@ public class TracingSimulation extends AbstractSimulation {
             validateArguments();
             initializeBeacons();
             initializeObservers();
-            this.realBoard = new Board(this.rowNum, this.colNum);
+            this.realBoard = new RealBoard(this.rowNum, this.colNum);
             this.resolver = new GlobalResolver(this.rowNum, this.colNum);
             return new TracingSimulation(this);
         }

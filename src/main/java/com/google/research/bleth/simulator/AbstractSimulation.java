@@ -15,7 +15,7 @@ public abstract class AbstractSimulation {
     private final String id;
     private int currentRound;
     private final int maxNumberOfRounds;
-    private Board board;
+    private RealBoard board;
     protected final ImmutableList<Beacon> beacons;
     protected final ImmutableList<Observer> observers;
     private IResolver resolver;
@@ -24,7 +24,7 @@ public abstract class AbstractSimulation {
 
     // A protected constructor used by the concrete simulation classes' constructors.
     protected AbstractSimulation
-    (String id, int currentRound, int maxNumberOfRounds, IResolver resolver, double radius, Board realBoard,
+    (String id, int currentRound, int maxNumberOfRounds, IResolver resolver, double radius, RealBoard realBoard,
      List<Beacon> beacons, List<Observer> observers) {
         this.id = id;
         this.maxNumberOfRounds = maxNumberOfRounds;
@@ -37,9 +37,9 @@ public abstract class AbstractSimulation {
 
     /**
      * Return the simulation real board.
-     * @return Board object representing the simulation's real state.
+     * @return RealBoard object representing the simulation's real state.
      */
-    Board getBoard() {
+    RealBoard getBoard() {
         return board;
     }
 
@@ -116,7 +116,7 @@ public abstract class AbstractSimulation {
         protected int maxNumberOfRounds;
         protected int rowNum;
         protected int colNum;
-        protected Board realBoard;
+        protected RealBoard realBoard;
         protected IResolver resolver;
         protected int beaconsNum;
         protected int observersNum;
@@ -264,7 +264,7 @@ public abstract class AbstractSimulation {
         protected int maxNumberOfRounds;
         protected int rowNum;
         protected int colNum;
-        protected Board realBoard;
+        protected RealBoard realBoard;
         protected IResolver resolver;
         protected int beaconsNum;
         protected int observersNum;
@@ -310,7 +310,7 @@ public abstract class AbstractSimulation {
          * @param realBoard is the real board.
          * @return this, to provide chaining.
          */
-        public BuilderFromExisting setRealBoard(Board realBoard) {
+        public BuilderFromExisting setRealBoard(RealBoard realBoard) {
             this.realBoard = realBoard;
             return this;
         }

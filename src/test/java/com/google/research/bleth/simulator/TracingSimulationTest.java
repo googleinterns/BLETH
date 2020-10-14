@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TracingSimulationTest {
@@ -233,7 +232,7 @@ public class TracingSimulationTest {
 
     @Test
     public void initSimulationFromExistingWithNonGlobalResolverShouldThrowException() {
-        Board realBoard = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        RealBoard realBoard = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
         ArrayList<Beacon> beacons = new ArrayList<>();
         beacons.add(beacon1);
         beacons.add(beacon2);
@@ -258,8 +257,8 @@ public class TracingSimulationTest {
 
     @Test
     public void initSimulationFromExistingDifferentBoardsDimensionsShouldThrowException() {
-        Board realBoard = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
-        Board estimatedBoard = new Board(BOARD_DIMENSION_EQUALS_THREE, BOARD_DIMENSION_EQUALS_THREE);
+        RealBoard realBoard = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        EstimatedBoard estimatedBoard = new EstimatedBoard(BOARD_DIMENSION_EQUALS_THREE, BOARD_DIMENSION_EQUALS_THREE);
         Mockito.when(resolver.getBoard()).thenReturn(estimatedBoard);
         ArrayList<Beacon> beacons = new ArrayList<>();
         beacons.add(beacon1);
@@ -285,7 +284,7 @@ public class TracingSimulationTest {
 
     @Test
     public void initSimulationFromExistingWithoutResolverShouldThrowException() {
-        Board board = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        RealBoard board = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
         ArrayList<Beacon> beacons = new ArrayList<>();
         beacons.add(beacon1);
         beacons.add(beacon2);
@@ -309,7 +308,7 @@ public class TracingSimulationTest {
 
     @Test
     public void initSimulationFromExistingWithoutAgentsShouldThrowException() {
-        Board board = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        RealBoard board = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
 
         AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
                 .setId(SIMULATION_ID)
@@ -349,8 +348,8 @@ public class TracingSimulationTest {
 
     @Test
     public void initSimulationFromExistingCurrentRoundBiggerThanMaxRoundShouldThrowException() {
-        Board board = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
-        Board estimatedBoard = new Board(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        RealBoard realBoard = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
+        EstimatedBoard estimatedBoard = new EstimatedBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
         Mockito.when(resolver.getBoard()).thenReturn(estimatedBoard);
         ArrayList<Beacon> beacons = new ArrayList<>();
         beacons.add(beacon1);
@@ -367,7 +366,7 @@ public class TracingSimulationTest {
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
-                .setRealBoard(board)
+                .setRealBoard(realBoard)
                 .setResolver(resolver)
                 .setBeacons(beacons)
                 .setObservers(observers);
@@ -375,29 +374,17 @@ public class TracingSimulationTest {
         assertThrows(IllegalArgumentException.class, builder::build);
     }
 
-    // Helper classes.
+    // Helper movement strategy.
 
     private static class moveUp implements IMovementStrategy {
 
         @Override
-        public Location moveTo(Board board, Location currentLocation) {
+        public Location moveTo(IAgentOwner owner, Location currentLocation) {
             Location newLocation = currentLocation.moveInDirection(Direction.UP);
-            if (board.isLocationValid(newLocation)) {
+            if (owner.isLocationValid(newLocation)) {
                 return newLocation;
             }
             return currentLocation;
-        }
-    }
-
-    private static class FakeResolver implements IResolver {
-        @Override
-        public void receiveInformation(Location observerLocation, List<Transmission> transmissions) {
-
-        }
-
-        @Override
-        public Board getBoard() {
-            return null;
         }
     }
 }
