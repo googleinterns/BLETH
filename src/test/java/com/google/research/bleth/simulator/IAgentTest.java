@@ -15,7 +15,7 @@ public abstract class IAgentTest {
 
     @Test
     public void newAgentLocationIsUpdatedOnBoardMatrix() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, board);
 
         assertThat(board.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).contains(randomAgent);
@@ -23,7 +23,7 @@ public abstract class IAgentTest {
 
     @Test
     public void newAgentLocationIsUpdated() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, board);
 
         assertThat(randomAgent.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
@@ -31,7 +31,7 @@ public abstract class IAgentTest {
 
     @Test
     public void moveStaticAgentStaysOnItsLocation() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         IAgent staticAgent = createStaticAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         staticAgent.move();
@@ -44,7 +44,7 @@ public abstract class IAgentTest {
         // -----
         // | A |
         // -----
-        Board board = new Board(1, 1);
+        Board board = new RealBoard(1, 1);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         randomAgent.move();
@@ -57,7 +57,7 @@ public abstract class IAgentTest {
         // -------------
         // | A |   |   |
         // -------------
-        Board board = new Board(1, 3);
+        Board board = new RealBoard(1, 3);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         randomAgent.move();
@@ -70,7 +70,7 @@ public abstract class IAgentTest {
         // -------------
         // |   |   | A |
         // -------------
-        Board board = new Board(1, 3);
+        Board board = new RealBoard(1, 3);
         IAgent randomAgent = createRandomAgentOnLocation(new Location(0, 2), board);
 
         randomAgent.move();
@@ -87,7 +87,7 @@ public abstract class IAgentTest {
         // -----
         // |   |
         // -----
-        Board board = new Board(3, 1);
+        Board board = new RealBoard(3, 1);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         randomAgent.move();
@@ -104,7 +104,7 @@ public abstract class IAgentTest {
         // -----
         // | A |
         // -----
-        Board board = new Board(3, 1);
+        Board board = new RealBoard(3, 1);
         IAgent randomAgent = createRandomAgentOnLocation(new Location(2, 0), board);
 
         randomAgent.move();
@@ -115,7 +115,7 @@ public abstract class IAgentTest {
     @Test
     public void upLeftCorneredAgentsMoveToValidLocations() {
         for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
+            Board board = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
             Location nextLocation = randomAgent.moveTo();
@@ -130,7 +130,7 @@ public abstract class IAgentTest {
         Location upRightCorner = new Location(0, 2);
 
         for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
+            Board board = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(upRightCorner, board);
 
             Location nextLocation = randomAgent.moveTo();
@@ -144,7 +144,7 @@ public abstract class IAgentTest {
     public void bottomLeftCorneredAgentsMoveToValidLocations() {
         Location bottomLeftCorner = new Location(2, 0);
         for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
+            Board board = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(bottomLeftCorner, board);
 
             Location nextLocation = randomAgent.moveTo();
@@ -158,7 +158,7 @@ public abstract class IAgentTest {
     public void bottomRightCorneredAgentsMoveToValidLocations() {
         Location bottomRightCorner = new Location(2, 2);
         for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
+            Board board = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(bottomRightCorner, board);
 
             Location nextLocation = randomAgent.moveTo();
@@ -175,7 +175,7 @@ public abstract class IAgentTest {
         // -----
         // | A |
         // -----
-        Board board = new Board(2, 1);
+        Board board = new RealBoard(2, 1);
         IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ZERO_COORDINATE, board);
 
         randomAgent.move();
@@ -191,7 +191,7 @@ public abstract class IAgentTest {
         // -----
         // |   |
         // -----
-        Board board = new Board(2, 1);
+        Board board = new RealBoard(2, 1);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         randomAgent.move();
@@ -205,7 +205,7 @@ public abstract class IAgentTest {
         // ----------
         // | A |    |
         // ----------
-        Board board = new Board(1, 2);
+        Board board = new RealBoard(1, 2);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         randomAgent.move();
@@ -219,7 +219,7 @@ public abstract class IAgentTest {
         // ---------
         // |   | A |
         // ---------
-        Board board = new Board(1, 2);
+        Board board = new RealBoard(1, 2);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, board);
 
         randomAgent.move();
@@ -231,7 +231,7 @@ public abstract class IAgentTest {
     @Test
     public void randomAgentsMoveExactlyOneStep() {
         for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
+            Board board = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ONE_COORDINATE, board);
 
             randomAgent.move();
@@ -243,7 +243,7 @@ public abstract class IAgentTest {
     @Test
     public void movingAgentsLocationsAreUpdatedOnBoardMatrix() {
         for (int i = 0; i < 1000; i++) {
-            Board board = new Board(3, 3);
+            Board board = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ONE_COORDINATE, board);
 
             randomAgent.move();

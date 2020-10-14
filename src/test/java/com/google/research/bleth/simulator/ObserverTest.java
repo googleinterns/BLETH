@@ -20,7 +20,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void createObserverOutsideTheBoardThrowsException() {
-        Board board = new Board(1, 1);
+        Board board = new RealBoard(1, 1);
 
         assertThrows(IllegalArgumentException.class, () -> {
             OBSERVER_FACTORY.createObserver(new Location(0, -1), new RandomMovementStrategy(), resolver, board,
@@ -30,7 +30,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerDoesNotObserveBeaconsPassesItsRightLocation() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ONE_COORDINATE, board);
 
         randomObserver.passInformationToResolver();
@@ -40,7 +40,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void movingObserverDoesNotObserveBeaconsPassesItsRightLocation() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE, board);
         randomObserver.move();
 
@@ -51,7 +51,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerDoesNotObserveBeaconsPassesNoTransmission() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE, board);
 
         randomObserver.passInformationToResolver();
@@ -61,7 +61,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerDoesNotObserveNearbyBeaconPassesNoTransmission() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ZERO_COORDINATE, board);
         Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission newBeaconTransmission = newBeacon.transmit();
@@ -73,7 +73,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerObservesOneBeaconInSameLocationPassesItsRightLocation() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission newBeaconTransmission = newBeacon.transmit();
@@ -86,7 +86,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerObservesOneBeaconInDifferentLocationPassesItsRightLocation() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon newBeacon = createStaticBeaconOnLocation(ONE_ON_ZERO_COORDINATE, board);
         Transmission newBeaconTransmission = newBeacon.transmit();
@@ -99,7 +99,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void movingObserverObservesOneBeaconPassesItsRightLocation() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission newBeaconTransmission = newBeacon.transmit();
@@ -113,7 +113,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerObservesOneBeaconInSameLocationPassesTheRightTransmission() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon newBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission newBeaconTransmission = newBeacon.transmit();
@@ -126,7 +126,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerObservesOneBeaconInDifferentLocationPassesTheRightTransmission() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon newBeacon = createStaticBeaconOnLocation(ONE_ON_ONE_COORDINATE, board);
         Transmission newBeaconTransmission = newBeacon.transmit();
@@ -139,7 +139,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerObservesOneBeaconOutOfTwoPassesTheRightTransmission() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
@@ -154,7 +154,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerObservesTwoBeaconsPassesItsRightLocation() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ONE_ON_ONE_COORDINATE, board);
         Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
@@ -170,7 +170,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void observerObservesTwoBeaconsPassesTheRightTransmissions() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
@@ -186,7 +186,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void transmissionsIsEmptyAfterObserverPassThem() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission firstBeaconTransmission = firstBeacon.transmit();
@@ -200,7 +200,7 @@ public class ObserverTest extends IAgentTest {
 
     @Test
     public void transmissionsRefillAfterObserverPassThem() {
-        Board board = new Board(2, 2);
+        Board board = new RealBoard(2, 2);
         Observer randomObserver = createRandomObserverOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Beacon firstBeacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
         Transmission firstBeaconTransmission = firstBeacon.transmit();

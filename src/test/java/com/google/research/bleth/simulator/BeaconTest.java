@@ -14,7 +14,7 @@ public class BeaconTest extends IAgentTest {
 
     @Test
     public void createBeaconOutsideTheBoardThrowsException() {
-        Board board = new Board(1, 1);
+        Board board = new RealBoard(1, 1);
 
         assertThrows(IllegalArgumentException.class, () -> {
             BEACON_FACTORY.createBeacon(new Location(0, -1), new RandomMovementStrategy(), board);
@@ -23,7 +23,7 @@ public class BeaconTest extends IAgentTest {
 
     @Test
     public void staticBeaconTransmitStaticId() {
-        Board board = new Board(1, 1);
+        Board board = new RealBoard(1, 1);
         Beacon beacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
@@ -31,7 +31,7 @@ public class BeaconTest extends IAgentTest {
 
     @Test
     public void randomBeaconTransmitStaticId() {
-        Board board = new Board(3, 3);
+        Board board = new RealBoard(3, 3);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
 
         assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
