@@ -3,6 +3,8 @@ package com.google.research.bleth.simulator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Random;
+
 /**
  * A simulation in which the global resolver estimates beacons' real locations based on information received from observers.
  * Beacons transmit their unique static IDs each round.
@@ -34,18 +36,28 @@ public class TracingSimulation extends AbstractSimulation {
         }
 
         @Override
-        void initializeObservers() { }
+        void initializeObservers() {
+            // todo: implement awakeness strategies factory to implement this method
+        }
 
         @Override
-        void initializeBeacons() { }
+        void initializeBeacons() {
+            Random rand = new Random();
+            BeaconFactory beaconFactory = new BeaconFactory();
+            for (int i = 0; i < beaconsNum; i++) {
+                Location initialLocation = new Location(rand.nextInt(rowNum), rand.nextInt(colNum));
+                Beacon beacon = beaconFactory.createBeacon(initialLocation, beaconMovementStrategy, realBoard);
+                beacons.add(beacon);
+            }
+        }
 
         @Override
         public AbstractSimulation build() {
             validateArguments();
-            initializeBeacons();
-            initializeObservers();
             this.realBoard = new RealBoard(this.rowNum, this.colNum);
             this.resolver = new GlobalResolver(this.rowNum, this.colNum);
+            initializeBeacons();
+            initializeObservers();
             return new TracingSimulation(this);
         }
     }

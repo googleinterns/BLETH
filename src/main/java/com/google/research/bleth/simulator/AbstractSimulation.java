@@ -67,23 +67,47 @@ public abstract class AbstractSimulation {
     /**
      * Move all agents according to their movement strategies and update the real board.
      */
-    void moveAgents() { }
+    void moveAgents() {
+        for (Beacon beacon : beacons) {
+            beacon.move();
+        }
+        for (Observer observer : observers) {
+            observer.move();
+        }
+    }
 
     /**
      * Update all observers awakeness states according to their awakeness strategies.
      */
-    void updateObserversAwaknessState() { }
+    void updateObserversAwaknessState() {
+        for (Observer observer : observers) {
+            observer.updateAwakenessState(currentRound);
+        }
+    }
 
     /**
      * Pass transmissions from beacons to observers while taking into consideration world-physics parameters,
      * such as probability of transmission and distance between beacons and observers.
      */
-    void beaconsToObservers() { }
+    void beaconsToObservers() {
+        for (Beacon beacon : beacons) {
+            for (Observer observer : observers) {
+                double distance = distance(beacon.getLocation(), observer.getLocation());
+                if (distance <= radius) {
+                    observer.observe(beacon.transmit());
+                }
+            }
+        }
+    }
 
     /**
      * Pass current-round information of transmission data from all observers to the simulation's resolver.
      */
-    void observersToResolver() { }
+    void observersToResolver() {
+        for (Observer observer : observers) {
+            observer.passInformationToResolver();
+        }
+    }
 
     /**
      * Update resolver's estimated board.
@@ -395,5 +419,9 @@ public abstract class AbstractSimulation {
          * @return a new Simulation object constructed with the builder parameters.
          */
         public abstract AbstractSimulation build();
+    }
+
+    private double distance(Location location1, Location location2) {
+        return (double) (Math.abs(location1.row - location2.row) + Math.abs(location1.col - location2.col));
     }
 }
