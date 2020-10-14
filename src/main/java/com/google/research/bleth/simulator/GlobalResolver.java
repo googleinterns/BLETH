@@ -12,7 +12,7 @@ import java.util.Map;
 
 /** Tracing Simulation's Resolver, which receives information from its observers and estimate the beacons' locations according to it. */
 public final class GlobalResolver implements IGlobalResolver {
-    private Board estimatedBoard;
+    private EstimatedBoard estimatedBoard;
     private Multimap<Transmission, Location> currentRoundTransmissions = ArrayListMultimap.create();
     private HashBiMap<Beacon, Transmission> beaconsToTransmissions;
     private Map<Beacon, Location> beaconsToEstimatedLocations = new HashMap<>();
@@ -26,12 +26,12 @@ public final class GlobalResolver implements IGlobalResolver {
      */
     public static GlobalResolver createResolver(int rowsNum, int colsNum, List<Beacon> beacons) {
         checkNotNull(beacons);
-        Board board = new Board(rowsNum, colsNum);
+        EstimatedBoard estimatedBoard = new EstimatedBoard(rowsNum, colsNum);
         HashBiMap<Beacon, Transmission> beaconsToTransmissions = HashBiMap.create();
         for (Beacon beacon : beacons) {
             beaconsToTransmissions.put(beacon, beacon.transmit());
         }
-        return new GlobalResolver(board, beaconsToTransmissions);
+        return new GlobalResolver(estimatedBoard, beaconsToTransmissions);
     }
 
     @Override
@@ -68,7 +68,7 @@ public final class GlobalResolver implements IGlobalResolver {
         return estimatedBoard;
     }
 
-    private GlobalResolver(Board estimatedBoard, HashBiMap<Beacon, Transmission> beaconsToTransmissions) {
+    private GlobalResolver(EstimatedBoard estimatedBoard, HashBiMap<Beacon, Transmission> beaconsToTransmissions) {
         this.estimatedBoard = estimatedBoard;
         this.beaconsToTransmissions = beaconsToTransmissions;
     }

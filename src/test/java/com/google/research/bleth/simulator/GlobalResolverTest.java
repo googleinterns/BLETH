@@ -18,50 +18,43 @@ public class GlobalResolverTest {
     private static final Location TWO_ON_TWO_COORDINATE = new Location(2, 2);
     private static final BeaconFactory BEACON_FACTORY = new BeaconFactory();
 
-    @Mock
-    private Simulation simulation;
-
     @Test
     public void estimatedBoardInitializedEmpty() {
-        Board board = new Board(2, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(2, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
 
         GlobalResolver resolver = GlobalResolver.createResolver(2, 3, ImmutableList.of(beacon));
 
-        assertThat(isBoardEmpty(resolver.getBoard())).isTrue();
+        assertThat(isBoardEmpty(resolver.getBoard(), 2, 3)).isTrue();
     }
 
     @Test
     public void firstEstimateWithoutReceiveInformation_EstimatedBoardIsEmpty() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.estimate();
 
-        assertThat(isBoardEmpty(resolver.getBoard()));
+        assertThat(isBoardEmpty(resolver.getBoard(), 3, 3));
     }
 
     @Test
     public void firstEstimateWithoutTransmissions_EstimatedBoardIsEmpty() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of());
         resolver.estimate();
 
-        assertThat(isBoardEmpty(resolver.getBoard()));
+        assertThat(isBoardEmpty(resolver.getBoard(), 3, 3));
     }
 
     @Test
     public void firstEstimateWithInformationFromObserverOnSameLocationAsBeacon_UpdateEstimatedBoardAccordingToItsLocation() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
@@ -73,9 +66,8 @@ public class GlobalResolverTest {
 
     @Test
     public void firstEstimateWithInformationFromObserverOnDifferentLocationThanBeacon_UpdateEstimatedBoardAccordingToItsLocation() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
@@ -87,10 +79,9 @@ public class GlobalResolverTest {
 
     @Test
     public void firstEstimateOfTwoBeaconsWithInformationFromOneObserver_UpdateEstimatedBoardAccordingToItsLocation() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon firstBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Beacon secondBeacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon firstBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
+        Beacon secondBeacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(firstBeacon, secondBeacon));
 
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(firstBeacon.transmit(), secondBeacon.transmit()));
@@ -102,10 +93,9 @@ public class GlobalResolverTest {
 
     @Test
     public void firstEstimateWithInformationFromTwoObserversObservedOtherBeacons_UpdateEstimatedBoardAccordingToTheirLocations() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon firstBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
-        Beacon secondBeacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon firstBeacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
+        Beacon secondBeacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(firstBeacon, secondBeacon));
 
         resolver.receiveInformation(ZERO_ON_ONE_COORDINATE, ImmutableList.of(firstBeacon.transmit()));
@@ -118,9 +108,8 @@ public class GlobalResolverTest {
 
     @Test
     public void firstEstimateWithInformationFromTwoObserversObservedSameBeacon_UpdateEstimatedBoardAccordingToAverageOfLocations() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
@@ -134,9 +123,8 @@ public class GlobalResolverTest {
 
     @Test
     public void secondEstimateWithInformationFromStationaryObserver_UpdateEstimatedBoardAccordingToAverageOfItsLocationAndPreviousEstimatedLocation() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ONE_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
@@ -150,9 +138,8 @@ public class GlobalResolverTest {
 
     @Test
     public void secondEstimateWithInformationFromMovingObserver_UpdateEstimatedBoardAccordingToAverageOfItsLocationAndPreviousEstimatedLocation() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
@@ -167,9 +154,8 @@ public class GlobalResolverTest {
 
     @Test
     public void secondEstimateWithInformationFromTwoObservers_UpdateEstimatedBoardAccordingToAverageOfTheirLocationsAndPreviousLocation() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ONE_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
@@ -186,9 +172,8 @@ public class GlobalResolverTest {
 
     @Test
     public void secondEstimateWithoutInformation_DoNotUpdateTheBoard() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
@@ -200,9 +185,8 @@ public class GlobalResolverTest {
 
     @Test
     public void secondEstimateForUnlocatedBeacon_UpdateAccordingToTheObserverLocationOnly() {
-        Board board = new Board(3, 3);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(3, 3, ImmutableList.of(beacon));
 
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
@@ -213,9 +197,8 @@ public class GlobalResolverTest {
 
     @Test
     public void transmissionsFromPreviousRoundsIsDeleted() {
-        Board board = new Board(5, 5);
-        Mockito.when(simulation.getBoard()).thenReturn(board);
-        Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ZERO_COORDINATE);
+        RealBoard realboard = new RealBoard(5, 5);
+        Beacon beacon = createRandomBeaconOnLocation(ONE_ON_ZERO_COORDINATE, realboard);
         GlobalResolver resolver = GlobalResolver.createResolver(5, 5, ImmutableList.of(beacon));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
@@ -227,13 +210,13 @@ public class GlobalResolverTest {
         assertThat(resolver.getBoard().getAgentsOnLocation(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
     }
 
-    private Beacon createRandomBeaconOnLocation(Location initial_location) {
-        return BEACON_FACTORY.createBeacon(initial_location, new RandomMovementStrategy(), simulation);
+    private Beacon createRandomBeaconOnLocation(Location initialLocation, RealBoard realBoard) {
+        return BEACON_FACTORY.createBeacon(initialLocation, new RandomMovementStrategy(), realBoard);
     }
 
-    private boolean isBoardEmpty(Board board) {
-        for (int row = 0; row < board.getRowsNum(); row++) {
-            for (int col = 0; col < board.getColsNum(); col++) {
+    private boolean isBoardEmpty(Board board, int rowsNum, int colsNum) {
+        for (int row = 0; row < rowsNum; row++) {
+            for (int col = 0; col < colsNum; col++) {
                 if (!board.getAgentsOnLocation(new Location(row, col)).isEmpty()) {
                     return false;
                 }
