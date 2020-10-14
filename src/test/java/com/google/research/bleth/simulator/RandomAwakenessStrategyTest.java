@@ -15,7 +15,10 @@ public class RandomAwakenessStrategyTest extends AwakenessStrategyTest {
         boolean wakesUpAtThree = false;
 
         for (int i = 0; i < 1000; i++) {
-            IAwakenessStrategy awakenessStrategy = new RandomAwakenessStrategy(2, 1, 0);
+            IAwakenessStrategy awakenessStrategy =
+                    new RandomAwakenessStrategy(/* awakenessCycleDuration= */ 2,
+                                                /* awakenessDuration= */ 1,
+                                                /* firstAwakenessTime= */ 0);
             awakenessStrategy.updateAwakenessState(1);
 
             awakenessStrategy.updateAwakenessState(2);

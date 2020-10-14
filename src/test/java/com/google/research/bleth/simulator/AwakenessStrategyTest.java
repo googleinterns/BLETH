@@ -10,21 +10,30 @@ import org.mockito.junit.MockitoJUnitRunner;
 public abstract class AwakenessStrategyTest {
     @Test
     public void observerWithFirstAwakenessTimeZeroStartsAwake() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(5, 3, 0);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                        /* awakenessDuration= */ 3,
+                                        /* firstAwakenessTime= */ 0);
 
         assertThat(awakenessStrategy.isAwake()).isTrue();
     }
 
     @Test
     public void observerWithFirstAwakenessTimeOneStartsAsleep() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(5, 3, 1);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                        /* awakenessDuration= */ 3,
+                                        /* firstAwakenessTime= */ 1);
 
         assertThat(awakenessStrategy.isAwake()).isFalse();
     }
 
     @Test
     public void observerWakesUpAtRoundTwo() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(5,3 ,2);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                        /* awakenessDuration= */ 3,
+                                        /* firstAwakenessTime= */ 2);
         awakenessStrategy.updateAwakenessState(1);
 
         awakenessStrategy.updateAwakenessState(2);
@@ -34,8 +43,10 @@ public abstract class AwakenessStrategyTest {
 
     @Test
     public void observerThatWakesUpAtRoundTwoSleepsAtRoundOne() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(5, 3, 2);
-
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                        /* awakenessDuration= */ 3,
+                                        /* firstAwakenessTime= */ 2);
         awakenessStrategy.updateAwakenessState(1);
 
         assertThat(awakenessStrategy.isAwake()).isFalse();
@@ -43,7 +54,10 @@ public abstract class AwakenessStrategyTest {
 
     @Test
     public void observerThatWakesUpAtRoundTwoForTwoRoundsIsAwakeAtRoundThree() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(5,2, 2);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                        /* awakenessDuration= */ 2,
+                                        /* firstAwakenessTime= */ 2);
         awakenessStrategy.updateAwakenessState(1);
         awakenessStrategy.updateAwakenessState(2);
 
@@ -54,7 +68,10 @@ public abstract class AwakenessStrategyTest {
 
     @Test
     public void observerThatWakesUpAtRoundOneForTwoRoundsAsleepAtRoundThree() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(10, 2, 1);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 10,
+                                        /* awakenessDuration= */ 2,
+                                        /* firstAwakenessTime= */ 1);
         awakenessStrategy.updateAwakenessState(1);
         awakenessStrategy.updateAwakenessState(2);
 
@@ -65,7 +82,10 @@ public abstract class AwakenessStrategyTest {
 
     @Test
     public void observerThatWakesUpAtRoundZeroAndIsAwakeForAWholeCycleStaysAwake() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(2, 2, 0);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 2,
+                                        /* awakenessDuration= */ 2,
+                                        /* firstAwakenessTime= */ 0);
         awakenessStrategy.updateAwakenessState(1);
         awakenessStrategy.updateAwakenessState(2);
 
@@ -74,7 +94,10 @@ public abstract class AwakenessStrategyTest {
 
     @Test
     public void observerWakesUpAtTheSecondCycle() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(2, 1, 0);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 2,
+                                        /* awakenessDuration= */ 1,
+                                        /* firstAwakenessTime= */ 0);
         awakenessStrategy.updateAwakenessState(1);
 
         awakenessStrategy.updateAwakenessState(2);
@@ -87,7 +110,10 @@ public abstract class AwakenessStrategyTest {
 
     @Test
     public void observerWakesUpExactlyOnceAtTheSecondCycle() {
-        IAwakenessStrategy awakenessStrategy = createAwakenessStrategy(2, 1, 0);
+        IAwakenessStrategy awakenessStrategy =
+                createAwakenessStrategy(/* awakenessCycleDuration= */ 2,
+                                        /* awakenessDuration= */ 1,
+                                        /* firstAwakenessTime= */ 0);
         awakenessStrategy.updateAwakenessState(1);
 
         awakenessStrategy.updateAwakenessState(2);

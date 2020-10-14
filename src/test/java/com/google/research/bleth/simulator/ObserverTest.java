@@ -24,7 +24,9 @@ public class ObserverTest extends IAgentTest {
 
         assertThrows(IllegalArgumentException.class, () -> {
             OBSERVER_FACTORY.createObserver(new Location(0, -1), new RandomMovementStrategy(), resolver, realBoard,
-                    new FixedAwakenessStrategy(5, 1, 0));
+                    new FixedAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                               /* awakenessDuration= */ 1,
+                                               /* firstAwakenessTime= */ 0));
         });
     }
 
@@ -217,15 +219,23 @@ public class ObserverTest extends IAgentTest {
 
     Observer createRandomAgentOnLocation(Location initialLocation, RealBoard owner) {
         return OBSERVER_FACTORY.createObserver(initialLocation, new RandomMovementStrategy(), resolver, owner,
-                new FixedAwakenessStrategy(5, 1, 0));    }
+                new FixedAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                           /* awakenessDuration= */ 1,
+                                           /* firstAwakenessTime= */ 0));
+    }
 
     Observer createStaticAgentOnLocation(Location initialLocation, RealBoard owner) {
         return OBSERVER_FACTORY.createObserver(initialLocation, new StationaryMovementStrategy(), resolver, owner,
-                new FixedAwakenessStrategy(5, 1, 0));    }
+                new FixedAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                           /* awakenessDuration= */ 1,
+                                           /* firstAwakenessTime= */ 0));
+    }
 
     private Observer createRandomObserverOnLocation(Location initialLocation, RealBoard owner) {
         return OBSERVER_FACTORY.createObserver(initialLocation, new RandomMovementStrategy(), resolver, owner,
-                new FixedAwakenessStrategy(5, 1, 0));
+                new FixedAwakenessStrategy(/* awakenessCycleDuration= */ 5,
+                                           /* awakenessDuration= */ 1,
+                                           /* firstAwakenessTime= */ 0));
     }
 
     private Beacon createStaticBeaconOnLocation(Location initial_location, RealBoard owner) {

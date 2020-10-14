@@ -34,7 +34,7 @@ public abstract class AbstractAgent implements IAgent {
     @Override
     public void move() {
         Location nextMove = moveTo();
-        owner.updateAgentLocation(realLocation, nextMove,this);
+        owner.updateAgentLocation(realLocation, nextMove, this);
         realLocation = nextMove;
     }
 }
