@@ -11,21 +11,21 @@ public class ObserverFactory {
      * @param initialLocation is the location on board where the observer is placed.
      * @param IMovementStrategy determines how the observer moves.
      * @param resolver is the resolver that the observer belongs to.
-     * @param simulation is the world the observer lives in.
+     * @param owner is the real board that represents the world in which the observer lives.
      * @param awakenessStrategy determines when the observer is activated.
      * @return
      */
     public Observer createObserver(Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver,
-                                   Simulation simulation, IAwakenessStrategy awakenessStrategy) {
+                                   Board owner, IAwakenessStrategy awakenessStrategy) {
         checkNotNull(initialLocation);
         checkNotNull(IMovementStrategy);
         checkNotNull(resolver);
-        checkNotNull(simulation);
+        checkNotNull(owner);
         checkNotNull(awakenessStrategy);
-        simulation.getBoard().validateLocation(initialLocation);
+        owner.validateLocation(initialLocation);
 
-        Observer newObserver = new Observer(observerId++, initialLocation, IMovementStrategy, resolver, simulation, awakenessStrategy);
-        simulation.getBoard().placeAgent(initialLocation, newObserver);
+        Observer newObserver = new Observer(observerId++, initialLocation, IMovementStrategy, resolver, owner, awakenessStrategy);
+        owner.placeAgent(initialLocation, newObserver);
         return newObserver;
     }
 }

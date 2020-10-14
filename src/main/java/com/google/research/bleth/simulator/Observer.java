@@ -8,7 +8,7 @@ public class Observer implements IObserver {
     private final int id;
     private final IMovementStrategy IMovementStrategy;
     private final IResolver resolver;
-    private final Simulation simulation;
+    private final Board owner;
     private final IAwakenessStrategy awakenessStrategy;
 
     private Location realLocation; // the observer's location on the board, changed each time the observer moves.
@@ -20,16 +20,16 @@ public class Observer implements IObserver {
      * @param initialLocation is the location on board where the agent is placed.
      * @param IMovementStrategy determines how the observer moves.
      * @param resolver is the resolver that the observer belongs to.
-     * @param simulation is the world the agent lives in.
+     * @param owner is the real board that represents the world in which the observer lives.
      * @param awakenessStrategy determines when the observer wakes up.
      */
     Observer(int id, Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver,
-             Simulation simulation, IAwakenessStrategy awakenessStrategy) {
+             Board owner, IAwakenessStrategy awakenessStrategy) {
         this.id = id;
         realLocation = initialLocation;
         this.IMovementStrategy = IMovementStrategy;
         this.resolver = resolver;
-        this.simulation = simulation;
+        this.owner = owner;
         this.awakenessStrategy = awakenessStrategy;
     }
 
@@ -46,7 +46,7 @@ public class Observer implements IObserver {
 
     @Override
     public Location moveTo() {
-        return IMovementStrategy.moveTo(simulation.getBoard(), realLocation);
+        return IMovementStrategy.moveTo(owner, realLocation);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Observer implements IObserver {
     @Override
     public void move() {
         Location nextMove = moveTo();
-        simulation.getBoard().moveAgent(realLocation, nextMove,this);
+        owner.moveAgent(realLocation, nextMove,this);
         realLocation = nextMove;
     }
 
