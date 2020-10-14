@@ -1,5 +1,6 @@
 package com.google.research.bleth.simulator;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /** A factory class to create new beacons. */
@@ -8,18 +9,18 @@ public class BeaconFactory {
 
     /**
      * Create new beacon, according to the given parameters.
-     * @param initialLocation is the location on board where the agent is placed.
-     * @param movementStrategy determines how the agent moves.
-     * @param simulation is the world the agent lives in.
+     * @param initialLocation is the location on board where the beacon is placed.
+     * @param IMovementStrategy determines how the beacon moves.
+     * @param owner is the real board that represents the world in which the beacon lives.
      */
-    public Beacon createBeacon(Location initialLocation, MovementStrategy movementStrategy, Simulation simulation) {
+    public Beacon createBeacon(Location initialLocation, IMovementStrategy IMovementStrategy, IAgentOwner owner) {
         checkNotNull(initialLocation);
-        checkNotNull(movementStrategy);
-        checkNotNull(simulation);
-        simulation.getBoard().validateLocation(initialLocation);
+        checkNotNull(IMovementStrategy);
+        checkNotNull(owner);
+        checkArgument(owner.isLocationValid(initialLocation));
 
-        Beacon newBeacon = new Beacon(beaconId++, initialLocation, movementStrategy, simulation);
-        simulation.getBoard().placeAgent(initialLocation, newBeacon);
+        Beacon newBeacon = new Beacon(beaconId++, initialLocation, IMovementStrategy, owner);
+        owner.updateAgentLocation(null, initialLocation, newBeacon);
         return newBeacon;
     }
 }

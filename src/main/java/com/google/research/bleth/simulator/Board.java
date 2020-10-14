@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /** A container for all the agents, representing their locations, either real or estimated. */
-public class Board {
+public abstract class Board {
     private final int rowNum;
     private final int colNum;
-    private ArrayTable<Integer, Integer, ArrayList<Agent>> matrix;
+    private ArrayTable<Integer, Integer, ArrayList<IAgent>> matrix;
 
     /**
      * Create an empty board for storing agents' locations.
@@ -30,7 +30,7 @@ public class Board {
                                    IntStream.range(0, cols).boxed().collect(Collectors.toList()));
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                matrix.set(row, col, new ArrayList<Agent>());
+                matrix.set(row, col, new ArrayList<IAgent>());
             }
         }
     }
@@ -66,7 +66,7 @@ public class Board {
      * @param location is the requested location to retrieve all the agents that located on it.
      * @return an immutable copy of the list of all agents which located on location.
      */
-    public List<Agent> getAgentsOnLocation(Location location) {
+    public List<IAgent> getAgentsOnLocation(Location location) {
         validateLocation(location);
         return ImmutableList.copyOf(matrix.get(location.row, location.col));
     }
@@ -76,7 +76,7 @@ public class Board {
      * @param newLocation is the location where the agent will be placed.
      * @param agent is the Agent which placed on the board.
      */
-    public void placeAgent(Location newLocation, Agent agent) {
+    public void placeAgent(Location newLocation, IAgent agent) {
         checkNotNull(agent);
         validateLocation(newLocation);
         matrix.get(newLocation.row, newLocation.col).add(agent);
@@ -88,11 +88,14 @@ public class Board {
      * @param newLocation is the location where the agent will be placed.
      * @param agent is the Agent which moves from oldLocation to newLocation.
      */
-    public void moveAgent(Location oldLocation, Location newLocation, Agent agent) {
+    public void moveAgent(Location oldLocation, Location newLocation, IAgent agent) {
         checkNotNull(agent);
         validateLocation(newLocation);
         validateLocation(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
     }
+
+    /** Returns the type of the board, either real or estimated. */
+    public abstract String getType();
 }
