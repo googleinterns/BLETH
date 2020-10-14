@@ -11,7 +11,7 @@ public class Beacon extends AbstractAgent implements IBeacon {
      * @param IMovementStrategy determines how the beacon moves.
      * @param owner is the real board that represents the world in which the beacon lives.
      */
-    Beacon(int id, Location initialLocation, IMovementStrategy IMovementStrategy, Board owner) {
+    Beacon(int id, Location initialLocation, IMovementStrategy IMovementStrategy, IAgentOwner owner) {
         super(initialLocation, IMovementStrategy, owner);
         this.id = id;
     }

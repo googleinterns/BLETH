@@ -4,14 +4,14 @@ package com.google.research.bleth.simulator;
 public abstract class AbstractAgent implements IAgent {
     private final IMovementStrategy IMovementStrategy;
     private Location realLocation; // the agent's location on the board, changed each time the agent moves.
-    private final Board owner;
+    private final IAgentOwner owner;
 
     /**
      * @param initialLocation is the location on board where the agent is placed.
      * @param IMovementStrategy determines how the agent moves.
      * @param owner is the real board that represents the world in which the agent lives.
      */
-    public AbstractAgent(Location initialLocation, IMovementStrategy IMovementStrategy, Board owner) {
+    public AbstractAgent(Location initialLocation, IMovementStrategy IMovementStrategy, IAgentOwner owner) {
         realLocation = initialLocation;
         this.IMovementStrategy = IMovementStrategy;
         this.owner = owner;
@@ -34,7 +34,7 @@ public abstract class AbstractAgent implements IAgent {
     @Override
     public void move() {
         Location nextMove = moveTo();
-        owner.moveAgent(realLocation, nextMove,this);
+        owner.updateAgentLocation(realLocation, nextMove,this);
         realLocation = nextMove;
     }
 }

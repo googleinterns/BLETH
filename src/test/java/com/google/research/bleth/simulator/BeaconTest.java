@@ -14,42 +14,42 @@ public class BeaconTest extends IAgentTest {
 
     @Test
     public void createBeaconOutsideTheBoardThrowsException() {
-        Board board = new RealBoard(1, 1);
+        RealBoard realBoard = new RealBoard(1, 1);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            BEACON_FACTORY.createBeacon(new Location(0, -1), new RandomMovementStrategy(), board);
+            BEACON_FACTORY.createBeacon(new Location(0, -1), new RandomMovementStrategy(), realBoard);
         });
     }
 
     @Test
     public void staticBeaconTransmitStaticId() {
-        Board board = new RealBoard(1, 1);
-        Beacon beacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(1, 1);
+        Beacon beacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
     }
 
     @Test
     public void randomBeaconTransmitStaticId() {
-        Board board = new RealBoard(3, 3);
-        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(3, 3);
+        Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
     }
 
-    Beacon createRandomAgentOnLocation(Location initialLocation, Board owner) {
+    Beacon createRandomAgentOnLocation(Location initialLocation, RealBoard owner) {
         return createRandomBeaconOnLocation(initialLocation, owner);
     }
 
-    Beacon createStaticAgentOnLocation(Location initialLocation, Board owner) {
+    Beacon createStaticAgentOnLocation(Location initialLocation, RealBoard owner) {
         return createStaticBeaconOnLocation(initialLocation, owner);
     }
 
-    private Beacon createStaticBeaconOnLocation(Location initialLocation, Board owner) {
+    private Beacon createStaticBeaconOnLocation(Location initialLocation, RealBoard owner) {
         return BEACON_FACTORY.createBeacon(initialLocation, new StationaryMovementStrategy(), owner);
     }
 
-    private Beacon createRandomBeaconOnLocation(Location initialLocation, Board owner) {
+    private Beacon createRandomBeaconOnLocation(Location initialLocation, RealBoard owner) {
         return BEACON_FACTORY.createBeacon(initialLocation, new RandomMovementStrategy(), owner);
     }
 }

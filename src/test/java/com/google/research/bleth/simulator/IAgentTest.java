@@ -15,24 +15,24 @@ public abstract class IAgentTest {
 
     @Test
     public void newAgentLocationIsUpdatedOnBoardMatrix() {
-        Board board = new RealBoard(2, 2);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(2, 2);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, realBoard);
 
-        assertThat(board.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).contains(randomAgent);
+        assertThat(realBoard.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).contains(randomAgent);
     }
 
     @Test
     public void newAgentLocationIsUpdated() {
-        Board board = new RealBoard(2, 2);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(2, 2);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, realBoard);
 
         assertThat(randomAgent.getLocation()).isEqualTo(ZERO_ON_ONE_COORDINATE);
     }
 
     @Test
     public void moveStaticAgentStaysOnItsLocation() {
-        Board board = new RealBoard(2, 2);
-        IAgent staticAgent = createStaticAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(2, 2);
+        IAgent staticAgent = createStaticAgentOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         staticAgent.move();
 
@@ -44,8 +44,8 @@ public abstract class IAgentTest {
         // -----
         // | A |
         // -----
-        Board board = new RealBoard(1, 1);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(1, 1);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         randomAgent.move();
 
@@ -57,12 +57,12 @@ public abstract class IAgentTest {
         // -------------
         // | A |   |   |
         // -------------
-        Board board = new RealBoard(1, 3);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(1, 3);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         randomAgent.move();
 
-        assertThat(board.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
@@ -70,12 +70,12 @@ public abstract class IAgentTest {
         // -------------
         // |   |   | A |
         // -------------
-        Board board = new RealBoard(1, 3);
-        IAgent randomAgent = createRandomAgentOnLocation(new Location(0, 2), board);
+        RealBoard realBoard = new RealBoard(1, 3);
+        IAgent randomAgent = createRandomAgentOnLocation(new Location(0, 2), realBoard);
 
         randomAgent.move();
 
-        assertThat(board.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
@@ -87,12 +87,12 @@ public abstract class IAgentTest {
         // -----
         // |   |
         // -----
-        Board board = new RealBoard(3, 1);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(3, 1);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         randomAgent.move();
 
-        assertThat(board.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
@@ -104,23 +104,23 @@ public abstract class IAgentTest {
         // -----
         // | A |
         // -----
-        Board board = new RealBoard(3, 1);
-        IAgent randomAgent = createRandomAgentOnLocation(new Location(2, 0), board);
+        RealBoard realBoard = new RealBoard(3, 1);
+        IAgent randomAgent = createRandomAgentOnLocation(new Location(2, 0), realBoard);
 
         randomAgent.move();
 
-        assertThat(board.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
     public void upLeftCorneredAgentsMoveToValidLocations() {
         for (int i = 0; i < 1000; i++) {
-            Board board = new RealBoard(3, 3);
-            IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+            RealBoard realBoard = new RealBoard(3, 3);
+            IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
             Location nextLocation = randomAgent.moveTo();
 
-            assertThat(board.isLocationValid(nextLocation)).isTrue();
+            assertThat(realBoard.isLocationValid(nextLocation)).isTrue();
             assertThat(calculateDistance(ZERO_ON_ZERO_COORDINATE, nextLocation)).isEqualTo(1);
         }
     }
@@ -130,12 +130,12 @@ public abstract class IAgentTest {
         Location upRightCorner = new Location(0, 2);
 
         for (int i = 0; i < 1000; i++) {
-            Board board = new RealBoard(3, 3);
-            IAgent randomAgent = createRandomAgentOnLocation(upRightCorner, board);
+            RealBoard realBoard = new RealBoard(3, 3);
+            IAgent randomAgent = createRandomAgentOnLocation(upRightCorner, realBoard);
 
             Location nextLocation = randomAgent.moveTo();
 
-            assertThat(board.isLocationValid(nextLocation)).isTrue();
+            assertThat(realBoard.isLocationValid(nextLocation)).isTrue();
             assertThat(calculateDistance(upRightCorner, nextLocation)).isEqualTo(1);
         }
     }
@@ -144,12 +144,12 @@ public abstract class IAgentTest {
     public void bottomLeftCorneredAgentsMoveToValidLocations() {
         Location bottomLeftCorner = new Location(2, 0);
         for (int i = 0; i < 1000; i++) {
-            Board board = new RealBoard(3, 3);
-            IAgent randomAgent = createRandomAgentOnLocation(bottomLeftCorner, board);
+            RealBoard realBoard = new RealBoard(3, 3);
+            IAgent randomAgent = createRandomAgentOnLocation(bottomLeftCorner, realBoard);
 
             Location nextLocation = randomAgent.moveTo();
 
-            assertThat(board.isLocationValid(nextLocation)).isTrue();
+            assertThat(realBoard.isLocationValid(nextLocation)).isTrue();
             assertThat(calculateDistance(bottomLeftCorner, nextLocation)).isEqualTo(1);
         }
     }
@@ -158,12 +158,12 @@ public abstract class IAgentTest {
     public void bottomRightCorneredAgentsMoveToValidLocations() {
         Location bottomRightCorner = new Location(2, 2);
         for (int i = 0; i < 1000; i++) {
-            Board board = new RealBoard(3, 3);
-            IAgent randomAgent = createRandomAgentOnLocation(bottomRightCorner, board);
+            RealBoard realBoard = new RealBoard(3, 3);
+            IAgent randomAgent = createRandomAgentOnLocation(bottomRightCorner, realBoard);
 
             Location nextLocation = randomAgent.moveTo();
 
-            assertThat(board.isLocationValid(nextLocation)).isTrue();
+            assertThat(realBoard.isLocationValid(nextLocation)).isTrue();
             assertThat(calculateDistance(bottomRightCorner, nextLocation)).isEqualTo(1);
         }
     }
@@ -175,8 +175,8 @@ public abstract class IAgentTest {
         // -----
         // | A |
         // -----
-        Board board = new RealBoard(2, 1);
-        IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(2, 1);
+        IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ZERO_COORDINATE, realBoard);
 
         randomAgent.move();
         randomAgent.move();
@@ -191,8 +191,8 @@ public abstract class IAgentTest {
         // -----
         // |   |
         // -----
-        Board board = new RealBoard(2, 1);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(2, 1);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         randomAgent.move();
         randomAgent.move();
@@ -205,8 +205,8 @@ public abstract class IAgentTest {
         // ----------
         // | A |    |
         // ----------
-        Board board = new RealBoard(1, 2);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(1, 2);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
         randomAgent.move();
         randomAgent.move();
@@ -219,8 +219,8 @@ public abstract class IAgentTest {
         // ---------
         // |   | A |
         // ---------
-        Board board = new RealBoard(1, 2);
-        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, board);
+        RealBoard realBoard = new RealBoard(1, 2);
+        IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, realBoard);
 
         randomAgent.move();
         randomAgent.move();
@@ -231,8 +231,8 @@ public abstract class IAgentTest {
     @Test
     public void randomAgentsMoveExactlyOneStep() {
         for (int i = 0; i < 1000; i++) {
-            Board board = new RealBoard(3, 3);
-            IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ONE_COORDINATE, board);
+            RealBoard realBoard = new RealBoard(3, 3);
+            IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ONE_COORDINATE, realBoard);
 
             randomAgent.move();
 
@@ -243,18 +243,18 @@ public abstract class IAgentTest {
     @Test
     public void movingAgentsLocationsAreUpdatedOnBoardMatrix() {
         for (int i = 0; i < 1000; i++) {
-            Board board = new RealBoard(3, 3);
-            IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ONE_COORDINATE, board);
+            RealBoard realBoard = new RealBoard(3, 3);
+            IAgent randomAgent = createRandomAgentOnLocation(ONE_ON_ONE_COORDINATE, realBoard);
 
             randomAgent.move();
 
-            assertThat(board.getAgentsOnLocation(randomAgent.getLocation())).containsExactly(randomAgent);
+            assertThat(realBoard.getAgentsOnLocation(randomAgent.getLocation())).containsExactly(randomAgent);
         }
     }
 
-    abstract IAgent createRandomAgentOnLocation(Location initialLocation, Board owner);
+    abstract IAgent createRandomAgentOnLocation(Location initialLocation, RealBoard owner);
 
-    abstract IAgent createStaticAgentOnLocation(Location initialLocation, Board owner);
+    abstract IAgent createStaticAgentOnLocation(Location initialLocation, RealBoard owner);
 
     private int calculateDistance(Location oldLocation, Location newLocation) {
         return Math.abs(newLocation.row - oldLocation.row) + Math.abs(newLocation.col - oldLocation.col);

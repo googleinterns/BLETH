@@ -11,7 +11,7 @@ public class Observer extends AbstractAgent implements IObserver {
 
     private List<Transmission> transmissions = new ArrayList<>(); // contains the transmissions the observer observed in the current round
 
-    /**
+    /**moveAgent
      * Create new observer with consecutive serial number.
      * @param id is a unique ID.
      * @param initialLocation is the location on board where the observer is placed.
@@ -21,7 +21,7 @@ public class Observer extends AbstractAgent implements IObserver {
      * @param awakenessStrategy determines when the observer wakes up.
      */
     Observer(int id, Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver,
-             Board owner, IAwakenessStrategy awakenessStrategy) {
+             IAgentOwner owner, IAwakenessStrategy awakenessStrategy) {
         super(initialLocation, IMovementStrategy, owner);
         this.id = id;
         this.resolver = resolver;

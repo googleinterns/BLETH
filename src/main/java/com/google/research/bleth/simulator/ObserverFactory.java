@@ -1,5 +1,6 @@
 package com.google.research.bleth.simulator;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /** A factory class to create new observers. */
@@ -16,16 +17,16 @@ public class ObserverFactory {
      * @return
      */
     public Observer createObserver(Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver,
-                                   Board owner, IAwakenessStrategy awakenessStrategy) {
+                                   IAgentOwner owner, IAwakenessStrategy awakenessStrategy) {
         checkNotNull(initialLocation);
         checkNotNull(IMovementStrategy);
         checkNotNull(resolver);
         checkNotNull(owner);
         checkNotNull(awakenessStrategy);
-        owner.validateLocation(initialLocation);
+        checkArgument(owner.isLocationValid(initialLocation));
 
         Observer newObserver = new Observer(observerId++, initialLocation, IMovementStrategy, resolver, owner, awakenessStrategy);
-        owner.placeAgent(initialLocation, newObserver);
+        owner.updateAgentLocation(null, initialLocation, newObserver);
         return newObserver;
     }
 }
