@@ -4,20 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Simulation's Observer, which moves on the board, observe beacons' transmissions and pass the information to its resolver. */
-public class Observer implements IObserver {
+public class Observer extends AbstractAgent implements IObserver {
     private final int id;
-    private final IMovementStrategy IMovementStrategy;
     private final IResolver resolver;
-    private final Board owner;
     private final IAwakenessStrategy awakenessStrategy;
 
-    private Location realLocation; // the observer's location on the board, changed each time the observer moves.
     private List<Transmission> transmissions = new ArrayList<>(); // contains the transmissions the observer observed in the current round
 
     /**
      * Create new observer with consecutive serial number.
      * @param id is a unique ID.
-     * @param initialLocation is the location on board where the agent is placed.
+     * @param initialLocation is the location on board where the observer is placed.
      * @param IMovementStrategy determines how the observer moves.
      * @param resolver is the resolver that the observer belongs to.
      * @param owner is the real board that represents the world in which the observer lives.
@@ -25,11 +22,9 @@ public class Observer implements IObserver {
      */
     Observer(int id, Location initialLocation, IMovementStrategy IMovementStrategy, IResolver resolver,
              Board owner, IAwakenessStrategy awakenessStrategy) {
+        super(initialLocation, IMovementStrategy, owner);
         this.id = id;
-        realLocation = initialLocation;
-        this.IMovementStrategy = IMovementStrategy;
         this.resolver = resolver;
-        this.owner = owner;
         this.awakenessStrategy = awakenessStrategy;
     }
 
@@ -40,25 +35,8 @@ public class Observer implements IObserver {
 
     @Override
     public void passInformationToResolver() {
-        resolver.receiveInformation(realLocation, new ArrayList<>(transmissions));
+        resolver.receiveInformation(getLocation(), new ArrayList<>(transmissions));
         transmissions.clear();
-    }
-
-    @Override
-    public Location moveTo() {
-        return IMovementStrategy.moveTo(owner, realLocation);
-    }
-
-    @Override
-    public Location getLocation() {
-        return realLocation;
-    }
-
-    @Override
-    public void move() {
-        Location nextMove = moveTo();
-        owner.moveAgent(realLocation, nextMove,this);
-        realLocation = nextMove;
     }
 
     @Override
