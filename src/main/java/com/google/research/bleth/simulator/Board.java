@@ -35,16 +35,12 @@ public abstract class Board {
         }
     }
 
-    /**
-     * @return number of rows.
-     */
+    /** Returns the number of rows. */
     public int getRowNum() {
         return rowNum;
     }
 
-    /**
-     * @return number of columns.
-     */
+    /** Returns the number of columns. */
     public int getColNum() {
         return colNum;
     }

@@ -21,6 +21,9 @@ public class TracingSimulationIT {
     private static final int CURRENT_ROUND_EQUALS_ZERO = 0;
     private static final double RADIUS_EQUALS_ONE = 1.0;
 
+    private static final Location ZERO_ON_ZERO_LOCATION = new Location(0, 0);
+    private static final Location ONE_ON_ZERO_LOCATION = new Location(1, 0);
+
     @Mock
     private GlobalResolver resolver;
 
@@ -36,8 +39,8 @@ public class TracingSimulationIT {
         BeaconFactory beaconFactory = new BeaconFactory();
         ObserverFactory observerFactory = new ObserverFactory();
         AwakenessStrategyFactory awakenessStrategyFactory = new AwakenessStrategyFactory(AwakenessStrategyFactory.Type.FIXED);
-        Beacon beacon = beaconFactory.createBeacon(new Location(1, 0), MOVE_UP, realBoard);
-        Observer observer = observerFactory.createObserver(new Location(0, 0), STATIONARY, resolver,
+        Beacon beacon = beaconFactory.createBeacon(ONE_ON_ZERO_LOCATION, MOVE_UP, realBoard);
+        Observer observer = observerFactory.createObserver(ZERO_ON_ZERO_LOCATION, STATIONARY, resolver,
                 realBoard, awakenessStrategyFactory.createStrategy(2, 1));
 
         beacons.add(beacon);
@@ -57,7 +60,7 @@ public class TracingSimulationIT {
 
         simulation.run();
 
-        assertThat(beacon.getLocation()).isEqualTo(new Location(0, 0));
-        assertThat(observer.getLocation()).isEqualTo(new Location(0, 0));
+        assertThat(beacon.getLocation()).isEqualTo(ZERO_ON_ZERO_LOCATION);
+        assertThat(observer.getLocation()).isEqualTo(ZERO_ON_ZERO_LOCATION);
     }
 }

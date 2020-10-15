@@ -22,17 +22,12 @@ public abstract class AbstractSimulation {
     private final double radius;
     private HashMap<String, Double> stats = new HashMap<>();
 
-    /**
-     * Return the simulation real board.
-     * @return RealBoard object representing the simulation's real state.
-     */
+    /** Returns the simulation's real board. */
     RealBoard getBoard() {
         return board;
     }
 
-    /**
-     * Run entire simulation logic, including writing data to db.
-     */
+    /** Run entire simulation logic, including writing data to db. */
     public void run() {
         if (currentRound == 0) {
             writeRoundState(); // round 0 is the initial simulation state
@@ -51,9 +46,7 @@ public abstract class AbstractSimulation {
         writeSimulationStats();
     }
 
-    /**
-     * Move all agents according to their movement strategies and update the real board.
-     */
+    /** Move all agents according to their movement strategies and update the real board. */
     void moveAgents() {
         for (Beacon beacon : beacons) {
             beacon.move();
@@ -63,9 +56,7 @@ public abstract class AbstractSimulation {
         }
     }
 
-    /**
-     * Update all observers awakeness states according to their awakeness strategies.
-     */
+    /** Update all observers awakeness states according to their awakeness strategies. */
     void updateObserversAwaknessState() {
         for (Observer observer : observers) {
             observer.updateAwakenessState(currentRound);
@@ -87,33 +78,23 @@ public abstract class AbstractSimulation {
         }
     }
 
-    /**
-     * Pass current-round information of transmission data from all observers to the simulation's resolver.
-     */
+    /** Pass current-round information of transmission data from all observers to the simulation's resolver. */
     void observersToResolver() {
         for (Observer observer : observers) {
             observer.passInformationToResolver();
         }
     }
 
-    /**
-     * Update resolver's estimated board.
-     */
+    /** Update resolver's estimated board. */
     void resolverEstimate() { }
 
-    /**
-     * Write current-round state of the simulation to db.
-     */
+    /** Write current-round state of the simulation to db. */
     void writeRoundState() { }
 
-    /**
-     * Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds.
-     */
+    /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
     abstract void updateSimulationStats();
 
-    /**
-     * Write final simulation statistical data to db.
-     */
+    /** Write final simulation statistical data to db. */
     void writeSimulationStats() { }
 
     /**
@@ -363,7 +344,7 @@ public abstract class AbstractSimulation {
         this.observers = ImmutableList.copyOf(builder.observers);
     }
 
-    private double distance(Location location1, Location location2) {
-        return (double) (Math.abs(location1.row - location2.row) + Math.abs(location1.col - location2.col));
+    private double distance(Location firstLocation, Location secondLocation) {
+        return (double) (Math.abs(firstLocation.row - secondLocation.row) + Math.abs(firstLocation.col - secondLocation.col));
     }
 }
