@@ -148,8 +148,10 @@ public abstract class AbstractSimulation {
         protected List<Observer> observers = new ArrayList<>();
         protected IMovementStrategy beaconMovementStrategy;
         protected IMovementStrategy observerMovementStrategy;
-        protected AwakenessStrategyFactory awakenessStrategyFactory;
+        protected AwakenessStrategyFactory.Type awakenessStrategyType;
         protected double radius;
+        protected int awakenessCycle;
+        protected int awakenessDuration;
 
         /**
          * Set simulation id.
@@ -232,16 +234,6 @@ public abstract class AbstractSimulation {
         }
 
         /**
-         * Set the observers' awakeness strategy factory, used for generating awakeness strategies for all observers.
-         * @param awakenessStrategyFactory is the awakeness strategy factory for all observers.
-         * @return this, to provide chaining.
-         */
-        public Builder setAwakenessStrategyFactory(AwakenessStrategyFactory awakenessStrategyFactory) {
-            this.awakenessStrategyFactory = awakenessStrategyFactory;
-            return this;
-        }
-
-        /**
          * Set the threshold transmission radius.
          * @param radius is the threshold transmission radius
          * @return this, to provide chaining.
@@ -252,19 +244,52 @@ public abstract class AbstractSimulation {
         }
 
         /**
+         * Set the awakeness cycle, which is the number of rounds in which every observer must have
+         * an awakeness period.
+         * @param awakenessCycle is the number of rounds to be considered as the cycle.
+         * @return this, to provide chaining.
+         */
+        public Builder setAwakenessCycle(int awakenessCycle) {
+            this.awakenessCycle = awakenessCycle;
+            return this;
+        }
+
+        /**
+         * Set the awakeness duration, which is the number of rounds in which an observer is awake in a
+         * single awakeness cycle.
+         * @param awakenessDuration is the number of rounds to be considered as the duration.
+         * @return this, to provide chaining.
+         */
+        public Builder setAwakenessDuration(int awakenessDuration) {
+            this.awakenessDuration = awakenessDuration;
+            return this;
+        }
+
+        /**
+         * Set the observers' awakeness strategy type, used for generating awakeness strategies for all observers.
+         * @param awakenessStrategyType is the awakeness strategy type for all observers.
+         * @return this, to provide chaining.
+         */
+        public Builder setAwakenessStrategyType(AwakenessStrategyFactory.Type awakenessStrategyType) {
+            this.awakenessStrategyType = awakenessStrategyType;
+            return this;
+        }
+
+        /**
          * Validate all simulation builder arguments are legal.
          */
         abstract void validateArguments();
 
         /**
-         * Create and initialize simulation observers using a factory, and store them in observers container.
+         * Create and initialize simulation observers in random initial locations using a factory, and store them in observers container.
          * Initializes the observers movement strategy according to the strategy passed to the builder.
-         * Initializes the observers awakeness strategy according to the strategy factory passed to the builder.
+         * Initializes the observers awakeness strategy according to the strategy type, awakeness cycle and awakeness duration
+         * passed to the builder.
          */
         abstract void initializeObservers();
 
         /**
-         * Create and initialize simulation beacons using a factory, and store them in observers container.
+         * Create and initialize simulation beacons in random initial locations using a factory, and store them in observers container.
          * Create simple beacons for a tracing simulation and swapping beacons for a stalking simulation.
          * Initializes the beacons movement strategy according to the strategy passed to the builder.
          */
