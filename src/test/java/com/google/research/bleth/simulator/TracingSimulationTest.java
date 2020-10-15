@@ -15,8 +15,6 @@ public class TracingSimulationTest {
 
     private static final IMovementStrategy MOVE_UP = new moveUp();
     private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
-    private static final AwakenessStrategyFactory DUMMY_AWAKENESS_STRATEGY_FACTORY =
-            new AwakenessStrategyFactory(AwakenessStrategyFactory.Type.FIXED);
 
     private static final String SIMULATION_ID = "test-sim-id-1";
     private static final int BOARD_DIMENSION_EQUALS_TWO = 2;
@@ -70,7 +68,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -89,7 +87,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_THREE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -108,7 +106,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -127,7 +125,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -146,7 +144,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -164,7 +162,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(NullPointerException.class, builder::build);
+        assertThrows(NullPointerException.class, builder::buildNew);
     }
 
     @Test
@@ -182,7 +180,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(NullPointerException.class, builder::build);
+        assertThrows(NullPointerException.class, builder::buildNew);
     }
 
     @Test
@@ -200,7 +198,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setObserverMovementStrategy(STATIONARY);
 
-        assertThrows(NullPointerException.class, builder::build);
+        assertThrows(NullPointerException.class, builder::buildNew);
     }
 
     @Test
@@ -218,7 +216,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -236,7 +234,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -254,7 +252,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     @Test
@@ -272,7 +270,7 @@ public class TracingSimulationTest {
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildNew);
     }
 
     // Test cases focused on building a TracingSimulation from existing.
@@ -287,19 +285,18 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(realBoard)
                 .setResolver(new FakeResolver())
                 .setBeacons(beacons)
                 .setObservers(observers);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildRestored);
     }
 
     @Test
@@ -314,19 +311,18 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(realBoard)
                 .setResolver(resolver)
                 .setBeacons(beacons)
                 .setObservers(observers);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildRestored);
     }
 
     @Test
@@ -339,35 +335,33 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(board)
                 .setBeacons(beacons)
                 .setObservers(observers);
 
-        assertThrows(NullPointerException.class, builder::build);
+        assertThrows(NullPointerException.class, builder::buildRestored);
     }
 
     @Test
     public void initSimulationFromExistingWithoutAgentsShouldThrowException() {
         RealBoard board = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
 
-        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(board)
                 .setResolver(resolver);
 
-        assertThrows(NullPointerException.class, builder::build);
+        assertThrows(NullPointerException.class, builder::buildRestored);
     }
 
     @Test
@@ -379,18 +373,17 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setResolver(resolver)
                 .setBeacons(beacons)
                 .setObservers(observers);
 
-        assertThrows(NullPointerException.class, builder::build);
+        assertThrows(NullPointerException.class, builder::buildRestored);
     }
 
     @Test
@@ -405,20 +398,19 @@ public class TracingSimulationTest {
         observers.add(observer1);
         observers.add(observer2);
 
-        AbstractSimulation.BuilderFromExisting builder = new TracingSimulation.BuilderFromExisting()
+        AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setCurrentRound(CURRENT_ROUND_EQUALS_THREE)
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
-                .setAwakenessStrategyFactory(DUMMY_AWAKENESS_STRATEGY_FACTORY)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setRealBoard(realBoard)
                 .setResolver(resolver)
                 .setBeacons(beacons)
                 .setObservers(observers);
 
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalArgumentException.class, builder::buildRestored);
     }
 
     // Helper movement strategy.

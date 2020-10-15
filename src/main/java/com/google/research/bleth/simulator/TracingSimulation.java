@@ -20,7 +20,7 @@ public class TracingSimulation extends AbstractSimulation {
     public static class Builder extends AbstractSimulation.Builder {
 
         @Override
-        void validateArguments() {
+        void validateNewSimulationArguments() {
             // todo: validate simulation id is unique
             checkArgument(rowNum > 0 && colNum > 0,
                     "Board dimensions must be positive.");
@@ -65,20 +65,17 @@ public class TracingSimulation extends AbstractSimulation {
         }
 
         @Override
-        public AbstractSimulation build() {
-            validateArguments();
+        public AbstractSimulation buildNew() {
+            validateNewSimulationArguments();
             this.realBoard = new RealBoard(this.rowNum, this.colNum);
             this.resolver = new GlobalResolver(this.rowNum, this.colNum);
             initializeBeacons();
             initializeObservers();
             return new TracingSimulation(this);
         }
-    }
-
-    public static class BuilderFromExisting extends AbstractSimulation.BuilderFromExisting {
 
         @Override
-        void validateArguments() {
+        void validateRestoredSimulationArguments() {
             // todo: validate simulation id is unique
             checkNotNull(realBoard);
             checkNotNull(resolver);
@@ -96,14 +93,11 @@ public class TracingSimulation extends AbstractSimulation {
             checkArgument(currentRound <= maxNumberOfRounds,
                     "Current round index must be less of equal to the index of last round " +
                             "(i.e. max number of rounds).");
-            checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
-            checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
-            checkNotNull(awakenessStrategyFactory, "No awakeness strategy factory has been set.");
         }
 
         @Override
-        public AbstractSimulation build() {
-            validateArguments();
+        public AbstractSimulation buildRestored() {
+            validateRestoredSimulationArguments();
             this.rowNum = this.realBoard.getRowNum();
             this.colNum = this.realBoard.getColNum();
             this.beaconsNum = beacons.size();
@@ -113,12 +107,6 @@ public class TracingSimulation extends AbstractSimulation {
     }
 
     private TracingSimulation(Builder builder) {
-        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
-                builder.realBoard, builder.beacons, builder.observers);
-    }
-
-    private TracingSimulation(BuilderFromExisting builder) {
-        super(builder.id, builder.currentRound, builder.maxNumberOfRounds, builder.resolver, builder.radius,
-                builder.realBoard, builder.beacons, builder.observers);
+        super(builder);
     }
 }
