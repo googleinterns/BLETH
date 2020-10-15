@@ -11,9 +11,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.ArrayList;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TracingSimulationTest {
+public class TracingSimulationBuilderTest {
 
-    private static final IMovementStrategy MOVE_UP = new moveUp();
+    private static final IMovementStrategy MOVE_UP = new UpMovementStrategy();
     private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
 
     private static final String SIMULATION_ID = "test-sim-id-1";
@@ -411,19 +411,5 @@ public class TracingSimulationTest {
                 .setObservers(observers);
 
         assertThrows(IllegalArgumentException.class, builder::buildRestored);
-    }
-
-    // Helper movement strategy.
-
-    private static class moveUp implements IMovementStrategy {
-
-        @Override
-        public Location moveTo(IAgentOwner owner, Location currentLocation) {
-            Location newLocation = currentLocation.moveInDirection(Direction.UP);
-            if (owner.isLocationValid(newLocation)) {
-                return newLocation;
-            }
-            return currentLocation;
-        }
     }
 }
