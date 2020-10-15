@@ -22,17 +22,6 @@ public abstract class AbstractSimulation {
     private final double radius;
     private HashMap<String, Double> stats = new HashMap<>();
 
-    // A protected constructor used by the concrete simulation classes' constructors.
-    protected AbstractSimulation (Builder builder) {
-        this.id = builder.id;
-        this.maxNumberOfRounds = builder.maxNumberOfRounds;
-        this.board = builder.realBoard;
-        this.resolver = builder.resolver;
-        this.radius = builder.radius;
-        this.beacons = ImmutableList.copyOf(builder.beacons);
-        this.observers = ImmutableList.copyOf(builder.observers);
-    }
-
     /**
      * Return the simulation real board.
      * @return RealBoard object representing the simulation's real state.
@@ -326,12 +315,12 @@ public abstract class AbstractSimulation {
         }
 
         /**
-         * Validate all simulation builder arguments are legal.
+         * Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}.
          */
         abstract void validateNewSimulationArguments();
 
         /**
-         * Validate all simulation builder arguments are legal.
+         * Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildRestored()}.
          */
         abstract void validateRestoredSimulationArguments();
 
@@ -351,16 +340,27 @@ public abstract class AbstractSimulation {
         abstract void initializeBeacons();
 
         /**
-         * Construct a simulation object.
+         * Construct a new simulation object.
          * @return a new Simulation object constructed with the builder parameters.
          */
         public abstract AbstractSimulation buildNew();
 
         /**
-         * Construct a simulation object.
+         * Construct a restored simulation object.
          * @return a new Simulation object constructed with the builder parameters.
          */
         public abstract AbstractSimulation buildRestored();
+    }
+
+    // A protected constructor used by the concrete simulation classes' constructors.
+    protected AbstractSimulation (Builder builder) {
+        this.id = builder.id;
+        this.maxNumberOfRounds = builder.maxNumberOfRounds;
+        this.board = builder.realBoard;
+        this.resolver = builder.resolver;
+        this.radius = builder.radius;
+        this.beacons = ImmutableList.copyOf(builder.beacons);
+        this.observers = ImmutableList.copyOf(builder.observers);
     }
 
     private double distance(Location location1, Location location2) {

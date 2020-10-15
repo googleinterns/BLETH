@@ -40,6 +40,27 @@ public class TracingSimulation extends AbstractSimulation {
         }
 
         @Override
+        void validateRestoredSimulationArguments() {
+            // todo: validate simulation id is unique
+            checkNotNull(realBoard);
+            checkNotNull(resolver);
+            checkArgument(resolver instanceof GlobalResolver,
+                    "Tracing simulation resolver must be a global resolver.");
+            checkArgument(realBoard.getRowNum() == resolver.getBoard().getRowNum() &&
+                            realBoard.getColNum() == resolver.getBoard().getColNum(),
+                    "Real and estimated board dimensions must agree.");
+            checkArgument(!beacons.isEmpty() && !observers.isEmpty(),
+                    "Number of beacons and number of observers must be positive.");
+            checkArgument(radius > 0,
+                    "Transmission radius must be positive.");
+            checkArgument(currentRound >= 0,
+                    "Current round index must be non-negative.");
+            checkArgument(currentRound <= maxNumberOfRounds,
+                    "Current round index must be less of equal to the index of last round " +
+                            "(i.e. max number of rounds).");
+        }
+
+        @Override
         void initializeObservers() {
             Random rand = new Random();
             ObserverFactory observerFactory = new ObserverFactory();
@@ -72,27 +93,6 @@ public class TracingSimulation extends AbstractSimulation {
             initializeBeacons();
             initializeObservers();
             return new TracingSimulation(this);
-        }
-
-        @Override
-        void validateRestoredSimulationArguments() {
-            // todo: validate simulation id is unique
-            checkNotNull(realBoard);
-            checkNotNull(resolver);
-            checkArgument(resolver instanceof GlobalResolver,
-                    "Tracing simulation resolver must be a global resolver.");
-            checkArgument(realBoard.getRowNum() == resolver.getBoard().getRowNum() &&
-                            realBoard.getColNum() == resolver.getBoard().getColNum(),
-                    "Real and estimated board dimensions must agree.");
-            checkArgument(!beacons.isEmpty() && !observers.isEmpty(),
-                    "Number of beacons and number of observers must be positive.");
-            checkArgument(radius > 0,
-                    "Transmission radius must be positive.");
-            checkArgument(currentRound >= 0,
-                    "Current round index must be non-negative.");
-            checkArgument(currentRound <= maxNumberOfRounds,
-                    "Current round index must be less of equal to the index of last round " +
-                            "(i.e. max number of rounds).");
         }
 
         @Override
