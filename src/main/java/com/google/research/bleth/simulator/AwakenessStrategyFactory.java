@@ -26,14 +26,13 @@ public class AwakenessStrategyFactory {
      * must have an awakeness period.
      * @param awakenessDuration is the duration, which is the number of rounds in which an observer
      * is awake in a single awakeness cycle.
-     * @return an awakeness strategy initialized with all required parameters.
+     * @return an awakeness strategy initialized with all required parameters (if no proper type was set, return random by default).
      */
     public IAwakenessStrategy createStrategy(int awakenessCycle, int awakenessDuration) {
         switch (this.type) {
             case FIXED: return createFixedStrategy(awakenessCycle, awakenessDuration);
-            case RANDOM: return createRandomStrategy(awakenessCycle, awakenessDuration);
+            default: return createRandomStrategy(awakenessCycle, awakenessDuration);
         }
-        return null;
     }
 
     private IAwakenessStrategy createFixedStrategy(int awakenessCycle, int awakenessDuration) {
