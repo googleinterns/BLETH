@@ -26,6 +26,7 @@ public class TracingSimulationIT {
 
     @Test
     public void runSimulationSingleRoundVerifyAgentsLocations() {
+        // Create board, resolver and agents.
         RealBoard realBoard = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
         EstimatedBoard estimatedBoard = new EstimatedBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
         Mockito.when(resolver.getBoard()).thenReturn(estimatedBoard);
@@ -42,6 +43,7 @@ public class TracingSimulationIT {
         beacons.add(beacon);
         observers.add(observer);
 
+        // Create simulation.
         AbstractSimulation simulation = new TracingSimulation.Builder()
                 .setId(SIMULATION_ID)
                 .setCurrentRound(CURRENT_ROUND_EQUALS_ZERO)
