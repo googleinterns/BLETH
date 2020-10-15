@@ -4,21 +4,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Multimap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /** Tracing Simulation's Resolver, which receives information from its observers and estimate the beacons' locations according to it. */
 public final class GlobalResolver implements IGlobalResolver {
     private EstimatedBoard estimatedBoard;
     private Multimap<Transmission, Location> currentRoundTransmissions = ArrayListMultimap.create();
-    private HashBiMap<Beacon, Transmission> beaconsToTransmissions;
+    private Map<Transmission, Beacon> TransmissionsToBeacons;
     private Map<Beacon, Location> beaconsToEstimatedLocations = new HashMap<>();
 
     /**
-     * A wrapper method to create new global resolver for a specific simulation.
+     * A wrapper method to create new global resolver for a tracing simulation.
      * The new resolver has a board for storing the estimated beacons' locations.
      * @param rowsNum is number of rows of the simulation's board.
      * @param colsNum is number of columns of the simulation's board.
@@ -27,11 +27,11 @@ public final class GlobalResolver implements IGlobalResolver {
     public static GlobalResolver createResolver(int rowsNum, int colsNum, List<Beacon> beacons) {
         checkNotNull(beacons);
         EstimatedBoard estimatedBoard = new EstimatedBoard(rowsNum, colsNum);
-        HashBiMap<Beacon, Transmission> beaconsToTransmissions = HashBiMap.create();
+        HashBiMap<Transmission, Beacon> TransmissionsToBeacons = HashBiMap.create();
         for (Beacon beacon : beacons) {
-            beaconsToTransmissions.put(beacon, beacon.transmit());
+            TransmissionsToBeacons.put(beacon.transmit(), beacon);
         }
-        return new GlobalResolver(estimatedBoard, beaconsToTransmissions);
+        return new GlobalResolver(estimatedBoard, TransmissionsToBeacons);
     }
 
     @Override
@@ -45,14 +45,14 @@ public final class GlobalResolver implements IGlobalResolver {
     public void estimate() {
         // Update only the beacons that there's new information about their location
         for (Transmission transmission : currentRoundTransmissions.keySet()) {
-            Beacon beacon = beaconsToTransmissions.inverse().get(transmission);
+            Beacon beacon = TransmissionsToBeacons.get(transmission);
             // Take into consideration the current estimated location of the beacon if there's such
             if (beaconsToEstimatedLocations.containsKey(beacon)) {
                 currentRoundTransmissions.put(transmission, beaconsToEstimatedLocations.get(beacon));
             }
             Location newLocation = estimateNewLocation(beacon);
 
-            if (!beaconsToEstimatedLocations.keySet().contains(beacon)) {
+            if (!beaconsToEstimatedLocations.containsKey(beacon)) {
                 estimatedBoard.placeAgent(newLocation, beacon);
             } else {
                 estimatedBoard.moveAgent(beaconsToEstimatedLocations.get(beacon), newLocation, beacon);
@@ -64,13 +64,13 @@ public final class GlobalResolver implements IGlobalResolver {
     }
 
     @Override
-    public Board getBoard() {
+    public EstimatedBoard getBoard() {
         return estimatedBoard;
     }
 
-    private GlobalResolver(EstimatedBoard estimatedBoard, HashBiMap<Beacon, Transmission> beaconsToTransmissions) {
+    private GlobalResolver(EstimatedBoard estimatedBoard, HashBiMap<Transmission, Beacon> TransmissionsToBeacons) {
         this.estimatedBoard = estimatedBoard;
-        this.beaconsToTransmissions = beaconsToTransmissions;
+        this.TransmissionsToBeacons = ImmutableBiMap.copyOf(TransmissionsToBeacons);
     }
 
     private Location estimateNewLocation(Beacon beacon) {

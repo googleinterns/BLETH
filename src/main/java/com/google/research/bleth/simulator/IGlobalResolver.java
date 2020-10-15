@@ -7,5 +7,5 @@ public interface IGlobalResolver extends IResolver {
     void estimate();
 
     /** Returns the estimated board that the resolver contains. */
-    Board getBoard();
+    EstimatedBoard getBoard();
 }

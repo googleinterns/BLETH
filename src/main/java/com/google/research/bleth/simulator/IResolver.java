@@ -7,7 +7,7 @@ public interface IResolver {
 
     /**
      * Add the transmissions from an observer to the resolver database, which consists of
-     * all the transmission its observers observed in the current round.
+     * all the transmissions its observers observed in the current round and their locations.
      * @param observerLocation is the current location of the observer that passed the transmissions.
      * @param transmissions is all the beacons' transmissions the observer observed in the current round.
      */
