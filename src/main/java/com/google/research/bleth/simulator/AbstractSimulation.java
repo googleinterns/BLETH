@@ -298,6 +298,9 @@ public abstract class AbstractSimulation {
             return this;
         }
 
+        /** Write simulation metadata to db. */
+        abstract void writeSimulationMetadata();
+
         /**
          * Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}.
          */

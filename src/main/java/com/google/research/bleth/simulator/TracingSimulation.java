@@ -20,8 +20,12 @@ public class TracingSimulation extends AbstractSimulation {
     public static class Builder extends AbstractSimulation.Builder {
 
         @Override
+        void writeSimulationMetadata() {
+            // todo: validate simulation id uniqueness
+        }
+
+        @Override
         void validateNewSimulationArguments() {
-            // todo: validate simulation id is unique
             checkArgument(rowNum > 0 && colNum > 0,
                     "Board dimensions must be positive.");
             checkArgument(beaconsNum > 0 && observersNum > 0,
@@ -41,7 +45,6 @@ public class TracingSimulation extends AbstractSimulation {
 
         @Override
         void validateRestoredSimulationArguments() {
-            // todo: validate simulation id is unique
             checkNotNull(realBoard);
             checkNotNull(resolver);
             checkArgument(resolver instanceof GlobalResolver,
@@ -88,6 +91,7 @@ public class TracingSimulation extends AbstractSimulation {
         @Override
         public AbstractSimulation buildNew() {
             validateNewSimulationArguments();
+            writeSimulationMetadata();
             this.realBoard = new RealBoard(this.rowNum, this.colNum);
             this.resolver = new GlobalResolver(this.rowNum, this.colNum);
             initializeBeacons();
