@@ -69,11 +69,12 @@ public abstract class AbstractSimulation {
      */
     void beaconsToObservers() {
         for (Beacon beacon : beacons) {
+            Transmission transmission = beacon.transmit();
             for (Observer observer : observers) {
                 if (observer.isAwake()) {
                     double distance = distance(beacon.getLocation(), observer.getLocation());
                     if (distance <= radius) {
-                        observer.observe(beacon.transmit());
+                        observer.observe(transmission);
                     }
                 }
             }
