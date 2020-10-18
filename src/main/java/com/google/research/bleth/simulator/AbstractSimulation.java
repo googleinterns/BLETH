@@ -127,16 +127,6 @@ public abstract class AbstractSimulation {
         protected int awakenessDuration;
 
         /**
-         * Set simulation id.
-         * @param id is a unique simulation id.
-         * @return this, to provide chaining.
-         */
-        public Builder setId(String id) {
-            this.id = id;
-            return this;
-        }
-
-        /**
          * Set number of rows in simulation.
          * @param rowNum is the number of rows in simulation.
          * @return this, to provide chaining.
@@ -173,6 +163,16 @@ public abstract class AbstractSimulation {
          */
         public Builder setObserversNum(int observersNum) {
             this.observersNum = observersNum;
+            return this;
+        }
+
+        /**
+         * Set maximum number of rounds in simulation as the index of the last simulation round.
+         * @param maxNumberOfRounds is the maximum number of rounds in simulation (index of last round).
+         * @return this, to provide chaining.
+         */
+        public Builder setMaxNumberOfRounds(int maxNumberOfRounds) {
+            this.maxNumberOfRounds = maxNumberOfRounds;
             return this;
         }
 
@@ -219,66 +219,6 @@ public abstract class AbstractSimulation {
         }
 
         /**
-         * Set initial round index.
-         * @param currentRound is the round index to start the new simulation run from.
-         * @return this, to provide chaining.
-         */
-        public Builder setCurrentRound(int currentRound) {
-            this.currentRound = currentRound;
-            return this;
-        }
-
-        /**
-         * Set maximum number of rounds in simulation as the index of the last simulation round.
-         * @param maxNumberOfRounds is the maximum number of rounds in simulation (index of last round).
-         * @return this, to provide chaining.
-         */
-        public Builder setMaxNumberOfRounds(int maxNumberOfRounds) {
-            this.maxNumberOfRounds = maxNumberOfRounds;
-            return this;
-        }
-
-        /**
-         * Set initial real board of simulation.
-         * @param realBoard is the real board.
-         * @return this, to provide chaining.
-         */
-        public Builder setRealBoard(RealBoard realBoard) {
-            this.realBoard = realBoard;
-            return this;
-        }
-
-        /**
-         * Set simulation resolver.
-         * @param resolver is the resolver.
-         * @return this, to provide chaining.
-         */
-        public Builder setResolver(IResolver resolver) {
-            this.resolver = resolver;
-            return this;
-        }
-
-        /**
-         * Set list of beacons associated with the simulation.
-         * @param beacons is the list of beacons.
-         * @return this, to provide chaining.
-         */
-        public Builder setBeacons(List<Beacon> beacons) {
-            this.beacons = beacons;
-            return this;
-        }
-
-        /**
-         * Set list of observers associated with the simulation.
-         * @param observers is the list of observers.
-         * @return this, to provide chaining.
-         */
-        public Builder setObservers(List<Observer> observers) {
-            this.observers = observers;
-            return this;
-        }
-
-        /**
          * Set the beacons' movement strategy.
          * @param beaconMovementStrategy is the movement strategy for all beacons.
          * @return this, to provide chaining.
@@ -304,12 +244,7 @@ public abstract class AbstractSimulation {
         /**
          * Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}.
          */
-        abstract void validateNewSimulationArguments();
-
-        /**
-         * Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildRestored()}.
-         */
-        abstract void validateRestoredSimulationArguments();
+        abstract void validateArguments();
 
         /**
          * Create and initialize simulation observers in random initial locations using a factory, and store them in observers container.
@@ -330,13 +265,7 @@ public abstract class AbstractSimulation {
          * Construct a new simulation object.
          * @return a new Simulation object constructed with the builder parameters.
          */
-        public abstract AbstractSimulation buildNew();
-
-        /**
-         * Construct a restored simulation object.
-         * @return a new Simulation object constructed with the builder parameters.
-         */
-        public abstract AbstractSimulation buildRestored();
+        public abstract AbstractSimulation build();
     }
 
     // A protected constructor used by the concrete simulation classes' constructors.

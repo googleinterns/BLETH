@@ -25,7 +25,7 @@ public class TracingSimulation extends AbstractSimulation {
         }
 
         @Override
-        void validateNewSimulationArguments() {
+        void validateArguments() {
             checkArgument(rowNum > 0 && colNum > 0,
                     "Board dimensions must be positive.");
             checkArgument(beaconsNum > 0 && observersNum > 0,
@@ -41,26 +41,6 @@ public class TracingSimulation extends AbstractSimulation {
             checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
             checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
             checkNotNull(awakenessStrategyType, "No awakeness strategy type has been set.");
-        }
-
-        @Override
-        void validateRestoredSimulationArguments() {
-            checkNotNull(realBoard);
-            checkNotNull(resolver);
-            checkArgument(resolver instanceof GlobalResolver,
-                    "Tracing simulation resolver must be a global resolver.");
-            checkArgument(realBoard.getRowNum() == resolver.getBoard().getRowNum() &&
-                            realBoard.getColNum() == resolver.getBoard().getColNum(),
-                    "Real and estimated board dimensions must agree.");
-            checkArgument(!beacons.isEmpty() && !observers.isEmpty(),
-                    "Number of beacons and number of observers must be positive.");
-            checkArgument(radius > 0,
-                    "Transmission radius must be positive.");
-            checkArgument(currentRound >= 0,
-                    "Current round index must be non-negative.");
-            checkArgument(currentRound <= maxNumberOfRounds,
-                    "Current round index must be less of equal to the index of last round " +
-                            "(i.e. max number of rounds).");
         }
 
         @Override
@@ -89,23 +69,13 @@ public class TracingSimulation extends AbstractSimulation {
         }
 
         @Override
-        public AbstractSimulation buildNew() {
-            validateNewSimulationArguments();
-            writeSimulationMetadata();
+        public AbstractSimulation build() {
+            validateArguments();
             this.realBoard = new RealBoard(this.rowNum, this.colNum);
             this.resolver = new GlobalResolver(this.rowNum, this.colNum);
             initializeBeacons();
             initializeObservers();
-            return new TracingSimulation(this);
-        }
-
-        @Override
-        public AbstractSimulation buildRestored() {
-            validateRestoredSimulationArguments();
-            this.rowNum = this.realBoard.getRowNum();
-            this.colNum = this.realBoard.getColNum();
-            this.beaconsNum = beacons.size();
-            this.observersNum = observers.size();
+            writeSimulationMetadata();
             return new TracingSimulation(this);
         }
     }
