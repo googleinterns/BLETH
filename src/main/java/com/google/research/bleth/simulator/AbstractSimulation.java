@@ -100,12 +100,7 @@ public abstract class AbstractSimulation {
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() { }
 
-    /**
-     * An abstract builder class designed to separate the construction of a simulation from its representation.
-     * Designated for:
-     * - Construction of a new simulation, based on parameters given by an end-user.
-     * - Construction of a restored simulation, based on data read from the db.
-     */
+    /** An abstract builder class designed to separate the construction of a simulation from its representation. */
     public static abstract class Builder {
 
         protected String id;
@@ -241,9 +236,7 @@ public abstract class AbstractSimulation {
         /** Write simulation metadata to db. */
         abstract void writeSimulationMetadata();
 
-        /**
-         * Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}.
-         */
+        /** Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}. */
         abstract void validateArguments();
 
         /**
