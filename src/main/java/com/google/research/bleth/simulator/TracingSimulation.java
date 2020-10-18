@@ -21,7 +21,7 @@ public class TracingSimulation extends AbstractSimulation {
 
         @Override
         void writeSimulationMetadata() {
-            // todo: validate simulation id uniqueness
+            // todo: write metadata and assign a unique simulation id
         }
 
         @Override
