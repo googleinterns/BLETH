@@ -4,63 +4,72 @@ import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TracingSimulationIT {
+
     private static final IMovementStrategy MOVE_UP = new UpMovementStrategy();
     private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
 
-    private static final String SIMULATION_ID = "test-sim-id-1";
     private static final int BOARD_DIMENSION_EQUALS_TWO = 2;
-    private static final int MAX_ROUNDS_EQUALS_ONE = 1;
-    private static final int CURRENT_ROUND_EQUALS_ZERO = 0;
+    private static final int MAX_ROUNDS_EQUALS_TWO = 2;
+    private static final int NUMBER_OF_BEACONS_EQUALS_ONE = 1;
+    private static final int NUMBER_OF_OBSERVERS_EQUALS_ONE = 1;
     private static final double RADIUS_EQUALS_ONE = 1.0;
-
-    private static final Location ZERO_ON_ZERO_LOCATION = new Location(0, 0);
-    private static final Location ONE_ON_ZERO_LOCATION = new Location(1, 0);
-
-    @Mock
-    private GlobalResolver resolver;
+    private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
+    private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
+    private static final AwakenessStrategyFactory.Type FIXES_AWAKENESS_STRATEGY_TYPE =
+            AwakenessStrategyFactory.Type.FIXED;
 
     @Test
     public void runSimulationSingleRoundVerifyAgentsLocations() {
-        // Create board, resolver and agents.
-        RealBoard realBoard = new RealBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
-        EstimatedBoard estimatedBoard = new EstimatedBoard(BOARD_DIMENSION_EQUALS_TWO, BOARD_DIMENSION_EQUALS_TWO);
-        Mockito.when(resolver.getBoard()).thenReturn(estimatedBoard);
-        ArrayList<Beacon> beacons = new ArrayList<>();
-        ArrayList<Observer> observers = new ArrayList<>();
-
-        BeaconFactory beaconFactory = new BeaconFactory();
-        ObserverFactory observerFactory = new ObserverFactory();
-        AwakenessStrategyFactory awakenessStrategyFactory = new AwakenessStrategyFactory(AwakenessStrategyFactory.Type.FIXED);
-        Beacon beacon = beaconFactory.createBeacon(ONE_ON_ZERO_LOCATION, MOVE_UP, realBoard);
-        Observer observer = observerFactory.createObserver(ZERO_ON_ZERO_LOCATION, STATIONARY, resolver,
-                realBoard, awakenessStrategyFactory.createStrategy(2, 1));
-
-        beacons.add(beacon);
-        observers.add(observer);
-
-        // Create simulation.
+        // Create new simulation.
         AbstractSimulation simulation = new TracingSimulation.Builder()
-                .setId(SIMULATION_ID)
-                .setCurrentRound(CURRENT_ROUND_EQUALS_ZERO)
-                .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_ONE)
+                .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
+                .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
+                .setColNum(BOARD_DIMENSION_EQUALS_TWO)
+                .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_ONE)
+                .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_ONE)
                 .setRadius(RADIUS_EQUALS_ONE)
-                .setRealBoard(realBoard)
-                .setResolver(resolver)
-                .setBeacons(beacons)
-                .setObservers(observers)
-                .buildRestored();
+                .setBeaconMovementStrategy(MOVE_UP)
+                .setObserverMovementStrategy(STATIONARY)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE)
+                .build();
 
+        // Find agents and calculate their expected location after a single round.
+        Location beaconInitialLocation = findAgent(simulation.getBoard(), "Beacon");
+        Location observerInitialLocation = findAgent(simulation.getBoard(), "Observer");
+        Location beaconExpectedLocation = predictLocationAfterMoveUp(beaconInitialLocation);
+        Location observerExpectedLocation = observerInitialLocation;
+
+        // Run single-rounded simulation and find agents again.
         simulation.run();
+        Location beaconActualLocation = findAgent(simulation.getBoard(), "Beacon");
+        Location observerActualLocation = findAgent(simulation.getBoard(), "Observer");
 
-        assertThat(beacon.getLocation()).isEqualTo(ZERO_ON_ZERO_LOCATION);
-        assertThat(observer.getLocation()).isEqualTo(ZERO_ON_ZERO_LOCATION);
+        assertThat(beaconActualLocation).isEqualTo(beaconExpectedLocation);
+        assertThat(observerActualLocation).isEqualTo(observerExpectedLocation);
+    }
+
+    private Location findAgent(Board board, String type) {
+        for(int row = 0; row < board.getRowNum(); row++) {
+            for(int col = 0; col < board.getColNum(); col++) {
+                Location loc = new Location(row, col);
+                for(IAgent agent : board.getAgentsOnLocation(loc)) {
+                    if (agent.getId() == 0 && agent.getType().equals(type)) {
+                        return loc;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Location predictLocationAfterMoveUp(Location location) {
+        if(location.row == 0) return location;
+        return new Location(location.row - 1, location.col);
     }
 }
