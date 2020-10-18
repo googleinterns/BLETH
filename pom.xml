@@ -67,6 +67,31 @@
       <artifactId>guava</artifactId>
       <version>11.0.2</version>
     </dependency>
+    <!--appengine-testing-->
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-testing</artifactId>
+      <version>1.9.64</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-stubs</artifactId>
+      <version>1.9.64</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-tools-sdk</artifactId>
+      <version>1.9.64</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client-appengine</artifactId>
+      <version>1.23.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <!-- todo: remove if not needed
@@ -87,27 +112,6 @@
           <deploy.projectId>bleth-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
-      </plugin>
-      <!-- Protocol Buffers -->
-      <plugin>
-        <groupId>com.github.os72</groupId>
-        <artifactId>protoc-jar-maven-plugin</artifactId>
-        <version>3.1.0.1</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <protocVersion>3.1.0</protocVersion>
-              <inputDirectories>
-                <include>src/main/java/com/google/research/bleth/protobuff</include>
-              </inputDirectories>
-              <outputDirectory>src/main/java</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <!-- Integration Tests-->
       <plugin>
