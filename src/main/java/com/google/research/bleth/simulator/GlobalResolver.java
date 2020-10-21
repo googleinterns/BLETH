@@ -21,8 +21,8 @@ public final class GlobalResolver implements IGlobalResolver {
     /**
      * A wrapper method to create new global resolver for a tracing simulation.
      * The new resolver has a board for storing the estimated beacons' locations.
-     * @param rowsNum is number of rows of the simulation's board.
-     * @param colsNum is number of columns of the simulation's board.
+     * @param rowsNum is number of rows of both the simulation's board and the estimated board.
+     * @param colsNum is number of columns of both the simulation's board and the estimated board.
      * @param beacons is a list of the simulation's beacons.
      */
     public static GlobalResolver create(int rowsNum, int colsNum, List<Beacon> beacons) {
