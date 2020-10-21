@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.List;
+
 @RunWith(MockitoJUnitRunner.class)
 public class GlobalResolverTest {
     private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
@@ -66,8 +68,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(ZERO_ON_ZERO_COORDINATE, beacon);
     }
 
     @Test
@@ -81,8 +82,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(ONE_ON_ONE_COORDINATE, beacon);
     }
 
     @Test
@@ -97,8 +97,9 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(firstBeacon.transmit(), secondBeacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(firstBeacon, secondBeacon);
+        assertThat(resolver.getBoard().agentsOnBoard())
+                .containsExactly(ONE_ON_ONE_COORDINATE, firstBeacon,
+                                 ONE_ON_ONE_COORDINATE, secondBeacon);
     }
 
     @Test
@@ -114,8 +115,9 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(secondBeacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstBeacon);
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(secondBeacon);
+        assertThat(resolver.getBoard().agentsOnBoard())
+                .containsExactly(ZERO_ON_ONE_COORDINATE, firstBeacon,
+                                 ONE_ON_ONE_COORDINATE, secondBeacon);
     }
 
     @Test
@@ -130,9 +132,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(TWO_ON_TWO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(ONE_ON_ONE_COORDINATE, beacon);
     }
 
     @Test
@@ -148,8 +148,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(ZERO_ON_ZERO_COORDINATE, beacon);
     }
 
     @Test
@@ -165,9 +164,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(TWO_ON_TWO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(ONE_ON_ONE_COORDINATE, beacon);
     }
 
     @Test
@@ -184,9 +181,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(new Location(2, 1), ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ZERO_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(ONE_ON_ZERO_COORDINATE, beacon);
     }
 
     @Test
@@ -201,7 +196,7 @@ public class GlobalResolverTest {
 
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(TWO_ON_TWO_COORDINATE, beacon);
     }
 
     @Test
@@ -216,7 +211,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(TWO_ON_TWO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(TWO_ON_TWO_COORDINATE, beacon);
     }
 
     @Test
@@ -234,7 +229,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(new Location(4, 4), ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(TWO_ON_TWO_COORDINATE, beacon);
     }
 
     private Beacon createRandomBeaconOnLocation(Location initialLocation, RealBoard realBoard) {

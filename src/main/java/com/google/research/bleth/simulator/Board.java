@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ArrayTable;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -104,7 +105,7 @@ public abstract class Board {
                 locationsToAgents.putAll(new Location(row, col), matrix.get(row, col));
             }
         }
-        return locationsToAgents;
+        return ImmutableListMultimap.copyOf(locationsToAgents);
     }
 
     /** Returns the type of the board, either real or estimated. */

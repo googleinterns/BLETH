@@ -31,23 +31,13 @@ public final class BoardTest{
     }
 
     @Test
-    public void placeAnAgentOnBoardAgentShouldBeOnRightLocation() {
+    public void placeAnAgentOnBoardAgentShouldBeOnRightLocationAndShouldNotBeOnOtherLocations() {
         Board board = new RealBoard(2, 2);
         Mockito.when(firstAgent.moveTo()).thenReturn(ZERO_ON_ZERO_COORDINATE);
 
         board.placeAgent(firstAgent.moveTo(), firstAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(firstAgent);
-    }
-
-    @Test
-    public void placeAnAgentOnBoardAgentShouldNotBeOnOtherLocation() {
-        Board board = new RealBoard(2, 2);
-        Mockito.when(firstAgent.moveTo()).thenReturn(ONE_ON_ONE_COORDINATE);
-
-        board.placeAgent(firstAgent.moveTo(), firstAgent);
-
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
+        assertThat(board.agentsOnBoard()).containsExactly(ZERO_ON_ZERO_COORDINATE, firstAgent);
     }
 
     @Test
@@ -59,8 +49,9 @@ public final class BoardTest{
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(firstAgent);
-        assertThat(board.agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(secondAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ZERO_ON_ZERO_COORDINATE, firstAgent,
+                                 ONE_ON_ONE_COORDINATE, secondAgent);
     }
 
     @Test
@@ -72,7 +63,9 @@ public final class BoardTest{
         board.placeAgent(firstAgent.moveTo(), firstAgent);
         board.placeAgent(secondAgent.moveTo(), secondAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent, secondAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ZERO_ON_ONE_COORDINATE, firstAgent,
+                                 ZERO_ON_ONE_COORDINATE, secondAgent);
     }
 
     @Test
@@ -128,25 +121,14 @@ public final class BoardTest{
     }
 
     @Test
-    public void moveAgentToEmptyLocationAgentShouldBeOnNewLocation() {
+    public void moveAgentToEmptyLocationAgentShouldBeOnNewLocationAndShouldNotBeOnOldLocation() {
         Board board = new RealBoard(2, 2);
         board.placeAgent(ZERO_ON_ZERO_COORDINATE, firstAgent);
         Mockito.when(firstAgent.moveTo()).thenReturn(ZERO_ON_ONE_COORDINATE);
 
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent);
-    }
-
-    @Test
-    public void moveAgentToEmptyLocationAgentShouldNotBeOnOldLocation() {
-        Board board = new RealBoard(2, 2);
-        board.placeAgent(ZERO_ON_ZERO_COORDINATE, firstAgent);
-        Mockito.when(firstAgent.moveTo()).thenReturn(ZERO_ON_ONE_COORDINATE);
-
-        board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
-
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
+        assertThat(board.agentsOnBoard()).containsExactly(ZERO_ON_ONE_COORDINATE, firstAgent);
     }
 
     @Test
@@ -158,7 +140,9 @@ public final class BoardTest{
 
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent, secondAgent);
+        assertThat(board.agentsOnBoard()).
+                containsExactly(ZERO_ON_ONE_COORDINATE, firstAgent,
+                                ZERO_ON_ONE_COORDINATE, secondAgent);
     }
 
     @Test
@@ -170,8 +154,9 @@ public final class BoardTest{
 
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(secondAgent);
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ZERO_ON_ZERO_COORDINATE, secondAgent,
+                                 ZERO_ON_ONE_COORDINATE, firstAgent);
     }
 
     @Test
@@ -182,7 +167,7 @@ public final class BoardTest{
 
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(firstAgent);
+        assertThat(board.agentsOnBoard()).containsExactly(ZERO_ON_ZERO_COORDINATE, firstAgent);
     }
 
     @Test
@@ -305,8 +290,9 @@ public final class BoardTest{
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
         board.moveAgent(ONE_ON_ONE_COORDINATE, secondAgent.moveTo(), secondAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent);
-        assertThat(board.agentsOnBoard().get(ONE_ON_ZERO_COORDINATE)).containsExactly(secondAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ZERO_ON_ONE_COORDINATE, firstAgent,
+                                 ONE_ON_ZERO_COORDINATE, secondAgent);
     }
 
     @Test
@@ -320,7 +306,9 @@ public final class BoardTest{
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
         board.moveAgent(ONE_ON_ONE_COORDINATE, secondAgent.moveTo(), secondAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent, secondAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ZERO_ON_ONE_COORDINATE, firstAgent,
+                                 ZERO_ON_ONE_COORDINATE, secondAgent);
     }
 
     @Test
@@ -334,7 +322,9 @@ public final class BoardTest{
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, secondAgent.moveTo(), secondAgent);
 
-        assertThat(board.agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(firstAgent, secondAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ONE_ON_ONE_COORDINATE, firstAgent,
+                                 ONE_ON_ONE_COORDINATE, secondAgent);
     }
 
     @Test
@@ -348,8 +338,9 @@ public final class BoardTest{
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, secondAgent.moveTo(), secondAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent);
-        assertThat(board.agentsOnBoard().get(ONE_ON_ZERO_COORDINATE)).containsExactly(secondAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ZERO_ON_ONE_COORDINATE, firstAgent,
+                                 ONE_ON_ZERO_COORDINATE, secondAgent);
     }
 
     @Test
@@ -363,7 +354,8 @@ public final class BoardTest{
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, secondAgent.moveTo(), secondAgent);
         board.moveAgent(ZERO_ON_ZERO_COORDINATE, firstAgent.moveTo(), firstAgent);
 
-        assertThat(board.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstAgent);
-        assertThat(board.agentsOnBoard().get(ONE_ON_ZERO_COORDINATE)).containsExactly(secondAgent);
+        assertThat(board.agentsOnBoard())
+                .containsExactly(ZERO_ON_ONE_COORDINATE, firstAgent,
+                                 ONE_ON_ZERO_COORDINATE, secondAgent);
     }
 }
