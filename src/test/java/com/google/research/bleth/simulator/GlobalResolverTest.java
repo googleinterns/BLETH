@@ -66,8 +66,8 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ZERO_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ONE_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).isEmpty();
     }
 
     @Test
@@ -81,8 +81,8 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
     }
 
     @Test
@@ -97,8 +97,8 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(firstBeacon.transmit(), secondBeacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ONE_COORDINATE)).containsExactly(firstBeacon, secondBeacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(firstBeacon, secondBeacon);
     }
 
     @Test
@@ -114,8 +114,8 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ONE_ON_ONE_COORDINATE, ImmutableList.of(secondBeacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(firstBeacon);
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ONE_COORDINATE)).containsExactly(secondBeacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(firstBeacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(secondBeacon);
     }
 
     @Test
@@ -130,9 +130,9 @@ public class GlobalResolverTest {
         resolver.receiveInformation(TWO_ON_TWO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().getAgentsOnLocation(TWO_ON_TWO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).isEmpty();
     }
 
     @Test
@@ -148,8 +148,8 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ZERO_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ONE_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).isEmpty();
     }
 
     @Test
@@ -165,9 +165,9 @@ public class GlobalResolverTest {
         resolver.receiveInformation(TWO_ON_TWO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().getAgentsOnLocation(TWO_ON_TWO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ONE_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).isEmpty();
     }
 
     @Test
@@ -184,9 +184,9 @@ public class GlobalResolverTest {
         resolver.receiveInformation(new Location(2, 1), ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(ZERO_ON_ZERO_COORDINATE)).isEmpty();
-        assertThat(resolver.getBoard().getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(beacon);
-        assertThat(resolver.getBoard().getAgentsOnLocation(TWO_ON_TWO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ZERO_ON_ZERO_COORDINATE)).isEmpty();
+        assertThat(resolver.getBoard().agentsOnBoard().get(ONE_ON_ZERO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).isEmpty();
     }
 
     @Test
@@ -201,7 +201,7 @@ public class GlobalResolverTest {
 
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
     }
 
     @Test
@@ -216,7 +216,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(TWO_ON_TWO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
     }
 
     @Test
@@ -234,7 +234,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(new Location(4, 4), ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        assertThat(resolver.getBoard().getAgentsOnLocation(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
+        assertThat(resolver.getBoard().agentsOnBoard().get(TWO_ON_TWO_COORDINATE)).containsExactly(beacon);
     }
 
     private Beacon createRandomBeaconOnLocation(Location initialLocation, RealBoard realBoard) {

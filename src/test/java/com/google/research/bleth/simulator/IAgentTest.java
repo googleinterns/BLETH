@@ -18,7 +18,7 @@ public abstract class IAgentTest {
         RealBoard realBoard = new RealBoard(2, 2);
         IAgent randomAgent = createRandomAgentOnLocation(ZERO_ON_ONE_COORDINATE, realBoard);
 
-        assertThat(realBoard.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).contains(randomAgent);
+        assertThat(realBoard.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).contains(randomAgent);
     }
 
     @Test
@@ -62,7 +62,7 @@ public abstract class IAgentTest {
 
         randomAgent.move();
 
-        assertThat(realBoard.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
@@ -75,7 +75,7 @@ public abstract class IAgentTest {
 
         randomAgent.move();
 
-        assertThat(realBoard.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.agentsOnBoard().get(ZERO_ON_ONE_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
@@ -92,7 +92,7 @@ public abstract class IAgentTest {
 
         randomAgent.move();
 
-        assertThat(realBoard.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.agentsOnBoard().get(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
@@ -109,7 +109,7 @@ public abstract class IAgentTest {
 
         randomAgent.move();
 
-        assertThat(realBoard.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
+        assertThat(realBoard.agentsOnBoard().get(ONE_ON_ZERO_COORDINATE)).containsExactly(randomAgent);
     }
 
     @Test
@@ -248,7 +248,7 @@ public abstract class IAgentTest {
 
             randomAgent.move();
 
-            assertThat(realBoard.getAgentsOnLocation(randomAgent.getLocation())).containsExactly(randomAgent);
+            assertThat(realBoard.agentsOnBoard().get(randomAgent.getLocation())).containsExactly(randomAgent);
         }
     }
 

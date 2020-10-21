@@ -65,16 +65,6 @@ public abstract class Board {
     }
 
     /**
-     * Create and return an immutable list of all the agents which located on specific location.
-     * @param location is the requested location to retrieve all the agents that located on it.
-     * @return an immutable copy of the list of all agents which located on location.
-     */
-    public List<IAgent> getAgentsOnLocation(Location location) {
-        validateLocation(location);
-        return ImmutableList.copyOf(matrix.get(location.row, location.col));
-    }
-
-    /**
      * Place an agent on board if the given location is valid.
      * @param newLocation is the location where the agent will be placed.
      * @param agent is the Agent which placed on the board.
