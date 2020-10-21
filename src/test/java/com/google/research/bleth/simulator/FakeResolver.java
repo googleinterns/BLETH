@@ -23,7 +23,6 @@ class FakeResolver implements IResolver {
         return transmissions;
     }
 
-    @Override
     public Board getBoard() {
         return null;
     }
