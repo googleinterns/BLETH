@@ -1,7 +1,7 @@
 package com.google.research.bleth.simulator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.stream.Collectors.toMap;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -29,7 +29,7 @@ public final class GlobalResolver implements IGlobalResolver {
         checkNotNull(beacons);
         EstimatedBoard estimatedBoard = new EstimatedBoard(rowsNum, colsNum);
         Map<Transmission, Beacon> transmissionsToBeacons =
-                beacons.stream().collect(toMap(Beacon::transmit, Function.identity()));
+                beacons.stream().collect(toImmutableMap(Beacon::transmit, Function.identity()));
         return new GlobalResolver(estimatedBoard, transmissionsToBeacons);
     }
 
@@ -69,7 +69,7 @@ public final class GlobalResolver implements IGlobalResolver {
 
     private GlobalResolver(EstimatedBoard estimatedBoard, Map<Transmission, Beacon> transmissionsToBeacons) {
         this.estimatedBoard = estimatedBoard;
-        this.transmissionsToBeacons = ImmutableMap.copyOf(transmissionsToBeacons);
+        this.transmissionsToBeacons = transmissionsToBeacons;
     }
 
     private Location estimateNewLocation(Beacon beacon) {
