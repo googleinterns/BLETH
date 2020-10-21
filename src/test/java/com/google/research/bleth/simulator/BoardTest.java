@@ -27,7 +27,7 @@ public final class BoardTest{
     public void newBoardIsEmpty() {
         Board board = new RealBoard(2, 2);
 
-        assertThat(isBoardEmpty(board, 2, 2)).isTrue();
+        assertThat(board.agentsOnBoard()).isEmpty();
     }
 
     @Test
@@ -365,16 +365,5 @@ public final class BoardTest{
 
         assertThat(board.getAgentsOnLocation(ZERO_ON_ONE_COORDINATE)).containsExactly(firstIAgent);
         assertThat(board.getAgentsOnLocation(ONE_ON_ZERO_COORDINATE)).containsExactly(secondIAgent);
-    }
-
-    private boolean isBoardEmpty(Board board, int rowNum, int colNum) {
-        for (int row = 0; row < rowNum; row++) {
-            for (int col = 0; col < colNum; col++) {
-                if (!board.getAgentsOnLocation(new Location(row, col)).isEmpty()) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

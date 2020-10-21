@@ -3,12 +3,15 @@ package com.google.research.bleth.simulator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 
 /** A container for all the agents, representing their locations, either real or estimated. */
 public abstract class Board {
@@ -94,6 +97,27 @@ public abstract class Board {
         validateLocation(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
+    }
+
+    /** Returns the number of rows in the board. */
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    /** Returns the number of columns in the board. */
+    public int getColNum() {
+        return colNum;
+    }
+
+    /** Returns a map that maps to each populated location the agents on this location. */
+    public Multimap<Location, IAgent> agentsOnBoard() {
+        Multimap<Location, IAgent> locationsToAgents = ArrayListMultimap.create();
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < colNum; col++) {
+                locationsToAgents.putAll(new Location(row, col), matrix.get(row, col));
+            }
+        }
+        return locationsToAgents;
     }
 
     /** Returns the type of the board, either real or estimated. */
