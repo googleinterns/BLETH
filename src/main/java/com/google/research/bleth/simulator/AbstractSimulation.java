@@ -272,7 +272,7 @@ public abstract class AbstractSimulation {
         this.observers = ImmutableList.copyOf(builder.observers);
     }
 
-    private double distance(Location firstLocation, Location secondLocation) {
+    private static double distance(Location firstLocation, Location secondLocation) {
         return (double) (Math.abs(firstLocation.row - secondLocation.row) + Math.abs(firstLocation.col - secondLocation.col));
     }
 }
