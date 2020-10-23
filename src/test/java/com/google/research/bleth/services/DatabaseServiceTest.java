@@ -113,10 +113,11 @@ public class DatabaseServiceTest {
         realBoard.placeAgent(ZERO_ON_ZERO_COORDINATE, beacon);
         realBoard.placeAgent(ONE_ON_ONE_COORDINATE, observer);
         String firstSimulationId = db.writeMetadata(firstSimulationBuilder);
-        String expectedBoardState = GSON.toJson(toStaticBoardState(realBoard));
+        String expectedBoardState = GSON.toJson(toAgentsIdsTable(realBoard));
 
         db.writeBoardState(firstSimulationId, ZERO_ROUND, realBoard);
         String boardState = db.readRealBoardState(firstSimulationId, ZERO_ROUND);
+
         assertThat(boardState).isEqualTo(expectedBoardState);
     }
 
@@ -127,10 +128,11 @@ public class DatabaseServiceTest {
         estimatedBoard.placeAgent(ZERO_ON_ZERO_COORDINATE, beacon);
         estimatedBoard.placeAgent(ONE_ON_ONE_COORDINATE, observer);
         String firstSimulationId = db.writeMetadata(firstSimulationBuilder);
-        String expectedBoardState = GSON.toJson(toStaticBoardState(estimatedBoard));
+        String expectedBoardState = GSON.toJson(toAgentsIdsTable(estimatedBoard));
 
         db.writeBoardState(firstSimulationId, ZERO_ROUND, estimatedBoard);
         String boardState = db.readEstimatedBoardState(firstSimulationId, ZERO_ROUND);
+
         assertThat(boardState).isEqualTo(expectedBoardState);
     }
 
@@ -225,7 +227,7 @@ public class DatabaseServiceTest {
         helper.tearDown();
     }
 
-    private ArrayTable<Integer, Integer, ArrayList<String>> toStaticBoardState(Board board) {
+    private ArrayTable<Integer, Integer, ArrayList<String>> toAgentsIdsTable(Board board) {
         int rowNum = board.getRowNum();
         int colNum = board.getColNum();
         ArrayTable<Integer, Integer, ArrayList<String>> boardState = createEmptyTable(rowNum, colNum);
