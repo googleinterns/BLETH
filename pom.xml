@@ -95,9 +95,9 @@
   </dependencies>
 
   <!-- todo: remove if not needed
-  <buildNew>
+  <build>
     <finalName>bleth-2020</finalName>
-  </buildNew>
+  </build>
   -->
 
   <build>
