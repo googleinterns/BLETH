@@ -16,7 +16,7 @@ public class ObserverTest extends IAgentTest {
     private static final BeaconFactory BEACON_FACTORY = new BeaconFactory();
     private static final ObserverFactory OBSERVER_FACTORY = new ObserverFactory();
 
-    private final IResolver resolver = new FakeResolver();
+    private final FakeResolver resolver = new FakeResolver();
 
     @Test
     public void createObserverOutsideTheBoardThrowsException() {
@@ -37,7 +37,7 @@ public class ObserverTest extends IAgentTest {
 
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+        assertThat((resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ObserverTest extends IAgentTest {
 
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+        assertThat((resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class ObserverTest extends IAgentTest {
 
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).isEmpty();
+        assertThat((resolver).getTransmissions()).isEmpty();
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ObserverTest extends IAgentTest {
 
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).isEmpty();
+        assertThat((resolver).getTransmissions()).isEmpty();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(newBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+        assertThat((resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(newBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+        assertThat((resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(newBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+        assertThat((resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(newBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(newBeaconTransmission);
+        assertThat((resolver).getTransmissions()).containsExactly(newBeaconTransmission);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(newBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(newBeaconTransmission);
+        assertThat((resolver).getTransmissions()).containsExactly(newBeaconTransmission);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(firstBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(firstBeaconTransmission);
+        assertThat((resolver).getTransmissions()).containsExactly(firstBeaconTransmission);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(secondBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
+        assertThat((resolver).getObserverLocation()).isEqualTo(randomObserver.getLocation());
     }
 
     @Test
@@ -183,7 +183,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(secondBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(firstBeaconTransmission, secondBeaconTransmission);
+        assertThat((resolver).getTransmissions()).containsExactly(firstBeaconTransmission, secondBeaconTransmission);
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.passInformationToResolver();
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).isEmpty();
+        assertThat((resolver).getTransmissions()).isEmpty();
     }
 
     @Test
@@ -214,7 +214,7 @@ public class ObserverTest extends IAgentTest {
         randomObserver.observe(secondBeaconTransmission);
         randomObserver.passInformationToResolver();
 
-        assertThat(((FakeResolver) resolver).getTransmissions()).containsExactly(secondBeaconTransmission);
+        assertThat((resolver).getTransmissions()).containsExactly(secondBeaconTransmission);
     }
 
     Observer createRandomAgentOnLocation(Location initialLocation, RealBoard owner) {
