@@ -152,14 +152,14 @@ public class DatabaseService {
         Query.CompositeFilter composedFilter = Query.CompositeFilterOperator.and(filterBySimulationId, filterByRound);
 
         // Create query and return result.
-        Query boardStateBySimulationAndRoundQuery = new Query(entityKind).setFilter(composedFilter);
-        PreparedQuery pq = datastore.prepare(boardStateBySimulationAndRoundQuery);
+        Query boardStateBySimulationIdAndRoundQuery = new Query(entityKind).setFilter(composedFilter);
+        PreparedQuery boardStateBySimulationIdAndRoundPreparedQuery = datastore.prepare(boardStateBySimulationIdAndRoundQuery);
 
         // Return encoded board state (or null if round exceeds simulation's maximum number of rounds).
         if (!isRoundExistsInSimulation(simulationId, round)) {
             return null;
         }
-        return toJsonTable(pq.asIterable(), simulationId);
+        return toJsonTable(boardStateBySimulationIdAndRoundPreparedQuery.asIterable(), simulationId);
     }
 
     private String toJsonTable(Iterable<Entity> boardStateEntities, String simulationId) {
@@ -208,9 +208,9 @@ public class DatabaseService {
         Key simulationKey = KeyFactory.stringToKey(simulationId);
         Query.Filter filterBySimulationId =
                 new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, simulationKey);
-        Query q = new Query("Simulation").setFilter(filterBySimulationId);
-        PreparedQuery pq = datastore.prepare(q);
-        return pq.asSingleEntity();
+        Query simulationIdQuery = new Query("Simulation").setFilter(filterBySimulationId);
+        PreparedQuery simulationIdPreparedQuery = datastore.prepare(simulationIdQuery);
+        return simulationIdPreparedQuery.asSingleEntity();
     }
 
     private boolean isRoundExistsInSimulation(String simulationId, int round) {
