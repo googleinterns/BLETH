@@ -137,7 +137,7 @@ public class DatabaseServiceTest {
     }
 
     @Test
-    public void writeOnlyRealBoardThenReadEstimatedBoard_shouldGetEmptyBoard() {
+    public void writeOnlyRealBoardThenReadEstimatedBoard_shouldGetEmptyBoardJson() {
         DatabaseService db = DatabaseService.getInstance();
         RealBoard realBoard = new RealBoard(BOARD_DIMENSION, BOARD_DIMENSION);
         realBoard.placeAgent(ZERO_ON_ZERO_COORDINATE, beacon);
@@ -151,7 +151,7 @@ public class DatabaseServiceTest {
     }
 
     @Test
-    public void writeRealBoardThenReadRealBoardWithDifferentSimulationId_shouldGetEmptyBoard() {
+    public void writeRealBoardThenReadRealBoardWithDifferentSimulationId_shouldGetEmptyBoardJson() {
         DatabaseService db = DatabaseService.getInstance();
         RealBoard realBoard = new RealBoard(BOARD_DIMENSION, BOARD_DIMENSION);
         realBoard.placeAgent(ZERO_ON_ZERO_COORDINATE, beacon);
@@ -166,7 +166,7 @@ public class DatabaseServiceTest {
     }
 
     @Test
-    public void writeEstimatedBoardThenReadEstimatedBoardWithDifferentExistingRound_shouldGetEmptyBoard() {
+    public void writeEstimatedBoardThenReadEstimatedBoardWithDifferentExistingRound_shouldGetEmptyBoardJson() {
         DatabaseService db = DatabaseService.getInstance();
         EstimatedBoard estimatedBoard = new EstimatedBoard(BOARD_DIMENSION, BOARD_DIMENSION);
         estimatedBoard.placeAgent(ZERO_ON_ZERO_COORDINATE, beacon);
