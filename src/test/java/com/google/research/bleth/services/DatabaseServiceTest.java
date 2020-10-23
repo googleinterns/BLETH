@@ -178,7 +178,7 @@ public class DatabaseServiceTest {
     }
 
     @Test
-    public void writeEstimatedBoardThenReadEstimatedBoardWithDifferentNonExistingRound_shouldGetNull() {
+    public void writeEstimatedBoardThenReadEstimatedBoardWithDifferentNonExistingRound_shouldThrowException() {
         DatabaseService db = DatabaseService.getInstance();
         EstimatedBoard estimatedBoard = new EstimatedBoard(BOARD_DIMENSION, BOARD_DIMENSION);
         estimatedBoard.placeAgent(ZERO_ON_ZERO_COORDINATE, beacon);
@@ -187,7 +187,9 @@ public class DatabaseServiceTest {
 
         db.writeBoardState(firstSimulationId, ZERO_ROUND, estimatedBoard);
 
-        assertThat(db.readRealBoardState(firstSimulationId, MAX_NUMBER_OF_ROUNDS)).isNull();
+        assertThrows(ExceedingRoundException.class, () -> {
+            db.readRealBoardState(firstSimulationId, MAX_NUMBER_OF_ROUNDS);
+        });
     }
 
     @Test

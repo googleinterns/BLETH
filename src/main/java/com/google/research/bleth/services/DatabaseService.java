@@ -86,15 +86,10 @@ public class DatabaseService {
      * @param board is the board to write its state to the db.
      */
     public void writeBoardState(String simulationId, int round, Board board) {
-        // If the provided round should not exist in the provided simulation, throw an exception.
         String existingBoardState = readBoardState(simulationId, round, board.getType());
         String emptyJsonTable = gson.toJson(createEmptyTable(simulationId));
-        if (existingBoardState == null) {
-            throw new ExceedingRoundException("Provided round " + round +
-                    " exceeds maximum number of rounds of simulation " + simulationId);
-        }
         // If the same simulationId and round already recorded in the db, throw an exception.
-        else if (!existingBoardState.equals(emptyJsonTable)) {
+        if (!existingBoardState.equals(emptyJsonTable)) {
             throw new BoardStateAlreadyExistsException(board.getType() + "State with simulationId "
                     + simulationId + " at round " + round + " already exists.");
         }
@@ -142,6 +137,12 @@ public class DatabaseService {
     }
 
     private String readBoardState(String simulationId, int round, String entityKind) {
+        // throw an exception if provided round exceeds simulation's maximum number of rounds.
+        if (!isRoundExistsInSimulation(simulationId, round)) {
+            throw new ExceedingRoundException("Provided round " + round +
+                    " exceeds maximum number of rounds of simulation " + simulationId);
+        }
+
         // Set simple predicates.
         Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate("simulationId", Query.FilterOperator.EQUAL, simulationId);
@@ -155,10 +156,7 @@ public class DatabaseService {
         Query boardStateBySimulationIdAndRoundQuery = new Query(entityKind).setFilter(composedFilter);
         PreparedQuery boardStateBySimulationIdAndRoundPreparedQuery = datastore.prepare(boardStateBySimulationIdAndRoundQuery);
 
-        // Return encoded board state (or null if round exceeds simulation's maximum number of rounds).
-        if (!isRoundExistsInSimulation(simulationId, round)) {
-            return null;
-        }
+        // Return encoded board state.
         return toJsonTable(boardStateBySimulationIdAndRoundPreparedQuery.asIterable(), simulationId);
     }
 
