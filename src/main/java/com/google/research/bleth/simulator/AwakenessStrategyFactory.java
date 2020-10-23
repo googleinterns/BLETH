@@ -16,6 +16,10 @@ public class AwakenessStrategyFactory {
     private Random rand = new Random(); // used for generating the initial awakeness time
     private Type type;
 
+    /**
+     * Create new AwakenessStrategyFactory.
+     * @param type is the type of the awakeness strategies generated using the created factory.
+     */
     public AwakenessStrategyFactory(Type type) {
         this.type = type;
     }
