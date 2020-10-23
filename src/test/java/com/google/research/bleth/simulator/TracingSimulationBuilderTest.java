@@ -23,17 +23,13 @@ public class TracingSimulationBuilderTest {
     private static final AwakenessStrategyFactory.Type FIXES_AWAKENESS_STRATEGY_TYPE =
             AwakenessStrategyFactory.Type.FIXED;
 
-    private static final int ILLEGAL_BOARD_DIMENSION = 0;
-    private static final int ILLEGAL_NUMBER_OF_AGENTS = 0;
-    private static final int ILLEGAL_MAX_ROUNDS = 0;
-    private static final int ILLEGAL_RADIUS = -1;
-
     @Test
     public void setIllegalBoardDimensionInBuilderShouldThrowException() {
+        final int illegalBoardDimension = 0;
         AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
-                .setColNum(ILLEGAL_BOARD_DIMENSION)
+                .setColNum(illegalBoardDimension)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
                 .setRadius(RADIUS_EQUALS_ONE)
@@ -66,8 +62,9 @@ public class TracingSimulationBuilderTest {
 
     @Test
     public void setIllegalMaxRoundsInBuilderShouldThrowException() {
+        final int illegalMaxRounds = 0;
         AbstractSimulation.Builder builder = new TracingSimulation.Builder()
-                .setMaxNumberOfRounds(ILLEGAL_MAX_ROUNDS)
+                .setMaxNumberOfRounds(illegalMaxRounds)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
@@ -84,13 +81,14 @@ public class TracingSimulationBuilderTest {
 
     @Test
     public void setIllegalRadiusInBuilderShouldThrowException() {
+        final int illegalRadius = -1;
         AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(ILLEGAL_RADIUS)
+                .setRadius(illegalRadius)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -102,12 +100,13 @@ public class TracingSimulationBuilderTest {
 
     @Test
     public void setIllegalNumberOfAgentsInBuilderShouldThrowException() {
+        final int illegalNumberOfAgents = 0;
         AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
-                .setObserversNum(ILLEGAL_NUMBER_OF_AGENTS)
+                .setObserversNum(illegalNumberOfAgents)
                 .setRadius(RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
