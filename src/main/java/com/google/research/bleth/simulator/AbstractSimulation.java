@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class AbstractSimulation {
 
     private final String id;
-    private int currentRound;
+    private int currentRound = 0;
     private final int maxNumberOfRounds;
     private RealBoard board;
     protected final ImmutableList<Beacon> beacons;
@@ -29,11 +29,9 @@ public abstract class AbstractSimulation {
 
     /** Run entire simulation logic, including writing data to db. */
     public void run() {
-        if (currentRound == 0) {
-            writeRoundState(); // round 0 is the initial simulation state
-            currentRound++;
-        }
-        while (currentRound <= maxNumberOfRounds) {
+        writeRoundState(); // round 0 is the initial simulation state
+        currentRound++;
+        while (currentRound < maxNumberOfRounds) {
             moveAgents();
             updateObserversAwaknessState();
             beaconsToObservers();
@@ -104,7 +102,6 @@ public abstract class AbstractSimulation {
     public static abstract class Builder {
 
         protected String id;
-        protected int currentRound = 0;
         protected int maxNumberOfRounds;
         protected int rowNum;
         protected int colNum;
