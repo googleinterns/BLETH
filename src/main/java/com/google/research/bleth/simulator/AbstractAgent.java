@@ -3,8 +3,8 @@ package com.google.research.bleth.simulator;
 /** Represent both observer and beacon. Responsible for the agents' movement. */
 public abstract class AbstractAgent implements IAgent {
     private final IMovementStrategy IMovementStrategy;
-    private Location realLocation; // the agent's location on the board, changed each time the agent moves.
     private final IAgentOwner owner;
+    private Location realLocation; // the agent's location on the board, changed each time the agent moves.
 
     /**
      * @param initialLocation is the location on board where the agent is placed.
