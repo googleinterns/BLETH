@@ -16,7 +16,7 @@ public class TracingSimulationBuilderTest {
     private static final int MAX_ROUNDS_EQUALS_TWO = 2;
     private static final int NUMBER_OF_BEACONS_EQUALS_TWO = 2;
     private static final int NUMBER_OF_OBSERVERS_EQUALS_TWO = 2;
-    private static final double RADIUS_EQUALS_ONE = 1.0;
+    private static final double TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE = 1.0;
     private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
     private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
     private static final int AWAKENESS_DURATION_EQUALS_THREE = 3;
@@ -32,7 +32,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(illegalBoardDimension)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -50,7 +50,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -69,7 +69,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -81,14 +81,14 @@ public class TracingSimulationBuilderTest {
 
     @Test
     public void setIllegalRadiusInBuilderShouldThrowException() {
-        final int illegalRadius = -1;
+        final int illegalTransmissionThresholdRadius = -1;
         AbstractSimulation.Builder builder = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(MAX_ROUNDS_EQUALS_TWO)
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(illegalRadius)
+                .setTransmissionThresholdRadius(illegalTransmissionThresholdRadius)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -107,7 +107,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(illegalNumberOfAgents)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -125,7 +125,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
@@ -142,7 +142,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
@@ -159,7 +159,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
@@ -175,7 +175,7 @@ public class TracingSimulationBuilderTest {
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -192,7 +192,7 @@ public class TracingSimulationBuilderTest {
                 .setRowNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
@@ -209,7 +209,7 @@ public class TracingSimulationBuilderTest {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_TWO)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_TWO)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)

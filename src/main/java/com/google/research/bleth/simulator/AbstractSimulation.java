@@ -19,7 +19,7 @@ public abstract class AbstractSimulation {
     protected final ImmutableList<Beacon> beacons;
     protected final ImmutableList<Observer> observers;
     private IResolver resolver;
-    private final double radius;
+    private final double transmissionThresholdRadius;
     private HashMap<String, Double> stats = new HashMap<>();
 
     /** Returns the simulation's real board. */
@@ -71,7 +71,7 @@ public abstract class AbstractSimulation {
             for (Observer observer : observers) {
                 if (observer.isAwake()) {
                     double distance = distance(beacon.getLocation(), observer.getLocation());
-                    if (distance <= radius) {
+                    if (distance <= transmissionThresholdRadius) {
                         observer.observe(transmission);
                     }
                 }
@@ -114,7 +114,7 @@ public abstract class AbstractSimulation {
         protected IMovementStrategy beaconMovementStrategy;
         protected IMovementStrategy observerMovementStrategy;
         protected AwakenessStrategyFactory.Type awakenessStrategyType;
-        protected double radius;
+        protected double transmissionThresholdRadius;
         protected int awakenessCycle;
         protected int awakenessDuration;
 
@@ -170,11 +170,11 @@ public abstract class AbstractSimulation {
 
         /**
          * Set the threshold transmission radius.
-         * @param radius is the threshold transmission radius
+         * @param transmissionThresholdRadius is the threshold transmission radius
          * @return this, to provide chaining.
          */
-        public Builder setRadius(double radius) {
-            this.radius = radius;
+        public Builder setTransmissionThresholdRadius(double transmissionThresholdRadius) {
+            this.transmissionThresholdRadius = transmissionThresholdRadius;
             return this;
         }
 
@@ -264,7 +264,7 @@ public abstract class AbstractSimulation {
         this.maxNumberOfRounds = builder.maxNumberOfRounds;
         this.board = builder.realBoard;
         this.resolver = builder.resolver;
-        this.radius = builder.radius;
+        this.transmissionThresholdRadius = builder.transmissionThresholdRadius;
         this.beacons = ImmutableList.copyOf(builder.beacons);
         this.observers = ImmutableList.copyOf(builder.observers);
     }

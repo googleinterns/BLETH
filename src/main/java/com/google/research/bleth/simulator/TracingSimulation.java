@@ -34,8 +34,8 @@ public class TracingSimulation extends AbstractSimulation {
                     "Both awakeness cycle and duration must be positive.");
             checkArgument(awakenessCycle >= awakenessDuration,
                     "Awakeness cycle must be greater or equal to duration.");
-            checkArgument(radius > 0,
-                    "Transmission radius must be positive.");
+            checkArgument(transmissionThresholdRadius > 0,
+                    "Transmission threshold radius must be positive.");
             checkArgument(maxNumberOfRounds > 0,
                     "Maximum number of rounds must be positive.");
             checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");

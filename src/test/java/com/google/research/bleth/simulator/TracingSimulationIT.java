@@ -16,7 +16,7 @@ public class TracingSimulationIT {
     private static final int MAX_ROUNDS_EQUALS_TWO = 2;
     private static final int NUMBER_OF_BEACONS_EQUALS_ONE = 1;
     private static final int NUMBER_OF_OBSERVERS_EQUALS_ONE = 1;
-    private static final double RADIUS_EQUALS_ONE = 1.0;
+    private static final double TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE = 1.0;
     private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
     private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
     private static final AwakenessStrategyFactory.Type FIXES_AWAKENESS_STRATEGY_TYPE =
@@ -31,7 +31,7 @@ public class TracingSimulationIT {
                 .setColNum(BOARD_DIMENSION_EQUALS_TWO)
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_ONE)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_ONE)
-                .setRadius(RADIUS_EQUALS_ONE)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
                 .setBeaconMovementStrategy(MOVE_UP)
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
