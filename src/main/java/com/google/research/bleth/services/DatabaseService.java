@@ -87,7 +87,7 @@ public class DatabaseService {
      */
     public void writeBoardState(String simulationId, int round, Board board) {
         String existingBoardState = readBoardState(simulationId, round, board.getType());
-        String emptyJsonTable = gson.toJson(createEmptyTable(simulationId));
+        String emptyJsonTable = gson.toJson(createEmptyTableWithDimensionsOf(simulationId));
         // If the same simulationId and round already recorded in the db, throw an exception.
         if (!existingBoardState.equals(emptyJsonTable)) {
             throw new BoardStateAlreadyExistsException(board.getType() + "State with simulationId "
@@ -195,7 +195,7 @@ public class DatabaseService {
         return table;
     }
 
-    private ArrayTable<Integer, Integer, ArrayList<String>> createEmptyTable(String simulationId) {
+    private ArrayTable<Integer, Integer, ArrayList<String>> createEmptyTableWithDimensionsOf(String simulationId) {
         Entity simulationEntity = retrieveSimulationEntity(simulationId);
         int rowNum = ((Long) simulationEntity.getProperty("rowNum")).intValue();
         int colNum = ((Long) simulationEntity.getProperty("colNum")).intValue();
