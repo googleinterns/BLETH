@@ -11,7 +11,7 @@ public class Observer extends AbstractAgent implements IObserver {
 
     private List<Transmission> transmissions = new ArrayList<>(); // contains the transmissions the observer observed in the current round
 
-    /**moveAgent
+    /**
      * Create new observer with consecutive serial number.
      * @param id is a unique ID.
      * @param initialLocation is the location on board where the observer is placed.
