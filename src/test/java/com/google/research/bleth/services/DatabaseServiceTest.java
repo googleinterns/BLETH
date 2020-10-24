@@ -218,7 +218,7 @@ public class DatabaseServiceTest {
         db.writeBoardState(firstSimulationId, ZERO_ROUND, realBoard);
 
         assertThrows(BoardStateAlreadyExistsException.class, () -> {
-            db.writeBoardState(firstSimulationId, 0, realBoard);
+            db.writeBoardState(firstSimulationId, ZERO_ROUND, realBoard);
         });
     }
 
