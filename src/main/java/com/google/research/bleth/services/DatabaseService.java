@@ -36,7 +36,7 @@ public class DatabaseService {
 
     private static DatabaseService instance = null;
     private DatastoreService datastore;
-    private Gson gson = new Gson();
+    private Gson gson = new Gson(); // provides a method for JSON serialization
 
     /**
      * Static method to create an instance of the DatabaseService class.
