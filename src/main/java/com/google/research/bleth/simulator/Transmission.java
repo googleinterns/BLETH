@@ -1,32 +1,13 @@
 package com.google.research.bleth.simulator;
 
-import java.util.Objects;
+import com.google.auto.value.AutoValue;
 
 /** An advertisement of a beacon. */
-public class Transmission {
-    final int advertisement;
-
-    /**
-     * @param eid the ephemeral ID of the beacon.
-     */
-    Transmission(int eid) {
-        advertisement = eid;
+@AutoValue
+public abstract class Transmission {
+    public static Transmission create(int advertisement) {
+        return new AutoValue_Transmission(advertisement);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Transmission that = (Transmission) o;
-        return advertisement == that.advertisement;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(advertisement);
-    }
+    public abstract int advertisement();
 }
