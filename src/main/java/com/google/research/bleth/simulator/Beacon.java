@@ -18,7 +18,7 @@ public class Beacon extends AbstractAgent implements IBeacon {
 
     @Override
     public Transmission transmit() {
-        return Transmission.create(id);
+        return Transmission.create(id); // In the tracing simulation, the beacon's eid is its Id.
     }
 
     @Override
