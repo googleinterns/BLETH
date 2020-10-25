@@ -8,10 +8,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class IAgentTest {
-    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
-    private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
-    private static final Location ZERO_ON_ONE_COORDINATE = new Location(0, 1);
-    private static final Location ONE_ON_ZERO_COORDINATE = new Location(1, 0);
+    private static final Location ZERO_ON_ZERO_COORDINATE = Location.create(0, 0);
+    private static final Location ONE_ON_ONE_COORDINATE = Location.create(1, 1);
+    private static final Location ZERO_ON_ONE_COORDINATE = Location.create(0, 1);
+    private static final Location ONE_ON_ZERO_COORDINATE = Location.create(1, 0);
 
     @Test
     public void newAgentLocationIsUpdatedOnBoardMatrix() {
@@ -71,7 +71,7 @@ public abstract class IAgentTest {
         // |   |   | A |
         // -------------
         RealBoard realBoard = new RealBoard(1, 3);
-        IAgent randomAgent = createRandomAgentOnLocation(new Location(0, 2), realBoard);
+        IAgent randomAgent = createRandomAgentOnLocation(Location.create(0, 2), realBoard);
 
         randomAgent.move();
 
@@ -105,7 +105,7 @@ public abstract class IAgentTest {
         // | A |
         // -----
         RealBoard realBoard = new RealBoard(3, 1);
-        IAgent randomAgent = createRandomAgentOnLocation(new Location(2, 0), realBoard);
+        IAgent randomAgent = createRandomAgentOnLocation(Location.create(2, 0), realBoard);
 
         randomAgent.move();
 
@@ -127,7 +127,7 @@ public abstract class IAgentTest {
 
     @Test
     public void upRightCorneredAgentsMoveToValidLocations() {
-        Location upRightCorner = new Location(0, 2);
+        Location upRightCorner = Location.create(0, 2);
 
         for (int i = 0; i < 1000; i++) {
             RealBoard realBoard = new RealBoard(3, 3);
@@ -142,7 +142,7 @@ public abstract class IAgentTest {
 
     @Test
     public void bottomLeftCorneredAgentsMoveToValidLocations() {
-        Location bottomLeftCorner = new Location(2, 0);
+        Location bottomLeftCorner = Location.create(2, 0);
         for (int i = 0; i < 1000; i++) {
             RealBoard realBoard = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(bottomLeftCorner, realBoard);
@@ -156,7 +156,7 @@ public abstract class IAgentTest {
 
     @Test
     public void bottomRightCorneredAgentsMoveToValidLocations() {
-        Location bottomRightCorner = new Location(2, 2);
+        Location bottomRightCorner = Location.create(2, 2);
         for (int i = 0; i < 1000; i++) {
             RealBoard realBoard = new RealBoard(3, 3);
             IAgent randomAgent = createRandomAgentOnLocation(bottomRightCorner, realBoard);
@@ -257,6 +257,6 @@ public abstract class IAgentTest {
     abstract IAgent createStaticAgentOnLocation(Location initialLocation, RealBoard owner);
 
     private int calculateDistance(Location oldLocation, Location newLocation) {
-        return Math.abs(newLocation.row - oldLocation.row) + Math.abs(newLocation.col - oldLocation.col);
+        return Math.abs(newLocation.row() - oldLocation.row()) + Math.abs(newLocation.col() - oldLocation.col());
     }
 }

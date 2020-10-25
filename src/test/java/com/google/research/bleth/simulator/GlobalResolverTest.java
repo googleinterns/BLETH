@@ -9,11 +9,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GlobalResolverTest {
-    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
-    private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
-    private static final Location ZERO_ON_ONE_COORDINATE = new Location(0, 1);
-    private static final Location ONE_ON_ZERO_COORDINATE = new Location(1, 0);
-    private static final Location TWO_ON_TWO_COORDINATE = new Location(2, 2);
+    private static final Location ZERO_ON_ZERO_COORDINATE = Location.create(0, 0);
+    private static final Location ONE_ON_ONE_COORDINATE = Location.create(1, 1);
+    private static final Location ZERO_ON_ONE_COORDINATE = Location.create(0, 1);
+    private static final Location ONE_ON_ZERO_COORDINATE = Location.create(1, 0);
+    private static final Location TWO_ON_TWO_COORDINATE = Location.create(2, 2);
     private static final BeaconFactory BEACON_FACTORY = new BeaconFactory();
 
     @Test
@@ -176,7 +176,7 @@ public class GlobalResolverTest {
         resolver.estimate();
 
         resolver.receiveInformation(ONE_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
-        resolver.receiveInformation(new Location(2, 1), ImmutableList.of(beacon.transmit()));
+        resolver.receiveInformation(Location.create(2, 1), ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
         assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(ONE_ON_ZERO_COORDINATE, beacon);
@@ -224,7 +224,7 @@ public class GlobalResolverTest {
         resolver.receiveInformation(ZERO_ON_ZERO_COORDINATE, ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
-        resolver.receiveInformation(new Location(4, 4), ImmutableList.of(beacon.transmit()));
+        resolver.receiveInformation(Location.create(4, 4), ImmutableList.of(beacon.transmit()));
         resolver.estimate();
 
         assertThat(resolver.getBoard().agentsOnBoard()).containsExactly(TWO_ON_TWO_COORDINATE, beacon);
