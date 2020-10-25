@@ -41,7 +41,7 @@ public class TracingSimulation extends AbstractSimulation {
             ObserverFactory observerFactory = new ObserverFactory();
             AwakenessStrategyFactory awakenessStrategyFactory = new AwakenessStrategyFactory(awakenessStrategyType);
             for (int i = 0; i < observersNum; i++) {
-                Location initialLocation = new Location(rand.nextInt(rowNum), rand.nextInt(colNum));
+                Location initialLocation = Location.create(rand.nextInt(rowNum), rand.nextInt(colNum));
                 IAwakenessStrategy awakenessStrategy = awakenessStrategyFactory.createStrategy(awakenessCycle, awakenessDuration);
                 Observer observer = observerFactory.createObserver(initialLocation, observerMovementStrategy, resolver,
                 realBoard, awakenessStrategy);
@@ -54,7 +54,7 @@ public class TracingSimulation extends AbstractSimulation {
             Random rand = new Random();
             BeaconFactory beaconFactory = new BeaconFactory();
             for (int i = 0; i < beaconsNum; i++) {
-                Location initialLocation = new Location(rand.nextInt(rowNum), rand.nextInt(colNum));
+                Location initialLocation = Location.create(rand.nextInt(rowNum), rand.nextInt(colNum));
                 Beacon beacon = beaconFactory.createBeacon(initialLocation, beaconMovementStrategy, realBoard);
                 beacons.add(beacon);
             }

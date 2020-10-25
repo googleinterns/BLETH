@@ -18,7 +18,7 @@ public class Beacon extends AbstractAgent implements IBeacon {
 
     @Override
     public Transmission transmit() {
-        return new Transmission(id);
+        return Transmission.create(id);
     }
 
     @Override

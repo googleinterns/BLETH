@@ -59,7 +59,7 @@ public class TracingSimulationIT {
         Multimap<Location, IAgent> agentsOnLocations = board.agentsOnBoard();
         for(int row = 0; row < board.getRowNum(); row++) {
             for(int col = 0; col < board.getColNum(); col++) {
-                Location loc = new Location(row, col);
+                Location loc = Location.create(row, col);
                 for(IAgent agent : agentsOnLocations.get(loc)) {
                     if (agent.getId() == 0 && agent.getType().equals(type)) {
                         return loc;
@@ -71,7 +71,7 @@ public class TracingSimulationIT {
     }
 
     private Location predictLocationAfterMoveUp(Location location) {
-        if(location.row == 0) return location;
-        return new Location(location.row - 1, location.col);
+        if(location.row() == 0) return location;
+        return Location.create(location.row() - 1, location.col());
     }
 }

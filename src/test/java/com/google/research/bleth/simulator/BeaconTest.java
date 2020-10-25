@@ -26,7 +26,7 @@ public class BeaconTest extends IAgentTest {
         RealBoard realBoard = new RealBoard(1, 1);
         Beacon beacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
-        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
+        assertThat(beacon.transmit().advertisement()).isEqualTo(beacon.getId());
     }
 
     @Test
@@ -34,7 +34,7 @@ public class BeaconTest extends IAgentTest {
         RealBoard realBoard = new RealBoard(3, 3);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
-        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
+        assertThat(beacon.transmit().advertisement()).isEqualTo(beacon.getId());
     }
 
     Beacon createRandomAgentOnLocation(Location initialLocation, RealBoard owner) {
