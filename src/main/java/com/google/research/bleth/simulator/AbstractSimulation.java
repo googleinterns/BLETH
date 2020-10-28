@@ -85,7 +85,7 @@ public abstract class AbstractSimulation {
     void writeRoundState() { }
 
     /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
-    abstract void updateSimulationStats();
+    void updateSimulationStats() { }
 
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() { }

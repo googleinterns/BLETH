@@ -14,9 +14,6 @@ import java.util.Random;
  */
 public class TracingSimulation extends AbstractSimulation {
 
-    @Override
-    void updateSimulationStats() { }
-
     public static class Builder extends AbstractSimulation.Builder {
 
         @Override
