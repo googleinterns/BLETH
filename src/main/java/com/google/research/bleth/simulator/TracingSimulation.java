@@ -20,11 +20,6 @@ public class TracingSimulation extends AbstractSimulation {
     public static class Builder extends AbstractSimulation.Builder {
 
         @Override
-        void writeSimulationMetadata() {
-            // todo: write metadata and assign a unique simulation id
-        }
-
-        @Override
         void validateArguments() {
             checkArgument(rowNum > 0 && colNum > 0,
                     "Board dimensions must be positive.");

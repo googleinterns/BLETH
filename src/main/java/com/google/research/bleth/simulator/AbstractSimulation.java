@@ -231,7 +231,10 @@ public abstract class AbstractSimulation {
         }
 
         /** Write simulation metadata to db. */
-        abstract void writeSimulationMetadata();
+        void writeSimulationMetadata() {
+            // todo: write simulation metadata to db and store the unique id assigned to the simulation metadata entity:
+            // this.id = return new SimulationMetadata(this).write();
+        }
 
         /** Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}. */
         abstract void validateArguments();
