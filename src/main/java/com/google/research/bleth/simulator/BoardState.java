@@ -133,7 +133,7 @@ public class BoardState {
 
     private static BoardState read(String simulationId, int round, String entityKind) throws ExceedingRoundException {
         // throw and exception if the provided round does not exist in the simulation.
-        if (!SimulationMetadata.roundExistsInSimulation(simulationId, round)) {
+        if (!SimulationMetadata.isRoundExistsInSimulation(simulationId, round)) {
             throw new ExceedingRoundException("Provided round " + round +
                     " exceeds maximum number of rounds of simulation " + simulationId);
         }

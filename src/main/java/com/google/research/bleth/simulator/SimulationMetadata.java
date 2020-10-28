@@ -70,7 +70,7 @@ public class SimulationMetadata {
         entity.setProperty(Schema.SimulationMetadata.observersDensity, this.observersDensity);
         entity.setProperty(Schema.SimulationMetadata.awakenessRatio, this.awakenessRatio);
 
-        // Write to datastore and return key (as string).
+        // Write to datastore and return key as string.
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         return KeyFactory.keyToString(datastore.put(entity));
     }
@@ -92,7 +92,7 @@ public class SimulationMetadata {
     }
 
     /** Return true if provided round exists in the simulation associated with the provided simulation id, and false otherwise. */
-    static boolean roundExistsInSimulation(String simulationId, int round) {
+    static boolean isRoundExistsInSimulation(String simulationId, int round) {
         SimulationMetadata simulationMetadata = read(simulationId);
         int maxSimulationRound = simulationMetadata.roundsNum;
         return round < maxSimulationRound;

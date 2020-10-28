@@ -24,7 +24,7 @@ public class BoardStateFactory {
         checkArgument(round >= 0);
         checkNotNull(board);
         String entityKind = determineBoardStateEntityKind(board);
-        if (!SimulationMetadata.roundExistsInSimulation(simulationId, round)) {
+        if (!SimulationMetadata.isRoundExistsInSimulation(simulationId, round)) {
             throw new ExceedingRoundException("Provided round " + round +
                     " exceeds maximum number of rounds of simulation " + simulationId);
         }
