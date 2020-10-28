@@ -133,15 +133,15 @@ public class BoardState {
 
     private static BoardState read(String simulationId, int round, String entityKind) throws ExceedingRoundException {
         // throw and exception if the provided round does not exist in the simulation.
-        if (!AbstractSimulation.roundExistsInSimulation(simulationId, round)) {
+        if (!SimulationMetadata.roundExistsInSimulation(simulationId, round)) {
             throw new ExceedingRoundException("Provided round " + round +
                     " exceeds maximum number of rounds of simulation " + simulationId);
         }
 
         // Retrieve simulation dimensions.
-        Entity simulationEntity = AbstractSimulation.readMetadataEntity(simulationId);
-        int rowNum = ((Long) simulationEntity.getProperty(Schema.SimulationMetadata.rowsNum)).intValue();
-        int colNum = ((Long) simulationEntity.getProperty(Schema.SimulationMetadata.colsNum)).intValue();
+        SimulationMetadata simulationMetadata = SimulationMetadata.read(simulationId);
+        int rowNum = simulationMetadata.rowsNum;
+        int colNum = simulationMetadata.colsNum;
 
         // Retrieve entities to construct board state.
         PreparedQuery boardStateBySimulationIdAndRoundPreparedQuery = prepareBoardStateQuery(simulationId, round, entityKind);
