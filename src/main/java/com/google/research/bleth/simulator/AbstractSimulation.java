@@ -46,12 +46,8 @@ public abstract class AbstractSimulation {
 
     /** Move all agents according to their movement strategies and update the real board. */
     void moveAgents() {
-        for (Beacon beacon : beacons) {
-            beacon.move();
-        }
-        for (Observer observer : observers) {
-            observer.move();
-        }
+        beacons.forEach((AbstractAgent::move));
+        observers.forEach((AbstractAgent::move));
     }
 
     /** Update all observers awakeness states according to their awakeness strategies. */
