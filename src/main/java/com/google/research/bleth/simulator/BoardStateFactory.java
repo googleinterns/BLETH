@@ -1,6 +1,7 @@
 package com.google.research.bleth.simulator;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.Multimap;
@@ -21,6 +22,7 @@ public class BoardStateFactory {
      */
     public static BoardState create(Board board, String simulationId, int round) {
         checkArgument(round >= 0);
+        checkNotNull(board);
         String entityKind = determineBoardStateEntityKind(board);
         if (!SimulationMetadata.roundExistsInSimulation(simulationId, round)) {
             throw new ExceedingRoundException("Provided round " + round +
