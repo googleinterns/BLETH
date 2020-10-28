@@ -39,7 +39,7 @@ public class BoardStateFactory {
     static ArrayTable<Integer, Integer, ArrayList<String>> createEmptyTable(int rowNum, int colNum) {
         ArrayTable<Integer, Integer, ArrayList<String>> table;
         table = ArrayTable.create(IntStream.range(0, rowNum).boxed().collect(Collectors.toList()),
-                IntStream.range(0, colNum).boxed().collect(Collectors.toList()));
+                                  IntStream.range(0, colNum).boxed().collect(Collectors.toList()));
 
         for (int row = 0; row < rowNum; row++) {
             for (int col = 0; col < colNum; col++) {
