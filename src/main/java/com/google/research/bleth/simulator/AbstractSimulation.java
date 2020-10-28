@@ -52,9 +52,7 @@ public abstract class AbstractSimulation {
 
     /** Update all observers awakeness states according to their awakeness strategies. */
     void updateObserversAwaknessState() {
-        for (Observer observer : observers) {
-            observer.updateAwakenessState(currentRound);
-        }
+        observers.forEach((observer -> observer.updateAwakenessState(currentRound)));
     }
 
     /**
@@ -77,9 +75,7 @@ public abstract class AbstractSimulation {
 
     /** Pass current-round information of transmission data from all observers to the simulation's resolver. */
     void observersToResolver() {
-        for (Observer observer : observers) {
-            observer.passInformationToResolver();
-        }
+        observers.forEach((Observer::passInformationToResolver));
     }
 
     /** Update resolver's estimated board. */
