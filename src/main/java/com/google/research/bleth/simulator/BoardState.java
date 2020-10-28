@@ -39,7 +39,7 @@ public class BoardState {
      *                   can be either "RealBoardState" or "EstimatedBoardState".
      */
     BoardState(int rows, int cols, ArrayTable<Integer, Integer, ArrayList<String>> matrix,
-                      String simulationId, int round, String entityKind) {
+               String simulationId, int round, String entityKind) {
         this.rows = rows;
         this.cols = cols;
         this.matrix = matrix;
