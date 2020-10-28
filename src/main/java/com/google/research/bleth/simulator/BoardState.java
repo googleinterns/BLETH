@@ -65,13 +65,13 @@ public class BoardState {
     }
 
     /**
-     * Create multiple datastore entities (each represents and agent in its location) associated with the board state,
+     * Create multiple datastore entities (each represents an agent in its location) associated with the board state,
      * and write them to the db.
      * @throws BoardStateAlreadyExistsException if a board state associated with the same simulation id, round and entity kind
      * already exists in the db.
      */
     public void write() throws BoardStateAlreadyExistsException {
-        // Throw and exception if a board state associated with the same simulation id, round and entity kind
+        // Throw an exception if a board state associated with the same simulation id, round and entity kind
         // already exists in the db.
         BoardState readBoardState = read(simulationId, round, entityKind);
         if (!readBoardState.matrix.equals(BoardStateFactory.createEmptyTable(rows, cols))) {

@@ -46,7 +46,10 @@ public class SimulationMetadata {
         this.awakenessRatio = (double) builder.getAwakenessDuration() / builder.getAwakenessCycle();
     }
 
-    /** Create an entity storing the simulation's metadata and store it on db. */
+    /**
+     * Create a datastore entity representing the simulation metadata and write it to db.
+     * @return the unique Id assigned to the datastore entity as a string.
+     */
     public String write() {
         // Create new entity.
         Entity entity = new Entity(Schema.SimulationMetadata.entityKind);

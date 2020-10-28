@@ -30,7 +30,10 @@ public abstract class AbstractSimulation {
 
         public int getAwakenessDuration() { return 1; }
 
-        /** Create an entity storing the simulation's metadata and store it on db. */
+        /**
+         * Write simulation metadata to the db.
+         * @return the unique Id assigned to the datastore entity as a string.
+         */
         String writeMetadata() {
             return new SimulationMetadata(this).write();
         }
