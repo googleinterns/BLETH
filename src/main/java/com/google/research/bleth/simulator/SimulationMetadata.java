@@ -77,7 +77,7 @@ public class SimulationMetadata {
      * @param simulationId the id of the requested simulation.
      * @return a SimulationMetadata object storing the simulation's metadata.
      */
-    static SimulationMetadata read(String simulationId) {
+    public static SimulationMetadata read(String simulationId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Key simulationKey = KeyFactory.stringToKey(simulationId);
         Query.Filter filterBySimulationId =
