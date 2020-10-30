@@ -59,7 +59,7 @@ public final class GlobalResolver implements IGlobalResolver {
             beaconsToEstimatedLocations.put(beacon, newLocation);
         }
 
-         currentRoundTransmissions.clear();
+        currentRoundTransmissions.clear();
     }
 
     @Override

@@ -36,6 +36,16 @@ public abstract class Board {
         }
     }
 
+    /** Returns the number of rows. */
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    /** Returns the number of columns. */
+    public int getColNum() {
+        return colNum;
+    }
+
     /**
      * Check if a location is within the board boundaries.
      * @param location is the location to check if valid.
@@ -85,16 +95,6 @@ public abstract class Board {
         validateLocation(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
-    }
-
-    /** Returns the number of rows in the board. */
-    public int getRowNum() {
-        return rowNum;
-    }
-
-    /** Returns the number of columns in the board. */
-    public int getColNum() {
-        return colNum;
     }
 
     /** Returns a map that maps to each populated location the agents on this location. */

@@ -8,11 +8,11 @@ public class Beacon extends AbstractAgent implements IBeacon {
      * Create new Beacon with consecutive serial number.
      * @param id is a unique ID.
      * @param initialLocation is the location on board where the beacon is placed.
-     * @param IMovementStrategy determines how the beacon moves.
+     * @param movementStrategy determines how the beacon moves.
      * @param owner is the real board that represents the world in which the beacon lives.
      */
-    Beacon(int id, Location initialLocation, IMovementStrategy IMovementStrategy, IAgentOwner owner) {
-        super(initialLocation, IMovementStrategy, owner);
+    Beacon(int id, Location initialLocation, IMovementStrategy movementStrategy, IAgentOwner owner) {
+        super(initialLocation, movementStrategy, owner);
         this.id = id;
     }
 
