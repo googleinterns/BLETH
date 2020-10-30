@@ -8,12 +8,12 @@ public abstract class AbstractAgent implements IAgent {
 
     /**
      * @param initialLocation is the location on board where the agent is placed.
-     * @param IMovementStrategy determines how the agent moves.
+     * @param movementStrategy determines how the agent moves.
      * @param owner is the real board that represents the world in which the agent lives.
      */
-    public AbstractAgent(Location initialLocation, IMovementStrategy IMovementStrategy, IAgentOwner owner) {
+    public AbstractAgent(Location initialLocation, IMovementStrategy movementStrategy, IAgentOwner owner) {
         realLocation = initialLocation;
-        this.IMovementStrategy = IMovementStrategy;
+        this.IMovementStrategy = movementStrategy;
         this.owner = owner;
     }
 

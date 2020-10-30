@@ -2,6 +2,7 @@ package com.google.research.bleth.simulator;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.common.collect.Multimap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -55,10 +56,11 @@ public class TracingSimulationIT {
     }
 
     private Location findAgent(Board board, String type) {
+        Multimap<Location, IAgent> agentsOnLocations = board.agentsOnBoard();
         for(int row = 0; row < board.getRowNum(); row++) {
             for(int col = 0; col < board.getColNum(); col++) {
                 Location loc = new Location(row, col);
-                for(IAgent agent : board.getAgentsOnLocation(loc)) {
+                for(IAgent agent : agentsOnLocations.get(loc)) {
                     if (agent.getId() == 0 && agent.getType().equals(type)) {
                         return loc;
                     }

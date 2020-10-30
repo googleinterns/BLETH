@@ -3,10 +3,11 @@ package com.google.research.bleth.simulator;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ArrayTable;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -72,16 +73,6 @@ public abstract class Board {
     }
 
     /**
-     * Create and return an immutable list of all the agents which located on specific location.
-     * @param location is the requested location to retrieve all the agents that located on it.
-     * @return an immutable copy of the list of all agents which located on location.
-     */
-    public List<IAgent> getAgentsOnLocation(Location location) {
-        validateLocation(location);
-        return ImmutableList.copyOf(matrix.get(location.row, location.col));
-    }
-
-    /**
      * Place an agent on board if the given location is valid.
      * @param newLocation is the location where the agent will be placed.
      * @param agent is the Agent which placed on the board.
@@ -104,6 +95,17 @@ public abstract class Board {
         validateLocation(oldLocation);
         matrix.get(oldLocation.row, oldLocation.col).remove(agent);
         placeAgent(newLocation, agent);
+    }
+
+    /** Returns a map that maps to each populated location the agents on this location. */
+    public Multimap<Location, IAgent> agentsOnBoard() {
+        Multimap<Location, IAgent> locationsToAgents = ArrayListMultimap.create();
+        for (int row = 0; row < rowNum; row++) {
+            for (int col = 0; col < colNum; col++) {
+                locationsToAgents.putAll(new Location(row, col), matrix.get(row, col));
+            }
+        }
+        return ImmutableListMultimap.copyOf(locationsToAgents);
     }
 
     /** Returns the type of the board, either real or estimated. */
