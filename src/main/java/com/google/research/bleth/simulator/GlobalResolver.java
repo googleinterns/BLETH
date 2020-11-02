@@ -74,8 +74,8 @@ public final class GlobalResolver implements IGlobalResolver {
 
     private Location estimateNewLocation(Beacon beacon) {
         List<Location> locations = (List<Location>) currentRoundTransmissions.get(beacon.transmit());
-        int newRow = (int) Math.round((locations.stream().mapToDouble(location -> location.row).average().getAsDouble()));
-        int newCol = (int) Math.round((locations.stream().mapToDouble(location -> location.col).average().getAsDouble()));
-        return new Location(newRow, newCol);
+        int newRow = (int) Math.round((locations.stream().mapToDouble(location -> location.row()).average().getAsDouble()));
+        int newCol = (int) Math.round((locations.stream().mapToDouble(location -> location.col()).average().getAsDouble()));
+        return Location.create(newRow, newCol);
     }
 }

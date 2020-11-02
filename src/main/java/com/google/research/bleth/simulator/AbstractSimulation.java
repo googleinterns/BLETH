@@ -265,6 +265,6 @@ public abstract class AbstractSimulation {
     }
 
     private static double distance(Location firstLocation, Location secondLocation) {
-        return (double) (Math.abs(firstLocation.row - secondLocation.row) + Math.abs(firstLocation.col - secondLocation.col));
+        return (double) (Math.abs(firstLocation.row() - secondLocation.row()) + Math.abs(firstLocation.col() - secondLocation.col()));
     }
 }

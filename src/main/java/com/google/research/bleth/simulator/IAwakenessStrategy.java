@@ -11,8 +11,6 @@ public interface IAwakenessStrategy {
      */
     void updateAwakenessState(int currentRound);
 
-    /**
-     * Returns true if the observer is activated, false otherwise.
-     */
+    /** Returns true if the observer is activated, false otherwise. */
     boolean isAwake();
 }

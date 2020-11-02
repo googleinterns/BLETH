@@ -9,10 +9,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ObserverTest extends IAgentTest {
-    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
-    private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
-    private static final Location ZERO_ON_ONE_COORDINATE = new Location(0, 1);
-    private static final Location ONE_ON_ZERO_COORDINATE = new Location(1, 0);
+    private static final Location ZERO_ON_ZERO_COORDINATE = Location.create(0, 0);
+    private static final Location ONE_ON_ONE_COORDINATE = Location.create(1, 1);
+    private static final Location ZERO_ON_ONE_COORDINATE = Location.create(0, 1);
+    private static final Location ONE_ON_ZERO_COORDINATE = Location.create(1, 0);
     private static final BeaconFactory BEACON_FACTORY = new BeaconFactory();
     private static final ObserverFactory OBSERVER_FACTORY = new ObserverFactory();
 
@@ -23,7 +23,7 @@ public class ObserverTest extends IAgentTest {
         RealBoard realBoard = new RealBoard(1, 1);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            OBSERVER_FACTORY.createObserver(new Location(0, -1), new RandomMovementStrategy(), resolver, realBoard,
+            OBSERVER_FACTORY.createObserver(Location.create(0, -1), new RandomMovementStrategy(), resolver, realBoard,
                     new FixedAwakenessStrategy(/* awakenessCycleDuration= */ 5,
                                                /* awakenessDuration= */ 1,
                                                /* firstAwakenessTime= */ 0));

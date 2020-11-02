@@ -54,8 +54,8 @@ public abstract class Board {
      */
     public void validateLocation(Location location) {
         checkNotNull(location);
-        checkArgument(0 <= location.row && location.row < rowNum, "Invalid Location");
-        checkArgument(0 <= location.col && location.col < colNum, "Invalid Location");
+        checkArgument(0 <= location.row() && location.row() < rowNum, "Invalid Location");
+        checkArgument(0 <= location.col() && location.col() < colNum, "Invalid Location");
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class Board {
     public void placeAgent(Location newLocation, IAgent agent) {
         checkNotNull(agent);
         validateLocation(newLocation);
-        matrix.get(newLocation.row, newLocation.col).add(agent);
+        matrix.get(newLocation.row(), newLocation.col()).add(agent);
     }
 
     /**
@@ -93,7 +93,7 @@ public abstract class Board {
         checkNotNull(agent);
         validateLocation(newLocation);
         validateLocation(oldLocation);
-        matrix.get(oldLocation.row, oldLocation.col).remove(agent);
+        matrix.get(oldLocation.row(), oldLocation.col()).remove(agent);
         placeAgent(newLocation, agent);
     }
 
@@ -102,7 +102,7 @@ public abstract class Board {
         Multimap<Location, IAgent> locationsToAgents = ArrayListMultimap.create();
         for (int row = 0; row < rowNum; row++) {
             for (int col = 0; col < colNum; col++) {
-                locationsToAgents.putAll(new Location(row, col), matrix.get(row, col));
+                locationsToAgents.putAll(Location.create(row, col), matrix.get(row, col));
             }
         }
         return ImmutableListMultimap.copyOf(locationsToAgents);
