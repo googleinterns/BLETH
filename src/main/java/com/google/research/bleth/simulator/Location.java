@@ -18,6 +18,6 @@ public abstract class Location {
      * @return new Location, differ from the original location in one step, according the given direction.
      */
     public Location moveInDirection(Direction direction) {
-        return Location.create(row() + direction.getRowDelta(), col() + direction.getColDelta());
+        return create(row() + direction.getRowDelta(), col() + direction.getColDelta());
     }
 }
