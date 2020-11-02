@@ -64,8 +64,8 @@ public class TracingSimulation extends AbstractSimulation {
         public AbstractSimulation build() {
             validateArguments();
             this.realBoard = new RealBoard(this.rowNum, this.colNum);
-            this.resolver = GlobalResolver.create(this.rowNum, this.colNum, this.beacons);
             initializeBeacons();
+            this.resolver = GlobalResolver.create(this.rowNum, this.colNum, this.beacons);
             initializeObservers();
             writeSimulationMetadata();
             return new TracingSimulation(this);
