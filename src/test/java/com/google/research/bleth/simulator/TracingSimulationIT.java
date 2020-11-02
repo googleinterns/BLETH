@@ -42,7 +42,7 @@ public class TracingSimulationIT {
         // Find agents and calculate their expected location after a single round.
         Location beaconInitialLocation = simulation.beacons.get(0).getLocation();
         Location observerInitialLocation = simulation.observers.get(0).getLocation();
-        Location beaconExpectedLocation = predictLocationAfterMoveUp(beaconInitialLocation);
+        Location beaconExpectedLocation = predictLocationAfterMoveUp(beaconInitialLocation, 1);
         Location observerExpectedLocation = observerInitialLocation;
 
         // Run single-rounded simulation and find agents again.
@@ -54,10 +54,7 @@ public class TracingSimulationIT {
         assertThat(observerActualLocation).isEqualTo(observerExpectedLocation);
     }
 
-    private Location predictLocationAfterMoveUp(Location location) {
-        if (location.row() == 0) {
-            return location;
-        }
-        return Location.create(location.row() - 1, location.col());
+    private Location predictLocationAfterMoveUp(Location location, int numberOfRounds) {
+        return Location.create(Math.max(0, location.row() - numberOfRounds), location.col());
     }
 }
