@@ -18,7 +18,7 @@ public abstract class AbstractSimulation {
     private RealBoard board;
     protected final ImmutableList<Beacon> beacons;
     protected final ImmutableList<Observer> observers;
-    private IResolver resolver;
+    private IGlobalResolver resolver;
     private final double transmissionThresholdRadius;
     private HashMap<String, Double> stats = new HashMap<>();
 
@@ -79,7 +79,9 @@ public abstract class AbstractSimulation {
     }
 
     /** Update resolver's estimated board. */
-    void resolverEstimate() { }
+    void resolverEstimate() {
+        resolver.estimate();
+    }
 
     /** Write current-round state of the simulation to db. */
     void writeRoundState() { }
@@ -98,7 +100,7 @@ public abstract class AbstractSimulation {
         protected int rowNum;
         protected int colNum;
         protected RealBoard realBoard;
-        protected IResolver resolver;
+        protected IGlobalResolver resolver;
         protected int beaconsNum;
         protected int observersNum;
         protected List<Beacon> beacons = new ArrayList<>();
