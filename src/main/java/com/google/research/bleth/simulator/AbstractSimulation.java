@@ -27,6 +27,11 @@ public abstract class AbstractSimulation {
         return board;
     }
 
+    /** Returns the resolver's estimated board. */
+    EstimatedBoard getEstimatedBoard() {
+        return resolver.getBoard();
+    }
+
     /** Run entire simulation logic, including writing data to db. */
     public void run() {
         writeRoundState(); // round 0 is the initial simulation state
