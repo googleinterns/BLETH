@@ -2,13 +2,22 @@ package com.google.research.bleth.simulator;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.appengine.api.datastore.dev.LocalDatastoreService;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.Multimap;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TracingSimulationIT {
+
+    private final LocalServiceTestHelper helper =
+            new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
+                    .setAutoIdAllocationPolicy(LocalDatastoreService.AutoIdAllocationPolicy.SCATTERED));
 
     private static final IMovementStrategy MOVE_UP = new UpMovementStrategy();
     private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
@@ -22,6 +31,11 @@ public class TracingSimulationIT {
     private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
     private static final AwakenessStrategyFactory.Type FIXES_AWAKENESS_STRATEGY_TYPE =
             AwakenessStrategyFactory.Type.FIXED;
+
+    @Before
+    public void setUp() {
+        helper.setUp();
+    }
 
     @Test
     public void runSimulationSingleRoundVerifyAgentsLocations() {
@@ -68,6 +82,11 @@ public class TracingSimulationIT {
             }
         }
         return null;
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     private Location predictLocationAfterMoveUp(Location location) {

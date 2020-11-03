@@ -110,6 +110,64 @@ public abstract class AbstractSimulation {
         protected int awakenessCycle;
         protected int awakenessDuration;
 
+        /** Return the maximal number of rounds of the simulation created by the builder. */
+        public int getMaxNumberOfRounds() {
+            return maxNumberOfRounds;
+        }
+
+        /** Return the number of rows of the simulation created by the builder. */
+        public int getRowNum() {
+            return rowNum;
+        }
+
+        /** Return the number of columns of the simulation created by the builder. */
+        public int getColNum() {
+            return colNum;
+        }
+
+        /** Return the number of beacons of the simulation created by the builder. */
+        public int getBeaconsNum() {
+            return beaconsNum;
+        }
+
+        /** Return the number of observers of the simulation created by the builder. */
+        public int getObserversNum() {
+            return observersNum;
+        }
+
+        /** Return the beacons' movement strategy of the simulation created by the builder. */
+        public IMovementStrategy getBeaconMovementStrategy() {
+            return beaconMovementStrategy;
+        }
+
+        /** Return the observers' movement strategy of the simulation created by the builder. */
+        public IMovementStrategy getObserverMovementStrategy() {
+            return observerMovementStrategy;
+        }
+
+        /** Return the observers' awakeness strategy type of the simulation created by the builder. */
+        public AwakenessStrategyFactory.Type getAwakenessStrategyType() {
+            return awakenessStrategyType;
+        }
+
+        /** Return the threshold transmission radius of the simulation created by the builder. */
+        public double getTransmissionThresholdRadius() {
+            return transmissionThresholdRadius;
+        }
+
+        /** Return the awakeness cycle of the simulation created by the builder. */
+        public int getAwakenessCycle() {
+            return awakenessCycle;
+        }
+
+        /** Return the awakeness duration of the simulation created by the builder. */
+        public int getAwakenessDuration() {
+            return awakenessDuration;
+        }
+
+        /** Return a string incidating the type of the simulation created by the builder. */
+        public abstract String getSimulationType();
+
         /**
          * Set number of rows in simulation.
          * @param rowNum is the number of rows in simulation.
@@ -222,10 +280,13 @@ public abstract class AbstractSimulation {
             return this;
         }
 
-        /** Write simulation metadata to db. */
-        void writeSimulationMetadata() {
-            // todo: write simulation metadata to db and store the unique id assigned to the simulation metadata entity:
-            // this.id = return new SimulationMetadata(this).write();
+        /**
+         * Write simulation metadata to the db.
+         * @return the unique Id assigned to the datastore entity as a string.
+         */
+        String writeMetadata() {
+            this.id = new SimulationMetadata(this).write();
+            return this.id;
         }
 
         /** Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}. */

@@ -17,6 +17,11 @@ public class TracingSimulation extends AbstractSimulation {
     public static class Builder extends AbstractSimulation.Builder {
 
         @Override
+        public String getSimulationType() {
+            return "Tracing";
+        }
+
+        @Override
         void validateArguments() {
             checkArgument(rowNum > 0 && colNum > 0,
                     "Board dimensions must be positive.");
@@ -67,7 +72,7 @@ public class TracingSimulation extends AbstractSimulation {
             this.resolver = GlobalResolver.create(this.rowNum, this.colNum, this.beacons);
             initializeBeacons();
             initializeObservers();
-            writeSimulationMetadata();
+            writeMetadata();
             return new TracingSimulation(this);
         }
     }
