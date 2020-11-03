@@ -3,6 +3,9 @@ package com.google.research.bleth.simulator;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.common.collect.Iterables;
+
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -110,8 +113,8 @@ public class TracingSimulationIT {
                 .build();
 
         Map<IAgent, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getBoard());
-        Set<IAgent> observers = initialAgentsToLocations.keySet().stream().filter(agent -> agent instanceof Observer).collect(Collectors.toSet());
-        Location observerInitialLocation = averageLocationOfObservers(observers);
+        Collection<IAgent> observers = initialAgentsToLocations.keySet().stream().filter(agent -> agent instanceof Observer).collect(Collectors.toSet());
+        Location observerInitialLocation = Iterables.getOnlyElement(observers).getLocation();
 
         simulation.run();
         Map<IAgent, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoard());
