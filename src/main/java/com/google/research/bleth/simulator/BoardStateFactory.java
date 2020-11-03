@@ -59,7 +59,7 @@ public class BoardStateFactory {
         Multimap<Location, IAgent> agentsOnBoard = board.agentsOnBoard();
         for (Location location : agentsOnBoard.keys()) {
             for (IAgent agent : agentsOnBoard.get(location)) {
-                boardStateTable.get(location.row, location.col).add(agent.getType() + agent.getId());
+                boardStateTable.get(location.row(), location.col()).add(agent.getType() + agent.getId());
             }
         }
 

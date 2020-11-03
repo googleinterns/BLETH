@@ -11,12 +11,12 @@ import org.mockito.Mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public final class BoardTest{
-    private static final Location NEGATIVE_ROW_COORDINATE = new Location(-1, 0);
-    private static final Location NEGATIVE_COL_COORDINATE = new Location(0, -1);
-    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
-    private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
-    private static final Location ZERO_ON_ONE_COORDINATE = new Location(0, 1);
-    private static final Location ONE_ON_ZERO_COORDINATE = new Location(1, 0);
+    private static final Location NEGATIVE_ROW_COORDINATE = Location.create(-1, 0);
+    private static final Location NEGATIVE_COL_COORDINATE = Location.create(0, -1);
+    private static final Location ZERO_ON_ZERO_COORDINATE = Location.create(0, 0);
+    private static final Location ONE_ON_ONE_COORDINATE = Location.create(1, 1);
+    private static final Location ZERO_ON_ONE_COORDINATE = Location.create(0, 1);
+    private static final Location ONE_ON_ZERO_COORDINATE = Location.create(1, 0);
 
     @Mock
     private IAgent firstAgent;
@@ -101,7 +101,7 @@ public final class BoardTest{
     @Test
     public void placeAnAgentOutsideTheBoardTooHighRowThrowsException() {
         Board board = new RealBoard(2, 2);
-        Location rowTooHighCoordinate = new Location(2, 0);
+        Location rowTooHighCoordinate = Location.create(2, 0);
         Mockito.when(firstAgent.moveTo()).thenReturn(rowTooHighCoordinate);
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -112,7 +112,7 @@ public final class BoardTest{
     @Test
     public void placeAnAgentOutsideTheBoardTooHighColThrowsException() {
         Board board = new RealBoard(2, 2);
-        Location colTooHighCoordinate = new Location(0, 2);
+        Location colTooHighCoordinate = Location.create(0, 2);
         Mockito.when(firstAgent.moveTo()).thenReturn(colTooHighCoordinate);
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -207,7 +207,7 @@ public final class BoardTest{
     public void moveAnAgentOutsideTheBoardTooHighRowThrowsException() {
         Board board = new RealBoard(2, 2);
         board.placeAgent(ZERO_ON_ZERO_COORDINATE, firstAgent);
-        Location rowTooHighCoordinate = new Location(2, 0);
+        Location rowTooHighCoordinate = Location.create(2, 0);
         Mockito.when(firstAgent.moveTo()).thenReturn(rowTooHighCoordinate);
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -219,7 +219,7 @@ public final class BoardTest{
     public void moveAnAgentOutsideTheBoardTooHighColThrowsException() {
         Board board = new RealBoard(2, 2);
         board.placeAgent(ZERO_ON_ZERO_COORDINATE, firstAgent);
-        Location colTooHighCoordinate = new Location(0, 2);
+        Location colTooHighCoordinate = Location.create(0, 2);
         Mockito.when(firstAgent.moveTo()).thenReturn(colTooHighCoordinate);
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -251,7 +251,7 @@ public final class BoardTest{
     public void moveAnAgentFromTooHighRowOutsideTheBoardThrowsException() {
         Board board = new RealBoard(2, 2);
         Mockito.when(firstAgent.moveTo()).thenReturn(ZERO_ON_ZERO_COORDINATE);
-        Location rowTooHighCoordinate = new Location(2, 0);
+        Location rowTooHighCoordinate = Location.create(2, 0);
 
         assertThrows(IllegalArgumentException.class, () -> {
             board.moveAgent(rowTooHighCoordinate, firstAgent.moveTo(), firstAgent);
@@ -262,7 +262,7 @@ public final class BoardTest{
     public void moveAnAgentFromTooHighColOutsideTheBoardThrowsException() {
         Board board = new RealBoard(2, 2);
         Mockito.when(firstAgent.moveTo()).thenReturn(ZERO_ON_ZERO_COORDINATE);
-        Location colTooHighCoordinate = new Location(0, 2);
+        Location colTooHighCoordinate = Location.create(0, 2);
 
         assertThrows(IllegalArgumentException.class, () -> {
             board.moveAgent(colTooHighCoordinate, firstAgent.moveTo(), firstAgent);

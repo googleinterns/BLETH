@@ -19,7 +19,7 @@ public class SimulationMetadata {
     public final String beaconMovementStrategy;
     public final String observerMovementStrategy;
     public final String observerAwakenessStrategy;
-    public final double radius;
+    public final double transmissionThresholdRadius;
     public final int awakenessCycle;
     public final int awakenessDuration;
     public final double observersDensity;
@@ -39,7 +39,7 @@ public class SimulationMetadata {
         this.beaconMovementStrategy = builder.getBeaconMovementStrategy().toString();
         this.observerMovementStrategy = builder.getObserverMovementStrategy().toString();
         this.observerAwakenessStrategy = builder.getAwakenessStrategyType().toString();
-        this.radius = builder.getRadius();
+        this.transmissionThresholdRadius = builder.getTransmissionThresholdRadius();
         this.awakenessCycle = builder.getAwakenessCycle();
         this.awakenessDuration = builder.getAwakenessDuration();
         this.observersDensity = (double) builder.getObserversNum() / (builder.getRowNum() * builder.getColNum());
@@ -64,7 +64,7 @@ public class SimulationMetadata {
         entity.setProperty(Schema.SimulationMetadata.beaconMovementStrategy, this.beaconMovementStrategy);
         entity.setProperty(Schema.SimulationMetadata.observerMovementStrategy, this.observerMovementStrategy);
         entity.setProperty(Schema.SimulationMetadata.observerAwakenessStrategy, this.observerAwakenessStrategy);
-        entity.setProperty(Schema.SimulationMetadata.radius, this.radius);
+        entity.setProperty(Schema.SimulationMetadata.transmissionThresholdRadius, this.transmissionThresholdRadius);
         entity.setProperty(Schema.SimulationMetadata.awakenessCycle, this.awakenessCycle);
         entity.setProperty(Schema.SimulationMetadata.awakenessDuration, this.awakenessDuration);
         entity.setProperty(Schema.SimulationMetadata.observersDensity, this.observersDensity);
@@ -108,7 +108,7 @@ public class SimulationMetadata {
         this.beaconMovementStrategy = (String) entity.getProperty(Schema.SimulationMetadata.beaconMovementStrategy);
         this.observerMovementStrategy = (String) entity.getProperty(Schema.SimulationMetadata.observerMovementStrategy);
         this.observerAwakenessStrategy = (String) entity.getProperty(Schema.SimulationMetadata.observerAwakenessStrategy);
-        this.radius = (double) entity.getProperty(Schema.SimulationMetadata.radius);
+        this.transmissionThresholdRadius = (double) entity.getProperty(Schema.SimulationMetadata.transmissionThresholdRadius);
         this.awakenessCycle = ((Long) entity.getProperty(Schema.SimulationMetadata.awakenessCycle)).intValue();
         this.awakenessDuration = ((Long) entity.getProperty(Schema.SimulationMetadata.awakenessDuration)).intValue();
         this.observersDensity = (double) this.observersNum / (this.rowsNum * this.colsNum);

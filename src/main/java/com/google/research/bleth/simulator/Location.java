@@ -1,33 +1,16 @@
 package com.google.research.bleth.simulator;
 
-import java.util.Objects;
+import com.google.auto.value.AutoValue;
 
 /** A location on board. */
-public class Location {
-    public final int row;
-    public final int col;
-
-    public Location(int row, int col) {
-        this.row = row;
-        this.col = col;
+@AutoValue
+public abstract class Location {
+    public static Location create(int row, int col) {
+        return new AutoValue_Location(row, col);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Location location = (Location) o;
-        return row == location.row && col == location.col;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(row, col);
-    }
+    public abstract int row();
+    public abstract int col();
 
     /**
      * Calculate and return the new location based on the current location and the given direction.
@@ -35,6 +18,6 @@ public class Location {
      * @return new Location, differ from the original location in one step, according the given direction.
      */
     public Location moveInDirection(Direction direction) {
-        return new Location(row + direction.getRowDelta(), col + direction.getColDelta());
+        return create(row() + direction.getRowDelta(), col() + direction.getColDelta());
     }
 }

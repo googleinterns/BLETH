@@ -23,8 +23,8 @@ public class DatastoreIT {
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
                     .setAutoIdAllocationPolicy(LocalDatastoreService.AutoIdAllocationPolicy.SCATTERED));
 
-    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
-    private static final Location ONE_ON_ONE_COORDINATE = new Location(1, 1);
+    private static final Location ZERO_ON_ZERO_COORDINATE = Location.create(0, 0);
+    private static final Location ONE_ON_ONE_COORDINATE = Location.create(1, 1);
     private static final int BOARD_DIMENSION = 2;
     private static final int ZERO_ROUND = 0;
     private static final int ONE_ROUND = 1;
@@ -192,6 +192,10 @@ public class DatastoreIT {
     }
 
     public static class FakeSimulation extends AbstractSimulation {
+        protected FakeSimulation(AbstractSimulation.Builder builder) {
+            super(builder);
+        }
+
         public static class Builder extends AbstractSimulation.Builder {
             public String getSimulationType() {
                 return "Fake";
@@ -220,6 +224,18 @@ public class DatastoreIT {
             public AwakenessStrategyFactory.Type getAwakenessStrategyType() {
                 return AwakenessStrategyFactory.Type.FIXED;
             }
+
+            @Override
+            void validateArguments() { }
+
+            @Override
+            void initializeObservers() { }
+
+            @Override
+            void initializeBeacons() { }
+
+            @Override
+            public AbstractSimulation build() { return null; }
         }
     }
 }

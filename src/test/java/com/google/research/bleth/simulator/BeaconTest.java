@@ -9,7 +9,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BeaconTest extends IAgentTest {
-    private static final Location ZERO_ON_ZERO_COORDINATE = new Location(0, 0);
+    private static final Location ZERO_ON_ZERO_COORDINATE = Location.create(0, 0);
     private static final BeaconFactory BEACON_FACTORY = new BeaconFactory();
 
     @Test
@@ -17,7 +17,7 @@ public class BeaconTest extends IAgentTest {
         RealBoard realBoard = new RealBoard(1, 1);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            BEACON_FACTORY.createBeacon(new Location(0, -1), new RandomMovementStrategy(), realBoard);
+            BEACON_FACTORY.createBeacon(Location.create(0, -1), new RandomMovementStrategy(), realBoard);
         });
     }
 
@@ -26,7 +26,7 @@ public class BeaconTest extends IAgentTest {
         RealBoard realBoard = new RealBoard(1, 1);
         Beacon beacon = createStaticBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
-        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
+        assertThat(beacon.transmit().advertisement()).isEqualTo(beacon.getId());
     }
 
     @Test
@@ -34,7 +34,7 @@ public class BeaconTest extends IAgentTest {
         RealBoard realBoard = new RealBoard(3, 3);
         Beacon beacon = createRandomBeaconOnLocation(ZERO_ON_ZERO_COORDINATE, realBoard);
 
-        assertThat(beacon.transmit().advertisement).isEqualTo(beacon.getId());
+        assertThat(beacon.transmit().advertisement()).isEqualTo(beacon.getId());
     }
 
     Beacon createRandomAgentOnLocation(Location initialLocation, RealBoard owner) {

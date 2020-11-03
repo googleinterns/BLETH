@@ -14,7 +14,7 @@ public class Schema {
         public static final String beaconMovementStrategy = "beaconMovementStrategy";
         public static final String observerMovementStrategy = "observerMovementStrategy";
         public static final String observerAwakenessStrategy = "observerAwakenessStrategy";
-        public static final String radius = "radius";
+        public static final String transmissionThresholdRadius = "transmissionThresholdRadius";
         public static final String awakenessCycle = "awakenessCycle";
         public static final String awakenessDuration = "awakenessDuration";
         public static final String observersDensity = "observersDensity";
