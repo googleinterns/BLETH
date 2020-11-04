@@ -7,7 +7,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Objects;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ArrayTable;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.research.bleth.exceptions.BoardStateAlreadyExistsException;
 import com.google.research.bleth.exceptions.ExceedingRoundException;
 
@@ -103,6 +106,17 @@ public class BoardState {
     /** Return a JSON string representing the board state. */
     public String toJson() {
         return new Gson().toJson(this.matrix);
+    }
+
+    /** Returns a map that maps to each populated location the representations (type and id) of the agents on this location. */
+    public Multimap<Location, String> agentsRepresentationsOnStateBoard() {
+        Multimap<Location, String> locationsToRepresentations = ArrayListMultimap.create();
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                locationsToRepresentations.putAll(Location.create(row, col), matrix.get(row, col));
+            }
+        }
+        return ImmutableListMultimap.copyOf(locationsToRepresentations);
     }
 
     /**
