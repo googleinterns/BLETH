@@ -6,14 +6,18 @@ package com.google.research.bleth.simulator;
  */
 public class MovementStrategyFactory {
 
+    /** An enum representing a movement strategy type. */
     public enum Type {
-        STATIONARY(false), RANDOM(false), UP(true);
+        STATIONARY(false),
+        RANDOM(false),
+        UP(true); // a deterministic movement strategy used for testing.
 
-        private final boolean isTestOnly;
+        private final boolean isForTest;
 
-        Type(boolean isTestOnly) { this.isTestOnly = isTestOnly; }
+        Type(boolean isForTest) { this.isForTest = isForTest; }
 
-        public boolean isTestOnly() { return isTestOnly; }
+        /** Return true if this is a strategy for test only usage, and false otherwise. */
+        boolean isForTest() { return isForTest; }
     }
 
     private Type type;

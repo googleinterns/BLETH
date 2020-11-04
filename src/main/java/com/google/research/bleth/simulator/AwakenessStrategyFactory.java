@@ -9,14 +9,17 @@ import java.util.Random;
  */
 public class AwakenessStrategyFactory {
 
+    /** An enum representing an awakeness strategy type. */
     public enum Type {
-        FIXED(false), RANDOM(false);
+        FIXED(false),
+        RANDOM(false);
 
-        private final boolean isTestOnly;
+        private final boolean isForTest;
 
-        Type(boolean isTestOnly) { this.isTestOnly = isTestOnly; }
+        Type(boolean isForTest) { this.isForTest = isForTest; }
 
-        public boolean isTestOnly() { return isTestOnly; }
+        /** Return true if this is a strategy for test only usage, and false otherwise. */
+        boolean isForTest() { return isForTest; }
     }
 
     private Random rand = new Random(); // used for generating the initial awakeness time

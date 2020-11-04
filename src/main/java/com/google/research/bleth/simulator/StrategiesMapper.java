@@ -50,7 +50,7 @@ public class StrategiesMapper {
     public List<String> listMovementStrategies() {
         List<MovementStrategyFactory.Type> allMovementStrategies = Arrays.asList(MovementStrategyFactory.Type.values());
         return allMovementStrategies.stream()
-                .filter(type -> !type.isTestOnly())
+                .filter(type -> !type.isForTest())
                 .map(Enum::toString)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -59,7 +59,7 @@ public class StrategiesMapper {
     public List<String> listAwakenessStrategies(){
         List<AwakenessStrategyFactory.Type> allAwakenessStrategies = Arrays.asList(AwakenessStrategyFactory.Type.values());
         return allAwakenessStrategies.stream()
-                .filter(type -> !type.isTestOnly())
+                .filter(type -> !type.isForTest())
                 .map(Enum::toString)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
