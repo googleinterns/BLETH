@@ -57,7 +57,7 @@ public class BoardStateFactory {
         int colNum = board.getColNum();
         ArrayTable<Integer, Integer, ArrayList<String>> boardStateTable = createEmptyTable(rowNum, colNum);
         Multimap<Location, IAgent> agentsOnBoard = board.agentsOnBoard();
-        for (Location location : agentsOnBoard.keys()) {
+        for (Location location : agentsOnBoard.keySet()) {
             for (IAgent agent : agentsOnBoard.get(location)) {
                 boardStateTable.get(location.row(), location.col()).add(agent.getType() + agent.getId());
             }
