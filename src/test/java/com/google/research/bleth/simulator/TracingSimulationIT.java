@@ -19,8 +19,8 @@ public class TracingSimulationIT {
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
                     .setAutoIdAllocationPolicy(LocalDatastoreService.AutoIdAllocationPolicy.SCATTERED));
 
-    private static final IMovementStrategy MOVE_UP = new UpMovementStrategy();
-    private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
+    private static final MovementStrategyFactory.Type MOVE_UP = MovementStrategyFactory.Type.UP;
+    private static final MovementStrategyFactory.Type STATIONARY = MovementStrategyFactory.Type.STATIONARY;
 
     private static final int BOARD_DIMENSION_EQUALS_TWO = 2;
     private static final int MAX_ROUNDS_EQUALS_TWO = 2;
@@ -47,8 +47,8 @@ public class TracingSimulationIT {
                 .setBeaconsNum(NUMBER_OF_BEACONS_EQUALS_ONE)
                 .setObserversNum(NUMBER_OF_OBSERVERS_EQUALS_ONE)
                 .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(STATIONARY)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(FIXES_AWAKENESS_STRATEGY_TYPE)
