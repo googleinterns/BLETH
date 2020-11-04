@@ -7,16 +7,14 @@ import com.google.appengine.api.datastore.dev.LocalDatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.Iterables;
-import com.google.research.bleth.exceptions.BoardStateAlreadyExistsException;
-import com.google.research.bleth.exceptions.ExceedingRoundException;
-import org.junit.After;
-import org.junit.Before;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Test;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.junit.Test;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,7 +26,6 @@ public class TracingSimulationIT {
 
     private static final IMovementStrategy MOVE_UP = new UpMovementStrategy();
     private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
-
     private static final double TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE = 1.0;
     private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
     private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
@@ -61,12 +58,12 @@ public class TracingSimulationIT {
                 .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
                 .build();
 
-        Map<IAgent, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getBoard());
+        Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
 
         simulation.run();
-        Map<IAgent, Location> terminalAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getBoard());
+        Map<String, Location> terminalAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
 
-        for (IAgent agent : initialAgentsToLocations.keySet()) {
+        for (String agent : initialAgentsToLocations.keySet()) {
             assertThat(terminalAgentsToLocations.get(agent)).isEqualTo(
                        predictLocationAfterMoveUp(initialAgentsToLocations.get(agent), roundsNum));
         }
@@ -94,12 +91,12 @@ public class TracingSimulationIT {
                 .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
                 .build();
 
-        Map<IAgent, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getBoard());
+        Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
 
         simulation.run();
-        Map<IAgent, Location> terminalAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getBoard());
+        Map<String, Location> terminalAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
 
-        for (IAgent agent : initialAgentsToLocations.keySet()) {
+        for (String agent : initialAgentsToLocations.keySet()) {
             assertThat(terminalAgentsToLocations.get(agent)).isEqualTo(initialAgentsToLocations.get(agent));
         }
     }
@@ -111,7 +108,7 @@ public class TracingSimulationIT {
         int colsNum = 2;
         int beaconsNum = 1;
         int observersNum = 1;
-        double transmissionRadius = 2.0;
+        double transmissionRadius = 2.0; // Includes the whole board
 
         AbstractSimulation simulation = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
@@ -127,15 +124,14 @@ public class TracingSimulationIT {
                 .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
                 .build();
 
-        Map<IAgent, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getBoard());
-        Collection<IAgent> observers = initialAgentsToLocations.keySet().stream().filter(agent -> agent instanceof Observer).collect(Collectors.toSet());
-        Location observerInitialLocation = Iterables.getOnlyElement(observers).getLocation();
+        Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
+        Location observerInitialLocation = Iterables.getOnlyElement(simulation.observers).getLocation();
 
         simulation.run();
-        Map<IAgent, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoard());
+        Map<String, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoardState());
 
-        Set<IAgent> beacons = initialAgentsToLocations.keySet().stream().filter(agent -> agent instanceof Beacon).collect(Collectors.toSet());
-        for (IAgent beacon : beacons) {
+        Set<String> beacons = initialAgentsToLocations.keySet().stream().filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
+        for (String beacon : beacons) {
             assertThat(estimatedAgentsToLocations.get(beacon)).isEqualTo(observerInitialLocation);
         }
     }
@@ -163,15 +159,14 @@ public class TracingSimulationIT {
                 .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
                 .build();
 
-        Map<IAgent, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getBoard());
-        Set<IAgent> observers = initialAgentsToLocations.keySet().stream().filter(agent -> agent instanceof Observer).collect(Collectors.toSet());
-        Location observersAverageLocation = averageLocationOfObservers(observers);
+        Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
+        Location observersAverageLocation = averageLocationOfObservers(simulation.observers);
 
         simulation.run();
-        Map<IAgent, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoard());
+        Map<String, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoardState());
 
-        Set<IAgent> beacons = initialAgentsToLocations.keySet().stream().filter(agent -> agent instanceof Beacon).collect(Collectors.toSet());
-        for (IAgent agent : beacons) {
+        Set<String> beacons = initialAgentsToLocations.keySet().stream().filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
+        for (String agent : beacons) {
             assertThat(estimatedAgentsToLocations.get(agent)).isEqualTo(observersAverageLocation);
         }
     }
@@ -181,14 +176,15 @@ public class TracingSimulationIT {
         helper.tearDown();
     }
 
-    private Location averageLocationOfObservers(Set<IAgent> observers) {
+    private Location averageLocationOfObservers(Collection<Observer> observers) {
         int newRow = (int) Math.round((observers.stream().mapToDouble(observer -> observer.getLocation().row()).average().getAsDouble()));
         int newCol = (int) Math.round((observers.stream().mapToDouble(observer -> observer.getLocation().col()).average().getAsDouble()));
         return Location.create(newRow, newCol);
     }
 
-    private Map<IAgent, Location> mapAgentsToLocationsOnBoard(Board board) {
-        return board.agentsOnBoard().entries().stream().collect(toImmutableMap(Map.Entry::getValue, Map.Entry::getKey));
+    private Map<String, Location> mapAgentsToLocationsOnBoard(BoardState boardState) {
+        return boardState.agentsRepresentationsOnStateBoard().entries().stream().collect(
+                         toImmutableMap(Map.Entry::getValue, Map.Entry::getKey));
     }
 
     private Location predictLocationAfterMoveUp(Location location, int numberOfRounds) {
