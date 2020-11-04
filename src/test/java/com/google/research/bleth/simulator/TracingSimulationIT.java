@@ -3,8 +3,14 @@ package com.google.research.bleth.simulator;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.appengine.api.datastore.dev.LocalDatastoreService;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.Iterables;
-
+import com.google.research.bleth.exceptions.BoardStateAlreadyExistsException;
+import com.google.research.bleth.exceptions.ExceedingRoundException;
+import org.junit.After;
+import org.junit.Before;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +22,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class TracingSimulationIT {
 
+    private final LocalServiceTestHelper helper =
+            new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
+                    .setAutoIdAllocationPolicy(LocalDatastoreService.AutoIdAllocationPolicy.SCATTERED));
+
     private static final IMovementStrategy MOVE_UP = new UpMovementStrategy();
     private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
 
@@ -23,6 +33,11 @@ public class TracingSimulationIT {
     private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
     private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
     private static final AwakenessStrategyFactory.Type FIXED_AWAKENESS_STRATEGY_TYPE = AwakenessStrategyFactory.Type.FIXED;
+
+    @Before
+    public void setUp() {
+        helper.setUp();
+    }
 
     @Test
     public void runTwoRoundsSimulationVerifyMovingUpAgentsLocations() {
@@ -159,6 +174,11 @@ public class TracingSimulationIT {
         for (IAgent agent : beacons) {
             assertThat(estimatedAgentsToLocations.get(agent)).isEqualTo(observersAverageLocation);
         }
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     private Location averageLocationOfObservers(Set<IAgent> observers) {
