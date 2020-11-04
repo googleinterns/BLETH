@@ -1,12 +1,10 @@
 package com.google.research.bleth.simulator;
 
-import org.reflections.Reflections;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A singleton class providing a methods for mapping strings to movement strategy objects and awakeness strategies types.
@@ -16,7 +14,7 @@ import java.util.Set;
 public class StrategiesMapper {
 
     private static StrategiesMapper instance = null;
-    private HashMap<String, Class<? extends IMovementStrategy>> movement = new HashMap<>();
+    private HashMap<String, MovementStrategyFactory.Type> movement = new HashMap<>();
     private HashMap<String, AwakenessStrategyFactory.Type> awakeness = new HashMap<>();
 
     /**
@@ -31,16 +29,12 @@ public class StrategiesMapper {
     }
 
     /**
-     * Create and return a new movement strategy based on the type provided as a string.
-     * @param typeAsString a string indicating the type of movement strategy to create.
-     * @return a movement strategy object.
-     * @throws NoSuchMethodException if the concrete movement strategy does not have a declared constructor.
-     * @throws IllegalAccessException if the concrete movement strategy's constructor is not accessible.
-     * @throws InstantiationException if the instantiation fails.
+     * Return the movement strategy type corresponding to the given string.
+     * @param typeAsString a string indicating the type of movement strategy to return.
+     * @return a movement strategy type.
      */
-    public IMovementStrategy getMovementStrategy(String typeAsString)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        return movement.get(typeAsString).getDeclaredConstructor().newInstance();
+    public MovementStrategyFactory.Type getMovementStrategy(String typeAsString) {
+        return movement.get(typeAsString);
     }
 
     /**
@@ -52,21 +46,27 @@ public class StrategiesMapper {
         return awakeness.get(typeAsString);
     }
 
-    /** Return a list of all strings representing all existing movement strategies. */
+    /** Return a list of all strings representing all existing movement strategies, excluding test-only strategies. */
     public List<String> listMovementStrategies() {
-        return new ArrayList<>(movement.keySet());
+        List<MovementStrategyFactory.Type> allMovementStrategies = Arrays.asList(MovementStrategyFactory.Type.values());
+        return allMovementStrategies.stream()
+                .filter(type -> !type.isTestOnly())
+                .map(Enum::toString)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    /** Return a list of all strings representing all existing awakeness strategies. */
-    public List<String> listAwakenessStrategies() {
-        return new ArrayList<>(awakeness.keySet());
+    /** Return a list of all strings representing all existing awakeness strategies, excluding test-only strategies. */
+    public List<String> listAwakenessStrategies(){
+        List<AwakenessStrategyFactory.Type> allAwakenessStrategies = Arrays.asList(AwakenessStrategyFactory.Type.values());
+        return allAwakenessStrategies.stream()
+                .filter(type -> !type.isTestOnly())
+                .map(Enum::toString)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private StrategiesMapper() {
-        Reflections reflections = new Reflections("com.google.research.bleth.simulator");
-        Set<Class<? extends IMovementStrategy>> implementations = reflections.getSubTypesOf(IMovementStrategy.class);
-        for (Class<? extends IMovementStrategy> impl : implementations) {
-            movement.put(impl.toString(), impl);
+        for (MovementStrategyFactory.Type type : MovementStrategyFactory.Type.values()) {
+            movement.put(type.toString(), type);
         }
 
         for (AwakenessStrategyFactory.Type type : AwakenessStrategyFactory.Type.values()) {
