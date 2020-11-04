@@ -103,8 +103,8 @@ public abstract class AbstractSimulation {
         protected int observersNum;
         protected List<Beacon> beacons = new ArrayList<>();
         protected List<Observer> observers = new ArrayList<>();
-        protected IMovementStrategy beaconMovementStrategy;
-        protected IMovementStrategy observerMovementStrategy;
+        protected MovementStrategyFactory.Type beaconMovementStrategyType;
+        protected MovementStrategyFactory.Type observerMovementStrategyType;
         protected AwakenessStrategyFactory.Type awakenessStrategyType;
         protected double transmissionThresholdRadius;
         protected int awakenessCycle;
@@ -136,13 +136,13 @@ public abstract class AbstractSimulation {
         }
 
         /** Return the beacons' movement strategy of the simulation created by the builder. */
-        public IMovementStrategy getBeaconMovementStrategy() {
-            return beaconMovementStrategy;
+        public MovementStrategyFactory.Type getBeaconMovementStrategyType() {
+            return beaconMovementStrategyType;
         }
 
         /** Return the observers' movement strategy of the simulation created by the builder. */
-        public IMovementStrategy getObserverMovementStrategy() {
-            return observerMovementStrategy;
+        public MovementStrategyFactory.Type getObserverMovementStrategyType() {
+            return observerMovementStrategyType;
         }
 
         /** Return the observers' awakeness strategy type of the simulation created by the builder. */
@@ -261,22 +261,22 @@ public abstract class AbstractSimulation {
         }
 
         /**
-         * Set the beacons' movement strategy.
-         * @param beaconMovementStrategy is the movement strategy for all beacons.
+         * Set the beacons' movement strategy type.
+         * @param beaconMovementStrategyType is the movement strategy type for all beacons.
          * @return this, to provide chaining.
          */
-        public Builder setBeaconMovementStrategy(IMovementStrategy beaconMovementStrategy) {
-            this.beaconMovementStrategy = beaconMovementStrategy;
+        public Builder setBeaconMovementStrategyType(MovementStrategyFactory.Type beaconMovementStrategyType) {
+            this.beaconMovementStrategyType = beaconMovementStrategyType;
             return this;
         }
 
         /**
-         * Set the observers' movement strategy.
-         * @param observerMovementStrategy is the movement strategy for all observers.
+         * Set the observers' movement strategy type.
+         * @param observerMovementStrategyType is the movement strategy type for all observers.
          * @return this, to provide chaining.
          */
-        public Builder setObserverMovementStrategy(IMovementStrategy observerMovementStrategy) {
-            this.observerMovementStrategy = observerMovementStrategy;
+        public Builder setObserverMovementStrategyType(MovementStrategyFactory.Type observerMovementStrategyType) {
+            this.observerMovementStrategyType = observerMovementStrategyType;
             return this;
         }
 
