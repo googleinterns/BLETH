@@ -22,14 +22,14 @@ public abstract class AbstractSimulation {
     private final double transmissionThresholdRadius;
     private HashMap<String, Double> stats = new HashMap<>();
 
-    /** Returns the simulation's real board. */
-    RealBoard getBoard() {
-        return board;
+    /** Returns a static snapshot of the real board at the current round. */
+    BoardState getRealBoardState() {
+        return BoardStateFactory.create(board, id, Math.min(currentRound, maxNumberOfRounds - 1));
     }
 
-    /** Returns the resolver's estimated board. */
-    EstimatedBoard getEstimatedBoard() {
-        return resolver.getBoard();
+    /** Returns a static snapshot of the resolver's estimated board at the current round. */
+    BoardState getEstimatedBoardState() {
+        return BoardStateFactory.create(resolver.getBoard(), id, Math.min(currentRound, maxNumberOfRounds - 1));
     }
 
     /** Run entire simulation logic, including writing data to db. */
