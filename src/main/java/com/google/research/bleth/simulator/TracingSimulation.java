@@ -35,8 +35,8 @@ public class TracingSimulation extends AbstractSimulation {
                     "Transmission threshold radius must be positive.");
             checkArgument(maxNumberOfRounds > 0,
                     "Maximum number of rounds must be positive.");
-            checkNotNull(beaconMovementStrategy, "No beacon movement strategy has been set.");
-            checkNotNull(observerMovementStrategy, "No observer movement strategy has been set.");
+            checkNotNull(beaconMovementStrategyType, "No beacon movement strategy has been set.");
+            checkNotNull(observerMovementStrategyType, "No observer movement strategy has been set.");
             checkNotNull(awakenessStrategyType, "No awakeness strategy type has been set.");
         }
 
@@ -44,11 +44,13 @@ public class TracingSimulation extends AbstractSimulation {
         void initializeObservers() {
             Random rand = new Random();
             ObserverFactory observerFactory = new ObserverFactory();
+            MovementStrategyFactory movementStrategyFactory = new MovementStrategyFactory(observerMovementStrategyType);
             AwakenessStrategyFactory awakenessStrategyFactory = new AwakenessStrategyFactory(awakenessStrategyType);
             for (int i = 0; i < observersNum; i++) {
                 Location initialLocation = Location.create(rand.nextInt(rowNum), rand.nextInt(colNum));
                 IAwakenessStrategy awakenessStrategy = awakenessStrategyFactory.createStrategy(awakenessCycle, awakenessDuration);
-                Observer observer = observerFactory.createObserver(initialLocation, observerMovementStrategy, resolver,
+                IMovementStrategy movementStrategy = movementStrategyFactory.createStrategy();
+                Observer observer = observerFactory.createObserver(initialLocation, movementStrategy, resolver,
                 realBoard, awakenessStrategy);
                 observers.add(observer);
             }
@@ -58,9 +60,11 @@ public class TracingSimulation extends AbstractSimulation {
         void initializeBeacons() {
             Random rand = new Random();
             BeaconFactory beaconFactory = new BeaconFactory();
+            MovementStrategyFactory movementStrategyFactory = new MovementStrategyFactory(beaconMovementStrategyType);
             for (int i = 0; i < beaconsNum; i++) {
                 Location initialLocation = Location.create(rand.nextInt(rowNum), rand.nextInt(colNum));
-                Beacon beacon = beaconFactory.createBeacon(initialLocation, beaconMovementStrategy, realBoard);
+                IMovementStrategy movementStrategy = movementStrategyFactory.createStrategy();
+                Beacon beacon = beaconFactory.createBeacon(initialLocation, movementStrategy, realBoard);
                 beacons.add(beacon);
             }
         }
@@ -69,8 +73,8 @@ public class TracingSimulation extends AbstractSimulation {
         public AbstractSimulation build() {
             validateArguments();
             this.realBoard = new RealBoard(this.rowNum, this.colNum);
-            this.resolver = GlobalResolver.create(this.rowNum, this.colNum, this.beacons);
             initializeBeacons();
+            this.resolver = GlobalResolver.create(this.rowNum, this.colNum, this.beacons);
             initializeObservers();
             writeMetadata();
             return new TracingSimulation(this);
