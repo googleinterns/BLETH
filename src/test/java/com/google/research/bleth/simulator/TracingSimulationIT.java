@@ -24,8 +24,8 @@ public class TracingSimulationIT {
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
                     .setAutoIdAllocationPolicy(LocalDatastoreService.AutoIdAllocationPolicy.SCATTERED));
 
-    private static final IMovementStrategy MOVE_UP = new UpMovementStrategy();
-    private static final IMovementStrategy STATIONARY = new StationaryMovementStrategy();
+    private static final MovementStrategyFactory.Type MOVE_UP = MovementStrategyFactory.Type.UP;
+    private static final MovementStrategyFactory.Type STATIONARY = MovementStrategyFactory.Type.STATIONARY;
     private static final double TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE = 1.0;
     private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
     private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
@@ -50,8 +50,8 @@ public class TracingSimulationIT {
                 .setBeaconsNum(beaconsNum)
                 .setObserversNum(observersNum)
                 .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(MOVE_UP)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(MOVE_UP)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
@@ -83,8 +83,8 @@ public class TracingSimulationIT {
                 .setBeaconsNum(beaconsNum)
                 .setObserversNum(observersNum)
                 .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
-                .setBeaconMovementStrategy(STATIONARY)
-                .setObserverMovementStrategy(STATIONARY)
+                .setBeaconMovementStrategyType(STATIONARY)
+                .setObserverMovementStrategyType(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
@@ -116,8 +116,8 @@ public class TracingSimulationIT {
                 .setBeaconsNum(beaconsNum)
                 .setObserversNum(observersNum)
                 .setTransmissionThresholdRadius(transmissionRadius)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(STATIONARY)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
@@ -152,8 +152,8 @@ public class TracingSimulationIT {
                 .setBeaconsNum(beaconsNum)
                 .setObserversNum(observersNum)
                 .setTransmissionThresholdRadius(transmissionRadius)
-                .setBeaconMovementStrategy(MOVE_UP)
-                .setObserverMovementStrategy(STATIONARY)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
                 .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)

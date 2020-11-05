@@ -213,12 +213,12 @@ public class DatastoreIT {
                 return MAX_NUMBER_OF_ROUNDS;
             }
 
-            public IMovementStrategy getBeaconMovementStrategy() {
-                return new RandomMovementStrategy();
+            public MovementStrategyFactory.Type getBeaconMovementStrategyType() {
+                return MovementStrategyFactory.Type.RANDOM;
             }
 
-            public IMovementStrategy getObserverMovementStrategy() {
-                return new StationaryMovementStrategy();
+            public MovementStrategyFactory.Type getObserverMovementStrategyType() {
+                return MovementStrategyFactory.Type.STATIONARY;
             }
 
             public AwakenessStrategyFactory.Type getAwakenessStrategyType() {

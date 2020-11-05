@@ -2,7 +2,7 @@ package com.google.research.bleth.simulator;
 
 /**
  * A deterministic movement strategy using for testing.
- * Moves the agent up whenever this is a legal mo, otherwise stays in the same location.
+ * Moves the agent up whenever this is a legal move, otherwise stays in the same location.
  */
 public class UpMovementStrategy implements IMovementStrategy {
 
