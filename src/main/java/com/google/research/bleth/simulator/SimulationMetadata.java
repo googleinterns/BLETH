@@ -36,8 +36,8 @@ public class SimulationMetadata {
         this.observersNum = builder.getObserversNum();
         this.rowsNum = builder.getRowNum();
         this.colsNum = builder.getColNum();
-        this.beaconMovementStrategy = builder.getBeaconMovementStrategy().toString();
-        this.observerMovementStrategy = builder.getObserverMovementStrategy().toString();
+        this.beaconMovementStrategy = builder.getBeaconMovementStrategyType().toString();
+        this.observerMovementStrategy = builder.getObserverMovementStrategyType().toString();
         this.observerAwakenessStrategy = builder.getAwakenessStrategyType().toString();
         this.transmissionThresholdRadius = builder.getTransmissionThresholdRadius();
         this.awakenessCycle = builder.getAwakenessCycle();
