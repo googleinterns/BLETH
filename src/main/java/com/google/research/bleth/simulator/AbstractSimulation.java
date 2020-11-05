@@ -24,12 +24,14 @@ public abstract class AbstractSimulation {
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
-        return BoardStateFactory.create(board, id, Math.min(currentRound, maxNumberOfRounds - 1));
+        return BoardStateFactory.create(board, id,
+                Math.min(currentRound, maxNumberOfRounds - 1)); // If the game is over return its final state
     }
 
     /** Returns a static snapshot of the resolver's estimated board at the current round. */
     BoardState getEstimatedBoardState() {
-        return BoardStateFactory.create(resolver.getBoard(), id, Math.min(currentRound, maxNumberOfRounds - 1));
+        return BoardStateFactory.create(resolver.getBoard(), id,
+                Math.min(currentRound, maxNumberOfRounds - 1)); // If the game is over return its final state
     }
 
     /** Run entire simulation logic, including writing data to db. */

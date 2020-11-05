@@ -29,7 +29,6 @@ public class TracingSimulationIT {
     private static final double TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE = 1.0;
     private static final int AWAKENESS_CYCLE_EQUALS_TWO = 2;
     private static final int AWAKENESS_DURATION_EQUALS_ONE = 1;
-    private static final AwakenessStrategyFactory.Type FIXED_AWAKENESS_STRATEGY_TYPE = AwakenessStrategyFactory.Type.FIXED;
 
     @Before
     public void setUp() {
@@ -55,7 +54,7 @@ public class TracingSimulationIT {
                 .setObserverMovementStrategy(MOVE_UP)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
                 .build();
 
         Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
@@ -64,8 +63,8 @@ public class TracingSimulationIT {
         Map<String, Location> terminalAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
 
         for (String agent : initialAgentsToLocations.keySet()) {
-            assertThat(terminalAgentsToLocations.get(agent)).isEqualTo(
-                       predictLocationAfterMoveUp(initialAgentsToLocations.get(agent), roundsNum));
+            assertThat(terminalAgentsToLocations.get(agent))
+                      .isEqualTo(predictLocationAfterMoveUp(initialAgentsToLocations.get(agent), roundsNum));
         }
     }
 
@@ -88,7 +87,7 @@ public class TracingSimulationIT {
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
                 .build();
 
         Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
@@ -121,7 +120,7 @@ public class TracingSimulationIT {
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
                 .build();
 
         Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
@@ -130,7 +129,8 @@ public class TracingSimulationIT {
         simulation.run();
         Map<String, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoardState());
 
-        Set<String> beacons = initialAgentsToLocations.keySet().stream().filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
+        Set<String> beacons = initialAgentsToLocations.keySet().stream()
+                              .filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
         for (String beacon : beacons) {
             assertThat(estimatedAgentsToLocations.get(beacon)).isEqualTo(observerInitialLocation);
         }
@@ -156,7 +156,7 @@ public class TracingSimulationIT {
                 .setObserverMovementStrategy(STATIONARY)
                 .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
                 .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setAwakenessStrategyType(FIXED_AWAKENESS_STRATEGY_TYPE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
                 .build();
 
         Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
@@ -165,7 +165,8 @@ public class TracingSimulationIT {
         simulation.run();
         Map<String, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoardState());
 
-        Set<String> beacons = initialAgentsToLocations.keySet().stream().filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
+        Set<String> beacons = initialAgentsToLocations.keySet().stream()
+                              .filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
         for (String agent : beacons) {
             assertThat(estimatedAgentsToLocations.get(agent)).isEqualTo(observersAverageLocation);
         }

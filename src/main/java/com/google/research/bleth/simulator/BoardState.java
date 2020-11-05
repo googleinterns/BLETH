@@ -110,13 +110,14 @@ public class BoardState {
 
     /** Returns a map that maps to each populated location the representations (type and id) of the agents on this location. */
     public Multimap<Location, String> agentsRepresentationsOnStateBoard() {
-        Multimap<Location, String> locationsToRepresentations = ArrayListMultimap.create();
+        ImmutableListMultimap.Builder<Location, String> locationsToRepresentations =
+                                                        new ImmutableListMultimap.Builder<Location, String>();
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 locationsToRepresentations.putAll(Location.create(row, col), matrix.get(row, col));
             }
         }
-        return ImmutableListMultimap.copyOf(locationsToRepresentations);
+        return locationsToRepresentations.build();
     }
 
     /**
