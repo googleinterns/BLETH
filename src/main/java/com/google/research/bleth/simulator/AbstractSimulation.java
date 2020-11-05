@@ -18,13 +18,20 @@ public abstract class AbstractSimulation {
     private RealBoard board;
     protected final ImmutableList<Beacon> beacons;
     protected final ImmutableList<Observer> observers;
-    private IResolver resolver;
+    private IGlobalResolver resolver;
     private final double transmissionThresholdRadius;
     private HashMap<String, Double> stats = new HashMap<>();
 
-    /** Returns the simulation's real board. */
-    RealBoard getBoard() {
-        return board;
+    /** Returns a static snapshot of the real board at the current round. */
+    BoardState getRealBoardState() {
+        return BoardStateFactory.create(board, id,
+                Math.min(currentRound, maxNumberOfRounds - 1)); // If the game is over return its final state
+    }
+
+    /** Returns a static snapshot of the resolver's estimated board at the current round. */
+    BoardState getEstimatedBoardState() {
+        return BoardStateFactory.create(resolver.getBoard(), id,
+                Math.min(currentRound, maxNumberOfRounds - 1)); // If the game is over return its final state
     }
 
     /** Run entire simulation logic, including writing data to db. */
@@ -79,7 +86,9 @@ public abstract class AbstractSimulation {
     }
 
     /** Update resolver's estimated board. */
-    void resolverEstimate() { }
+    void resolverEstimate() {
+        resolver.estimate();
+    }
 
     /** Write current-round state of the simulation to db. */
     void writeRoundState() { }
@@ -98,7 +107,7 @@ public abstract class AbstractSimulation {
         protected int rowNum;
         protected int colNum;
         protected RealBoard realBoard;
-        protected IResolver resolver;
+        protected IGlobalResolver resolver;
         protected int beaconsNum;
         protected int observersNum;
         protected List<Beacon> beacons = new ArrayList<>();
@@ -326,6 +335,6 @@ public abstract class AbstractSimulation {
     }
 
     private static double distance(Location firstLocation, Location secondLocation) {
-        return (double) (Math.abs(firstLocation.row() - secondLocation.row()) + Math.abs(firstLocation.col() - secondLocation.col()));
+        return Math.abs(firstLocation.row() - secondLocation.row()) + Math.abs(firstLocation.col() - secondLocation.col());
     }
 }
