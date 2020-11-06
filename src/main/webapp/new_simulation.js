@@ -26,7 +26,7 @@ function updateFormStrategiesList(strategies) {
 }
 
 /**
- * Add values stored in an array to a datalist corresponding the a given id.
+ * Add values stored in an array to a datalist corresponding to a given id.
  * @param {String} datalistId is the datalist id.
  * @param {Array} valuesArray is an array of values to be added to the datalist.
  */
