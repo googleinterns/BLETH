@@ -18,11 +18,8 @@ function retrieveStrategies() {
  * @param {Array} strategies is a JSON object stirng lists of movement and awakeness strategies (as strings).
  */
 function updateFormStrategiesList(strategies) {
-    movementStrategies = strategies.movement;
-    awakenessStrategies = strategies.awakeness;
-    updateDatalistValuesFromArray('beaconMovementStrategy', movementStrategies);
-    updateDatalistValuesFromArray('observerMovementStrategy', movementStrategies);
-    updateDatalistValuesFromArray('observerAwakenessStrategy', awakenessStrategies);
+    updateDatalistValuesFromArray('movementStrategy', strategies.movement);
+    updateDatalistValuesFromArray('awakenessStrategy', strategies.awakeness);
 }
 
 /**

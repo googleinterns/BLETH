@@ -25,14 +25,16 @@
 
         <!-- Agents' movement and awakeness strategies. -->
         <label for="beaconMovementStrategy">Beacons' Movement Strategy</label><br>
-        <input name="car" list="beaconMovementStrategy" /><br>
-        <datalist id="beaconMovementStrategy"></datalist>
+        <input id="beaconMovementStrategy" list="movementStrategy"/><br>
+        
         <label for="observerMovementStrategy">Observers' Movement Strategy</label><br>
-        <input name="car" list="observerMovementStrategy" /><br>
-        <datalist id="observerMovementStrategy"></datalist>
+        <input id="observerMovementStrategy" list="movementStrategy"/><br>
+        
         <label for="observerAwakenessStrategy">Observers' Awakeness Strategy</label><br>
-        <input name="car" list="observerAwakenessStrategy" /><br>
-        <datalist id="observerAwakenessStrategy"></datalist>
+        <input id="observerAwakenessStrategy" list="awakenessStrategy"/><br>
+        
+        <datalist id="movementStrategy"></datalist>
+        <datalist id="awakenessStrategy"></datalist>
 
         <!-- Observers' awakeness cycle and duration. -->
         <label for="awakenessCycle">Awakeness Cycle</label><br>
