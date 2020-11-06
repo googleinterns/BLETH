@@ -1,7 +1,7 @@
 package com.google.research.bleth.servlets;
 
-import com.google.appengine.repackaged.com.google.gson.Gson;
-import com.google.appengine.repackaged.com.google.gson.JsonArray;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.research.bleth.simulator.StrategiesMapper;
 
 import java.io.IOException;
