@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** A servlet used for displaying all string representations of movement and awakeness strategies. */
 @WebServlet("/list-strategies")
 public class ListStrategiesServlet extends HttpServlet {
 
