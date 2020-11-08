@@ -1,7 +1,6 @@
 package com.google.research.bleth.simulator;
 
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,9 @@ public abstract class AbstractSimulation {
     protected final ImmutableList<Observer> observers;
     private IGlobalResolver resolver;
     private final double transmissionThresholdRadius;
-    private HashMap<String, Double> stats = new HashMap<>();
+
+    private HashMap<String, Double> distanceStats = new HashMap<>();
+    private HashMap<String, Double> beaconsObservedPercent = new HashMap<>();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -68,14 +69,20 @@ public abstract class AbstractSimulation {
      */
     void beaconsToObservers() {
         for (Beacon beacon : beacons) {
+            boolean observed = false; // for stats
             Transmission transmission = beacon.transmit();
             for (Observer observer : observers) {
                 if (observer.isAwake()) {
                     double distance = distance(beacon.getLocation(), observer.getLocation());
                     if (distance <= transmissionThresholdRadius) {
                         observer.observe(transmission);
+                        observed = true; // for stats
                     }
                 }
+            }
+            if (observed) {
+                beaconsObservedPercent.put(String.valueOf(beacon.getId()),
+                        beaconsObservedPercent.getOrDefault(String.valueOf(beacon.getId()), 0D) + 1); // for stats
             }
         }
     }
@@ -94,10 +101,14 @@ public abstract class AbstractSimulation {
     void writeRoundState() { }
 
     /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
-    void updateSimulationStats() { }
+    void updateSimulationStats() {
+
+    }
 
     /** Write final simulation statistical data to db. */
-    void writeSimulationStats() { }
+    void writeSimulationStats() {
+        // add all the beacons that were never observed, if there are such, to the map as 0
+    }
 
     /** An abstract builder class designed to separate the construction of a simulation from its representation. */
     public static abstract class Builder {
@@ -118,6 +129,7 @@ public abstract class AbstractSimulation {
         protected double transmissionThresholdRadius;
         protected int awakenessCycle;
         protected int awakenessDuration;
+
 
         /** Return the maximal number of rounds of the simulation created by the builder. */
         public int getMaxNumberOfRounds() {
