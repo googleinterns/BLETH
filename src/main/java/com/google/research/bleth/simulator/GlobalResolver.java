@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import java.util.function.Function;
@@ -65,6 +66,11 @@ public final class GlobalResolver implements IGlobalResolver {
     @Override
     public EstimatedBoard getBoard() {
         return estimatedBoard;
+    }
+
+    /** Returns the map between each beacon and its estimated location. */
+    public Map<Beacon, Location> getBeaconsToEstimatedLocations() {
+       return ImmutableMap.copyOf(beaconsToEstimatedLocations);
     }
 
     private GlobalResolver(EstimatedBoard estimatedBoard, Map<Transmission, Beacon> transmissionsToBeacons) {

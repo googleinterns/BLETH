@@ -1,9 +1,12 @@
 package com.google.research.bleth.simulator;
 
+import static java.util.stream.Collectors.toList;
+
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An abstract class representing a BLETH simulation.
@@ -102,12 +105,35 @@ public abstract class AbstractSimulation {
 
     /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
     void updateSimulationStats() {
+        Map<Beacon, Location> beaconsToEstimatedLocations = ((GlobalResolver) resolver).getBeaconsToEstimatedLocations();
+        List<Double> distances = beaconsToEstimatedLocations.keySet().stream() // ignore beacons that have never been observed
+                .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toList());
 
+        double min = distances.stream().min(Double::compareTo).orElse(Double.POSITIVE_INFINITY);
+        double max = distances.stream().max(Double::compareTo).orElse(Double.NEGATIVE_INFINITY);
+        double average;
+        if (distances.isEmpty()) { // distances is empty until the first round an observer observed a beacon
+            average = 0;
+        } else {
+            average = distances.stream().mapToDouble(d -> d.doubleValue()).sum() / distances.size();
+        }
+
+        if (min < Double.POSITIVE_INFINITY) {
+            distanceStats.put("min", Math.min(distanceStats.getOrDefault("min", Double.POSITIVE_INFINITY), min));
+        }
+        if (max > Double.NEGATIVE_INFINITY) {
+            distanceStats.put("max", Math.max(distanceStats.getOrDefault("max", Double.NEGATIVE_INFINITY), max));
+        }
+        if (!distances.isEmpty()) {
+            double allRoundsAverage = (distanceStats.getOrDefault("sum", 0D) * (currentRound - 1) + average) / currentRound;
+            distanceStats.put("avg", allRoundsAverage);
+        }
     }
 
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() {
         // add all the beacons that were never observed, if there are such, to the map as 0
+        // write to db distanceStats and beaconsObserved
     }
 
     /** An abstract builder class designed to separate the construction of a simulation from its representation. */
