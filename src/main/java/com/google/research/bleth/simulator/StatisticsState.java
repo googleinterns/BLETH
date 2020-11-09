@@ -7,6 +7,9 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableMap;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +69,7 @@ public class StatisticsState {
      */
     public static Map<String, Double> readDistancesStats(String simulationId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Map<String, Double> distanceStats = new HashMap<>();
+        ImmutableMap.Builder<String, Double> distanceStats = new ImmutableMap.Builder<>();
 
         Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
@@ -77,7 +80,7 @@ public class StatisticsState {
             Double value = (Double) entity.getProperty(Schema.StatisticsState.value);
             distanceStats.put(kind, value);
         }
-        return distanceStats;
+        return distanceStats.build();
     }
 
     /**
@@ -87,7 +90,7 @@ public class StatisticsState {
      */
     public static Map<String, Double> readBeaconsObservedPercentStats(String simulationId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Map<String, Double> beaconsObserved = new HashMap<>();
+        ImmutableMap.Builder<String, Double> beaconsObserved = new ImmutableMap.Builder<>();
 
         Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
@@ -98,7 +101,7 @@ public class StatisticsState {
             Double percent = (Double) entity.getProperty(Schema.StatisticsState.percent);
             beaconsObserved.put(beaconId, percent);
         }
-        return beaconsObserved;
+        return beaconsObserved.build();
     }
 
     private StatisticsState(String simulationId, Map<String, Double> distanceStats, Map<String, Double> beaconsObserved) {

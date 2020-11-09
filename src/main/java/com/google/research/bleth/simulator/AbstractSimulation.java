@@ -159,7 +159,6 @@ public abstract class AbstractSimulation {
         protected int awakenessCycle;
         protected int awakenessDuration;
 
-
         /** Return the maximal number of rounds of the simulation created by the builder. */
         public int getMaxNumberOfRounds() {
             return maxNumberOfRounds;

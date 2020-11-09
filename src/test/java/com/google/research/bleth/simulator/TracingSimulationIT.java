@@ -169,7 +169,7 @@ public class TracingSimulationIT {
         Set<String> beacons = initialAgentsToLocations.keySet().stream()
                               .filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
         for (String agent : beacons) {
-                assertThat(estimatedAgentsToLocations.get(agent)).isEqualTo(observersAverageLocation);
+            assertThat(estimatedAgentsToLocations.get(agent)).isEqualTo(observersAverageLocation);
         }
     }
 
