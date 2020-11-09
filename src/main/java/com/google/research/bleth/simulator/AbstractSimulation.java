@@ -17,14 +17,14 @@ public abstract class AbstractSimulation {
     private final String id;
     private int currentRound = 0;
     private final int maxNumberOfRounds;
-    private RealBoard board;
+    private final RealBoard board;
     protected final ImmutableList<Beacon> beacons;
     protected final ImmutableList<Observer> observers;
-    private IGlobalResolver resolver;
+    private final IGlobalResolver resolver;
     private final double transmissionThresholdRadius;
 
-    private HashMap<String, Double> distancesStats = new HashMap<>();
-    private HashMap<String, Double> beaconsObservedPercent = new HashMap<>();
+    private final HashMap<String, Double> distancesStats = new HashMap<>();
+    private final HashMap<String, Double> beaconsObservedPercent = new HashMap<>();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -55,6 +55,7 @@ public abstract class AbstractSimulation {
         writeSimulationStats();
     }
 
+    /** Returns the simulation's Id. */
     public String getId() {
         return id;
     }
@@ -119,7 +120,7 @@ public abstract class AbstractSimulation {
         if (distances.isEmpty()) { // distances is empty until the first round an observer observed a beacon
             average = 0;
         } else {
-            average = distances.stream().mapToDouble(d -> d.doubleValue()).sum() / distances.size();
+            average = distances.stream().mapToDouble(Double::doubleValue).sum() / distances.size();
         }
 
         if (min < Double.POSITIVE_INFINITY) {
