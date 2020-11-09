@@ -142,7 +142,46 @@ public class TracingSimulationIT {
         int rowsNum = 2;
         int colsNum = 2;
         int beaconsNum = 10;
-        int observersNum = 5;
+        int observersNum = 10;
+        double transmissionRadius = 2.0; // Includes the whole board
+        int awakenessCycle = 1; // all the observers are awake at the same time
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
+                .setAwakenessCycle(awakenessCycle)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
+        Location observersAverageLocation = averageLocationOfObservers(simulation.observers);
+
+        simulation.run();
+        Map<String, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoardState());
+
+        Set<String> beacons = initialAgentsToLocations.keySet().stream()
+                              .filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
+        for (String agent : beacons) {
+                assertThat(estimatedAgentsToLocations.get(agent)).isEqualTo(observersAverageLocation);
+        }
+    }
+
+    // tests for gathering statistics
+
+    @Test
+    public void runTwoRoundsSimulationWithOneObserverVerifyAllBeaconsHaveBeenObservedOnce() {
+        int roundsNum = 2;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 10;
+        int observersNum = 1;
         double transmissionRadius = 2.0; // Includes the whole board
 
         AbstractSimulation simulation = new TracingSimulation.Builder()
@@ -159,17 +198,145 @@ public class TracingSimulationIT {
                 .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
                 .build();
 
-        Map<String, Location> initialAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getRealBoardState());
-        Location observersAverageLocation = averageLocationOfObservers(simulation.observers);
+        simulation.run();
+        String simulationId = simulation.getId();
+
+        Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
+
+        for (String beacon : observersStats.keySet()) {
+            assertThat(observersStats.get(beacon)).isEqualTo(0.5);
+        }
+    }
+
+    @Test
+    public void runTwoRoundsSimulationWithHundredObserversVerifyAllBeaconsHaveBeenObservedAllTheTime() {
+        int roundsNum = 2;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 10;
+        int observersNum = 100;
+        double transmissionRadius = 2.0; // Includes the whole board
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
 
         simulation.run();
-        Map<String, Location> estimatedAgentsToLocations = mapAgentsToLocationsOnBoard(simulation.getEstimatedBoardState());
+        String simulationId = simulation.getId();
 
-        Set<String> beacons = initialAgentsToLocations.keySet().stream()
-                              .filter(agent -> agent.startsWith("Beacon")).collect(Collectors.toSet());
-        for (String agent : beacons) {
-            assertThat(estimatedAgentsToLocations.get(agent)).isEqualTo(observersAverageLocation);
+        Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
+
+        for (String beacon : observersStats.keySet()) {
+            assertThat(observersStats.get(beacon)).isEqualTo(1);
         }
+    }
+
+    @Test
+    public void runFourRoundsSimulationWithOneObserverVerifyAllBeaconsHaveBeenObservedTwice() {
+        int roundsNum = 4;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 10;
+        int observersNum = 1;
+        double transmissionRadius = 2.0; // Includes the whole board
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+        String simulationId = simulation.getId();
+
+        Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
+
+        for (String beacon : observersStats.keySet()) {
+            assertThat(observersStats.get(beacon)).isEqualTo(0.5);
+        }
+    }
+
+    @Test
+    public void runTwoRoundsSimulationWithOnOneOnOneBoardDistancesEstimatedIsZero() {
+        int roundsNum = 2;
+        int rowsNum = 1;
+        int colsNum = 1;
+        int beaconsNum = 10;
+        int observersNum = 1;
+        double transmissionRadius = 2.0; // Includes the whole board
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+        String simulationId = simulation.getId();
+
+        Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
+
+        for (String aggregateFunction : distancesStats.keySet()) {
+            assertThat(distancesStats.get(aggregateFunction)).isEqualTo(0.0);
+        }
+    }
+
+    @Test
+    public void runTwoRoundsSimulationWithHundredStationaryBeaconsMaxDistanceIsRadiusAndMinIsZero() {
+        int roundsNum = 2;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 100;
+        int observersNum = 1;
+        double transmissionRadius = 2.0; // Includes the whole board
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(STATIONARY)
+                .setObserverMovementStrategyType(STATIONARY)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+        String simulationId = simulation.getId();
+
+        Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
+
+        assertThat(distancesStats.get("max")).isEqualTo(transmissionRadius);
+        assertThat(distancesStats.get("min")).isEqualTo(0.0);
     }
 
     @After
