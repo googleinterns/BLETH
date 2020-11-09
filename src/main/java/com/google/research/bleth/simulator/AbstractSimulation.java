@@ -114,23 +114,15 @@ public abstract class AbstractSimulation {
         List<Double> distances = beaconsToEstimatedLocations.keySet().stream() // ignore beacons that have never been observed
                 .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toList());
 
-        double min = distances.stream().min(Double::compareTo).orElse(Double.POSITIVE_INFINITY);
-        double max = distances.stream().max(Double::compareTo).orElse(Double.NEGATIVE_INFINITY);
-        double average;
-        if (distances.isEmpty()) { // distances is empty until the first round an observer observed a beacon
-            average = 0;
-        } else {
-            average = distances.stream().mapToDouble(Double::doubleValue).sum() / distances.size();
-        }
-
-        if (min < Double.POSITIVE_INFINITY) {
+        if (!distances.isEmpty()) { // distances is empty until the first round an observer observed a beacon
+            double min = distances.stream().min(Double::compareTo).get();
             distancesStats.put("min", Math.min(distancesStats.getOrDefault("min", Double.POSITIVE_INFINITY), min));
-        }
-        if (max > Double.NEGATIVE_INFINITY) {
+
+            double max = distances.stream().max(Double::compareTo).get();
             distancesStats.put("max", Math.max(distancesStats.getOrDefault("max", Double.NEGATIVE_INFINITY), max));
-        }
-        if (!distances.isEmpty()) {
-            double allRoundsAverage = (distancesStats.getOrDefault("sum", 0D) * (currentRound - 1) + average) / currentRound;
+
+            double average = distances.stream().mapToDouble(Double::doubleValue).sum() / distances.size();
+            double allRoundsAverage = (distancesStats.getOrDefault("avg", 0D) * (currentRound - 1) + average) / currentRound;
             distancesStats.put("avg", allRoundsAverage);
         }
     }
