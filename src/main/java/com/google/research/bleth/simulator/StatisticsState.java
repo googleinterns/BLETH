@@ -7,10 +7,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
-
-import java.util.HashMap;
 import java.util.Map;
 
 /** A mediator between the statistics the simulation gathered and their storage on datastore. */

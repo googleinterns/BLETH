@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * An abstract class representing a BLETH simulation.
- * Can be either a Tracing simulation or a Stalking simulation.
- */
+/** An abstract class representing a BLETH simulation. */
 public abstract class AbstractSimulation {
 
     private final String id;
