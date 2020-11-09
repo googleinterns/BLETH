@@ -23,7 +23,7 @@ public abstract class AbstractSimulation {
     private IGlobalResolver resolver;
     private final double transmissionThresholdRadius;
 
-    private HashMap<String, Double> distanceStats = new HashMap<>();
+    private HashMap<String, Double> distancesStats = new HashMap<>();
     private HashMap<String, Double> beaconsObservedPercent = new HashMap<>();
 
     /** Returns a static snapshot of the real board at the current round. */
@@ -53,6 +53,10 @@ public abstract class AbstractSimulation {
             currentRound++;
         }
         writeSimulationStats();
+    }
+
+    public String getId() {
+        return id;
     }
 
     /** Move all agents according to their movement strategies and update the real board. */
@@ -119,21 +123,27 @@ public abstract class AbstractSimulation {
         }
 
         if (min < Double.POSITIVE_INFINITY) {
-            distanceStats.put("min", Math.min(distanceStats.getOrDefault("min", Double.POSITIVE_INFINITY), min));
+            distancesStats.put("min", Math.min(distancesStats.getOrDefault("min", Double.POSITIVE_INFINITY), min));
         }
         if (max > Double.NEGATIVE_INFINITY) {
-            distanceStats.put("max", Math.max(distanceStats.getOrDefault("max", Double.NEGATIVE_INFINITY), max));
+            distancesStats.put("max", Math.max(distancesStats.getOrDefault("max", Double.NEGATIVE_INFINITY), max));
         }
         if (!distances.isEmpty()) {
-            double allRoundsAverage = (distanceStats.getOrDefault("sum", 0D) * (currentRound - 1) + average) / currentRound;
-            distanceStats.put("avg", allRoundsAverage);
+            double allRoundsAverage = (distancesStats.getOrDefault("sum", 0D) * (currentRound - 1) + average) / currentRound;
+            distancesStats.put("avg", allRoundsAverage);
         }
     }
 
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() {
-        // add all the beacons that were never observed, if there are such, to the map as 0
-        // write to db distanceStats and beaconsObserved
+        for (Beacon beacon : beacons) {
+            String beaconId = String.valueOf(beacon.getId());
+            beaconsObservedPercent.putIfAbsent(beaconId, 0D);
+            beaconsObservedPercent.put(beaconId, beaconsObservedPercent.get(beaconId) / (currentRound - 1));
+        }
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
+        statsState.writeDistancesStats();
+        statsState.writeBeaconsObservedPercentStats();
     }
 
     /** An abstract builder class designed to separate the construction of a simulation from its representation. */
