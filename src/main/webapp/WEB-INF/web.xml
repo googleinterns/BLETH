@@ -7,12 +7,12 @@
 
   <!-- Servlet Mapping. -->
   <servlet>
-    <servlet-name>WelcomeMessageServlet</servlet-name>
-    <servlet-class>servlets.WelcomeMessageServlet</servlet-class>
+    <servlet-name>ListSimulationsServlet</servlet-name>
+    <servlet-class>com.google.research.bleth.servlets.ListSimulationsServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>WelcomeMessageServlet</servlet-name>
-    <url-pattern>/welcome-msg</url-pattern>
+    <servlet-name>ListSimulationsServlet</servlet-name>
+    <url-pattern>/list-simulations</url-pattern>
   </servlet-mapping>
 
 </web-app>
