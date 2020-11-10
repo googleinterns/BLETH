@@ -7,12 +7,12 @@
 
   <!-- Servlet Mapping. -->
   <servlet>
-    <servlet-name>WelcomeMessageServlet</servlet-name>
-    <servlet-class>servlets.WelcomeMessageServlet</servlet-class>
+    <servlet-name>ReadBoardStateServlet</servlet-name>
+    <servlet-class>com.google.research.bleth.servlets.ReadBoardStateServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>WelcomeMessageServlet</servlet-name>
-    <url-pattern>/welcome-msg</url-pattern>
+    <servlet-name>ReadBoardStateServlet</servlet-name>
+    <url-pattern>/read-board-state</url-pattern>
   </servlet-mapping>
 
 </web-app>
