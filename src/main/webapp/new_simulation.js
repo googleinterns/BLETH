@@ -59,6 +59,11 @@ function setAllDynamicUpperBounds() {
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
 }
 
-function f() {
-    console.log("!");
+function createNewSimulation() {
+    const form = document.getElementById('newSimulationForm');
+    const inputArray = [...form.getElementsByTagName('input')];
+    const params = {}
+    inputArray.map(input => { params[input.id] = input.value; })
+
+    // todo: send a post request.
 }
