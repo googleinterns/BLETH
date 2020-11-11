@@ -46,13 +46,7 @@ function updateDatalistValuesFromArray(datalistId, valuesArray) {
  */
 function setDynamicUpperBound(boundedInputId, boundingInputId) {
     var boundingValue = document.getElementById(boundingInputId).value;
-    var boundedValue = document.getElementById(boundedInputId).value;
-
     document.getElementById(boundedInputId).setAttribute("max", boundingValue);
-
-    if (boundedValue > boundingValue) {
-        document.getElementById(boundedInputId).value = boundingValue;
-    }
 }
 
 /**
@@ -63,4 +57,8 @@ function setDynamicUpperBound(boundedInputId, boundingInputId) {
 function setAllDynamicUpperBounds() {
     setDynamicUpperBound('awakenessCycle', 'roundsNum');
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
+}
+
+function f() {
+    console.log("!");
 }
