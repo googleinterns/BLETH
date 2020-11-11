@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BLETH</title>
+    <script src='new_simulation.js'></script>
+</head>
+
+<body onload="retrieveStrategies()">
+    <h1>Create and Run a New BLETH Simulation</h1>
+    
+    <!-- A form for a new simulation initialization. -->
+    <form onload="setAllDynamicUpperBounds()" onchange="setAllDynamicUpperBounds()">
+        <!-- Number of rounds, agents, rows and cols. -->
+        <label for="roundsNum">Number of Rounds</label><br>
+        <input type="number" id="roundsNum" value=100 max=100000 min=1><br>
+        <label for="beaconsNum">Number of Beacons</label><br>
+        <input type="number" id="beaconsNum" value=5 max=100 min=1><br>
+        <label for="observersNum">Number of Observers</label><br>
+        <input type="number" id="observersNum" value=5 max=100 min=1><br>
+        <label for="rowsNum">Number of Rows</label><br>
+        <input type="number" id="rowsNum" value=10 max=50 min=2><br>
+        <label for="colsNum">Number of Columns</label><br>
+        <input type="number" id="colsNum" value=10 max=50 min=2><br>
+
+        <!-- Agents' movement and awakeness strategies. -->
+        <label for="beaconMovementStrategy">Beacons' Movement Strategy</label><br>
+        <input id="beaconMovementStrategy" list="movementStrategy"/><br>
+        
+        <label for="observerMovementStrategy">Observers' Movement Strategy</label><br>
+        <input id="observerMovementStrategy" list="movementStrategy"/><br>
+        
+        <label for="observerAwakenessStrategy">Observers' Awakeness Strategy</label><br>
+        <input id="observerAwakenessStrategy" list="awakenessStrategy"/><br>
+        
+        <datalist id="movementStrategy"></datalist>
+        <datalist id="awakenessStrategy"></datalist>
+
+        <!-- Observers' awakeness cycle and duration. -->
+        <label for="awakenessCycle">Awakeness Cycle</label><br>
+        <input type="number" id="awakenessCycle" value=2 min=2><br>
+        <label for="awakenessDuration">Awakeness Duration</label><br> 
+        <input type="number" id="awakenessDuration" value=1 min=1><br>
+        
+      </form>
+</body>
+</html>

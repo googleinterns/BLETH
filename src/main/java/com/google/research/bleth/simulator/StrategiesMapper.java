@@ -47,7 +47,7 @@ public class StrategiesMapper {
     }
 
     /** Return a list of all strings representing all existing movement strategies, excluding test-only strategies. */
-    public List<String> listMovementStrategies() {
+    public static List<String> listMovementStrategies() {
         List<MovementStrategyFactory.Type> allMovementStrategies = Arrays.asList(MovementStrategyFactory.Type.values());
         return allMovementStrategies.stream()
                 .filter(type -> !type.isForTest())
@@ -56,7 +56,7 @@ public class StrategiesMapper {
     }
 
     /** Return a list of all strings representing all existing awakeness strategies, excluding test-only strategies. */
-    public List<String> listAwakenessStrategies(){
+    public static List<String> listAwakenessStrategies(){
         List<AwakenessStrategyFactory.Type> allAwakenessStrategies = Arrays.asList(AwakenessStrategyFactory.Type.values());
         return allAwakenessStrategies.stream()
                 .filter(type -> !type.isForTest())

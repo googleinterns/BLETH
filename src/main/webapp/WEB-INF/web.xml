@@ -6,13 +6,22 @@
   <display-name>Archetype Created Web Application</display-name>
 
   <!-- Servlet Mapping. -->
-  <servlet>
-    <servlet-name>ReadBoardStateServlet</servlet-name>
-    <servlet-class>com.google.research.bleth.servlets.ReadBoardStateServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ReadBoardStateServlet</servlet-name>
-    <url-pattern>/read-board-state</url-pattern>
-  </servlet-mapping>
+    <servlet>
+        <servlet-name>ReadBoardStateServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.ReadBoardStateServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListStrategiesServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.ListStrategiesServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ReadBoardStateServlet</servlet-name>
+        <url-pattern>/read-board-state</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListStrategiesServlet</servlet-name>
+        <url-pattern>/list-strategies</url-pattern>
+    </servlet-mapping>
 
 </web-app>
