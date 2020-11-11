@@ -1,5 +1,6 @@
 package com.google.research.bleth.servlets;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.research.bleth.simulator.SimulationMetadata;
@@ -20,7 +21,7 @@ public class ListSimulationsServlet extends HttpServlet {
         Gson gson = new Gson(); // Used for json serialization.
 
         // Read SimulationMetadata as a HashMap.
-        HashMap<String, SimulationMetadata> simulations = SimulationMetadata.listSimulations();
+        ImmutableMap<String, SimulationMetadata> simulations = SimulationMetadata.listSimulations();
 
         // Serialize SimulationMetadata objects to JSON strings.
         HashMap<String, JsonElement> simulationsAsJson = new HashMap<>();
