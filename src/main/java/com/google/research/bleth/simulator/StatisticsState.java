@@ -32,7 +32,7 @@ public class StatisticsState {
     }
 
     /**
-     * Create and write multiple datastore entities, each represents an aggregate function such as min and max,
+     * Create and write a datastore entity, represents aggregate functions such as min and max,
      * of the distance between the beacons' real locations and their estimated locations.
      * @throws StatisticsAlreadyExistException if the simulation's distance statistics are already exists in the database.
      */
@@ -53,7 +53,7 @@ public class StatisticsState {
     }
 
     /**
-     * Create and write multiple datastore entities, each represents the percentage of rounds a beacon
+     * Create and write a datastore entity, represents the percentage of rounds a beacon
      * has been observed by at least one observer, i.e. has been detected by the resolver.
      * @throws StatisticsAlreadyExistException if the simulation's distance statistics are already exists in the database.
      */
@@ -76,7 +76,7 @@ public class StatisticsState {
     /**
      * Read from the db statical data about the distance between the beacons' real locations and their estimated locations.
      * @param simulationId is the simulation id associated with the statistical data.
-     * @return a map that maps an aggregate function to its value on the simulation.
+     * @return a map that maps each aggregate function to its value on the simulation.
      */
     public static Map<String, Double> readDistancesStats(String simulationId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
