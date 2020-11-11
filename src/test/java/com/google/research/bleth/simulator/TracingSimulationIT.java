@@ -2,12 +2,15 @@ package com.google.research.bleth.simulator;
 
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.appengine.api.datastore.dev.LocalDatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.Iterables;
+import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -337,6 +340,19 @@ public class TracingSimulationIT {
 
         assertThat(distancesStats.get("max")).isEqualTo(transmissionRadius);
         assertThat(distancesStats.get("min")).isEqualTo(0.0);
+    }
+
+    @Test
+    public void writeDistancesStatisticsOfSameSimulationTwiceThrowsException() {
+        Map<String, Double> fakeStats = new HashMap<>();
+        fakeStats.put("max", 0D);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats);
+
+        statistics.writeDistancesStats();
+
+        assertThrows(StatisticsAlreadyExistException.class, () -> {
+            statistics.writeDistancesStats();
+        });
     }
 
     @After
