@@ -21,7 +21,7 @@ public abstract class AbstractSimulation {
     private final double transmissionThresholdRadius;
 
     private final HashMap<String, Double> distancesStats = new HashMap<>();
-    private final HashMap<String, Double> beaconsObservedPercent = new HashMap<>();
+    private final HashMap<String, Double> beaconsObservedSum = new HashMap<>();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -86,8 +86,8 @@ public abstract class AbstractSimulation {
                 }
             }
             if (observed) {
-                beaconsObservedPercent.put(String.valueOf(beacon.getId()),
-                        beaconsObservedPercent.getOrDefault(String.valueOf(beacon.getId()), 0D) + 1); // for stats
+                beaconsObservedSum.put(String.valueOf(beacon.getId()),
+                        beaconsObservedSum.getOrDefault(String.valueOf(beacon.getId()), 0D) + 1); // for stats
             }
         }
     }
@@ -128,10 +128,10 @@ public abstract class AbstractSimulation {
     void writeSimulationStats() {
         for (Beacon beacon : beacons) {
             String beaconId = String.valueOf(beacon.getId());
-            beaconsObservedPercent.putIfAbsent(beaconId, 0D);
-            beaconsObservedPercent.put(beaconId, beaconsObservedPercent.get(beaconId) / (currentRound - 1));
+            beaconsObservedSum.putIfAbsent(beaconId, 0D);
+            beaconsObservedSum.put(beaconId, beaconsObservedSum.get(beaconId) / (currentRound - 1));
         }
-        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedSum);
         statsState.writeDistancesStats();
         statsState.writeBeaconsObservedPercentStats();
     }

@@ -70,9 +70,10 @@ public class StatisticsState {
 
         Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
-        PreparedQuery distances = datastore.prepare(new Query(Schema.StatisticsState.entityKindDistance).setFilter(filterBySimulationId));
+        Query distances = new Query(Schema.StatisticsState.entityKindDistance).setFilter(filterBySimulationId);
+        PreparedQuery distancesStatistics = datastore.prepare(distances);
 
-        for (Entity entity : distances.asIterable()) {
+        for (Entity entity : distancesStatistics.asIterable()) {
             String kind = (String) entity.getProperty(Schema.StatisticsState.aggregateFunction);
             Double value = (Double) entity.getProperty(Schema.StatisticsState.value);
             distanceStats.put(kind, value);
@@ -91,9 +92,10 @@ public class StatisticsState {
 
         Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
-        PreparedQuery percents = datastore.prepare(new Query(Schema.StatisticsState.entityKindBeaconsObservedPercent).setFilter(filterBySimulationId));
+        Query percents = new Query(Schema.StatisticsState.entityKindBeaconsObservedPercent).setFilter(filterBySimulationId);
+        PreparedQuery percentsStatistics = datastore.prepare(percents);
 
-        for (Entity entity : percents.asIterable()) {
+        for (Entity entity : percentsStatistics.asIterable()) {
             String beaconId = (String) entity.getProperty(Schema.StatisticsState.beaconId);
             Double percent = (Double) entity.getProperty(Schema.StatisticsState.percent);
             beaconsObserved.put(beaconId, percent);
