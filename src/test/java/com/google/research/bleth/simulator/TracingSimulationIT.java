@@ -355,6 +355,33 @@ public class TracingSimulationIT {
         });
     }
 
+    @Test
+    public void writeObservedPercentageStatisticsOfSameSimulationTwiceThrowsException() {
+        Map<String, Double> fakeStats = new HashMap<>();
+        fakeStats.put("max", 0D);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats);
+
+        statistics.writeBeaconsObservedPercentStats();
+
+        assertThrows(StatisticsAlreadyExistException.class, () -> {
+            statistics.writeBeaconsObservedPercentStats();
+        });
+    }
+
+    @Test
+    public void readNonExistingSimulationDistancesStatisticsReturnsEmptyMap() {
+        Map<String, Double> distancesStatistics = StatisticsState.readDistancesStats("fake");
+
+        assertThat(distancesStatistics).isEmpty();
+    }
+
+    @Test
+    public void readNonExistingSimulationObservedPercentageStatisticsReturnsEmptyMap() {
+        Map<String, Double> observedPercentage = StatisticsState.readBeaconsObservedPercentStats("fake");
+
+        assertThat(observedPercentage).isEmpty();
+    }
+
     @After
     public void tearDown() {
         helper.tearDown();
