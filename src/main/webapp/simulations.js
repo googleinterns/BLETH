@@ -61,8 +61,7 @@ function addSimulationRows(table, simulations) {
         row.insertCell(0).appendChild(visualizeSimulationButton);
         var i = 1; // cell index (cell 0 is a button).
         for (const property in simulation) {
-            row.insertCell(i).innerHTML = simulation[property];
-            i++;
+            row.insertCell(i++).innerHTML = simulation[property];
         }
     }
 }
