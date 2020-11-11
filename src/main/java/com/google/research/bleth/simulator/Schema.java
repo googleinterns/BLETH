@@ -37,7 +37,5 @@ public class Schema {
         public static final String simulationId = "simulationId";
         public static final String entityKindDistance = "distance";
         public static final String entityKindBeaconsObservedPercent = "beaconsObservedPercent";
-        public static final String beaconId = "id";
-        public static final String percent = "percent";
     }
 }

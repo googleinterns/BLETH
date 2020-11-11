@@ -55,16 +55,22 @@ public class StatisticsState {
     /**
      * Create and write multiple datastore entities, each represents the percentage of rounds a beacon
      * has been observed by at least one observer, i.e. has been detected by the resolver.
+     * @throws StatisticsAlreadyExistException if the simulation's distance statistics are already exists in the database.
      */
     public void writeBeaconsObservedPercentStats() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        for (String beaconId : beaconsObservedPercent.keySet()) {
-            Entity entity = new Entity(Schema.StatisticsState.entityKindBeaconsObservedPercent);
-            entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
-            entity.setProperty(Schema.StatisticsState.beaconId, beaconId);
-            entity.setProperty(Schema.StatisticsState.percent, beaconsObservedPercent.get(beaconId));
-            datastore.put(entity);
+
+        Map<String, Double> beaconsIdToObservedPercent = readBeaconsObservedPercentStats(simulationId);
+        if (!beaconsIdToObservedPercent.isEmpty()) {
+            throw new StatisticsAlreadyExistException(simulationId);
         }
+
+        Entity entity = new Entity(Schema.StatisticsState.entityKindBeaconsObservedPercent);
+        entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
+        for (Map.Entry<String, Double> entry : beaconsObservedPercent.entrySet()) {
+            entity.setProperty(entry.getKey(), entry.getValue());
+        }
+        datastore.put(entity);
     }
 
     /**
@@ -96,19 +102,19 @@ public class StatisticsState {
      */
     public static Map<String, Double> readBeaconsObservedPercentStats(String simulationId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        ImmutableMap.Builder<String, Double> beaconsObserved = new ImmutableMap.Builder<>();
 
         Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
         Query percents = new Query(Schema.StatisticsState.entityKindBeaconsObservedPercent).setFilter(filterBySimulationId);
-        PreparedQuery percentsStatistics = datastore.prepare(percents);
+        Entity percentsStatistics = datastore.prepare(percents).asSingleEntity();
 
-        for (Entity entity : percentsStatistics.asIterable()) {
-            String beaconId = (String) entity.getProperty(Schema.StatisticsState.beaconId);
-            Double percent = (Double) entity.getProperty(Schema.StatisticsState.percent);
-            beaconsObserved.put(beaconId, percent);
+        if (percentsStatistics == null) {
+            return ImmutableMap.of();
         }
-        return beaconsObserved.build();
+
+        return percentsStatistics.getProperties().entrySet().stream()
+                .filter(entry -> !(entry.getKey().equals(Schema.StatisticsState.simulationId)))
+                .collect(toImmutableMap(e -> e.getKey(), e -> (Double) e.getValue()));
     }
 
     private StatisticsState(String simulationId, Map<String, Double> distanceStats, Map<String, Double> beaconsObserved) {
