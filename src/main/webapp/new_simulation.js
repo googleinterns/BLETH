@@ -59,6 +59,8 @@ function setAllDynamicUpperBounds() {
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
 }
 
+// New simulation creation.
+
 /** Gather parameter for an HTTP request and fetch a servlet to create and run a new simulation. */
 function createNewSimulation() {
     const form = document.getElementById('newSimulationForm');
