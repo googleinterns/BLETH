@@ -59,11 +59,16 @@ function setAllDynamicUpperBounds() {
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
 }
 
+/** Gather parameter for an HTTP request and fetch a servlet to create and run a new simulation. */
 function createNewSimulation() {
     const form = document.getElementById('newSimulationForm');
     const inputArray = [...form.getElementsByTagName('input')];
-    const params = {}
-    inputArray.map(input => { params[input.id] = input.value; })
+    const params = new URLSearchParams();
+    inputArray.map(input => { 
+        params.append(input.id, input.value); 
+    })
 
-    // todo: send a post request.
+    fetch('/new-simulation', {method: 'POST', body: params})
+    .then(response => response.text())
+    .then(message => window.alert(message));
 }
