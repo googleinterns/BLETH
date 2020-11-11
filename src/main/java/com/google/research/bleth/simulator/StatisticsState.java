@@ -1,6 +1,7 @@
 package com.google.research.bleth.simulator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -8,6 +9,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
+import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
 import java.util.Map;
 
 /** A mediator between the statistics the simulation gathered and their storage on datastore. */
@@ -32,16 +34,22 @@ public class StatisticsState {
     /**
      * Create and write multiple datastore entities, each represents an aggregate function such as min and max,
      * of the distance between the beacons' real locations and their estimated locations.
+     * @throws StatisticsAlreadyExistException if the simulation's distance statistics are already exists in the database.
      */
     public void writeDistancesStats() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        for (Map.Entry<String, Double> entry : distanceStats.entrySet()) {
-            Entity entity = new Entity(Schema.StatisticsState.entityKindDistance);
-            entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
-            entity.setProperty(Schema.StatisticsState.aggregateFunction, entry.getKey());
-            entity.setProperty(Schema.StatisticsState.value, entry.getValue());
-            datastore.put(entity);
+
+        Map<String, Double> distanceStatsInDb = readDistancesStats(simulationId);
+        if (!distanceStatsInDb.isEmpty()) {
+            throw new StatisticsAlreadyExistException(simulationId);
         }
+
+        Entity entity = new Entity(Schema.StatisticsState.entityKindDistance);
+        entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
+        for (Map.Entry<String, Double> entry : distanceStats.entrySet()) {
+            entity.setProperty(entry.getKey(), entry.getValue());
+        }
+        datastore.put(entity);
     }
 
     /**
@@ -66,19 +74,19 @@ public class StatisticsState {
      */
     public static Map<String, Double> readDistancesStats(String simulationId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        ImmutableMap.Builder<String, Double> distanceStats = new ImmutableMap.Builder<>();
 
         Query.FilterPredicate filterBySimulationId =
                 new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
         Query distances = new Query(Schema.StatisticsState.entityKindDistance).setFilter(filterBySimulationId);
-        PreparedQuery distancesStatistics = datastore.prepare(distances);
+        Entity distancesStatistics = datastore.prepare(distances).asSingleEntity();
 
-        for (Entity entity : distancesStatistics.asIterable()) {
-            String kind = (String) entity.getProperty(Schema.StatisticsState.aggregateFunction);
-            Double value = (Double) entity.getProperty(Schema.StatisticsState.value);
-            distanceStats.put(kind, value);
+        if (distancesStatistics == null) {
+            return ImmutableMap.of();
         }
-        return distanceStats.build();
+
+        return distancesStatistics.getProperties().entrySet().stream()
+                .filter(entry -> !(entry.getKey().equals(Schema.StatisticsState.simulationId)))
+                .collect(toImmutableMap(e -> e.getKey(), e -> (Double) e.getValue()));
     }
 
     /**
