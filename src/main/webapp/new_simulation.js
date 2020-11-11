@@ -63,15 +63,23 @@ function setAllDynamicUpperBounds() {
 
 /** Gather parameter for an HTTP request and fetch a servlet to create and run a new simulation. */
 function createNewSimulation() {
+    // Construct list of form inputs.
+    const form = document.getElementById('newSimulationForm');
+    const inputArray = [...form.getElementsByTagName('input')];
+    const params = new URLSearchParams();
+
+    // Validate all required fields are provided and construct POST request parameters.
+    for (const input of inputArray) {
+        if (input.value === '') {
+            window.alert('Please fill all missing values.')
+            return;
+        }
+        params.append(input.id, input.value); 
+    }
+
+    // If confirmed, fetch url to create and run a new simulation.
     var confirmed = confirm("Create and run a new simulation?")
     if (confirmed) {
-        const form = document.getElementById('newSimulationForm');
-        const inputArray = [...form.getElementsByTagName('input')];
-        const params = new URLSearchParams();
-        inputArray.map(input => { 
-            params.append(input.id, input.value); 
-        })
-
         fetch('/new-simulation', {method: 'POST', body: params})
         .then(response => response.text())
         .then(message => window.alert(message));
