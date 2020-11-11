@@ -28,7 +28,7 @@ public class StatisticsState {
     public static StatisticsState create(String simulationId, Map<String, Double> distanceStats, Map<String, Double> beaconsObservedPercent) {
         checkNotNull(distanceStats);
         checkNotNull(beaconsObservedPercent);
-        return new StatisticsState(simulationId, distanceStats, beaconsObservedPercent);
+        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats), ImmutableMap.copyOf(beaconsObservedPercent));
     }
 
     /**
