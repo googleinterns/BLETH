@@ -37,26 +37,31 @@ public class NewSimulationServlet extends HttpServlet {
         MovementStrategyFactory.Type observerMovementStrategy = strategiesMapper.getMovementStrategy(observerMovementStrategyAsString);
         AwakenessStrategyFactory.Type observerAwakenessStrategy = strategiesMapper.getAwakenessStrategy(observerAwakenessStrategyAsString);
 
-        // Create a new simulation.
-        AbstractSimulation simulation = new TracingSimulation.Builder()
-                .setMaxNumberOfRounds(roundsNum)
-                .setRowNum(rowsNum)
-                .setColNum(colsNum)
-                .setBeaconsNum(beaconsNum)
-                .setObserversNum(observersNum)
-                .setBeaconMovementStrategyType(beaconMovementStrategy)
-                .setObserverMovementStrategyType(observerMovementStrategy)
-                .setAwakenessStrategyType(observerAwakenessStrategy)
-                .setAwakenessCycle(awakenessCycle)
-                .setAwakenessDuration(awakenessDuration)
-                .setTransmissionThresholdRadius(transmissionThresholdRadius)
-                .build();
+        String responseText = "Simulation has been created successfully.";
+        try {
+            // Create a new simulation.
+            AbstractSimulation simulation = new TracingSimulation.Builder()
+                    .setMaxNumberOfRounds(roundsNum)
+                    .setRowNum(rowsNum)
+                    .setColNum(colsNum)
+                    .setBeaconsNum(beaconsNum)
+                    .setObserversNum(observersNum)
+                    .setBeaconMovementStrategyType(beaconMovementStrategy)
+                    .setObserverMovementStrategyType(observerMovementStrategy)
+                    .setAwakenessStrategyType(observerAwakenessStrategy)
+                    .setAwakenessCycle(awakenessCycle)
+                    .setAwakenessDuration(awakenessDuration)
+                    .setTransmissionThresholdRadius(transmissionThresholdRadius)
+                    .build();
 
-        // Run simulation.
-        simulation.run();
+            // Run simulation.
+            simulation.run();
+        } catch (Exception e) {
+            responseText = e.getMessage();
+        }
 
         // Write to response.
         response.setContentType("text/html;");
-        response.getWriter().println("Simulation has been created successfully.");
+        response.getWriter().println(responseText);
     }
 }
