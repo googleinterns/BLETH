@@ -46,13 +46,7 @@ function updateDatalistValuesFromArray(datalistId, valuesArray) {
  */
 function setDynamicUpperBound(boundedInputId, boundingInputId) {
     var boundingValue = document.getElementById(boundingInputId).value;
-    var boundedValue = document.getElementById(boundedInputId).value;
-
     document.getElementById(boundedInputId).setAttribute("max", boundingValue);
-
-    if (boundedValue > boundingValue) {
-        document.getElementById(boundedInputId).value = boundingValue;
-    }
 }
 
 /**
@@ -63,4 +57,31 @@ function setDynamicUpperBound(boundedInputId, boundingInputId) {
 function setAllDynamicUpperBounds() {
     setDynamicUpperBound('awakenessCycle', 'roundsNum');
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
+}
+
+// New simulation creation.
+
+/** Gather parameter for an HTTP request and fetch a servlet to create and run a new simulation. */
+function createNewSimulation() {
+    // Construct list of form inputs.
+    const form = document.getElementById('newSimulationForm');
+    const inputArray = [...form.getElementsByTagName('input')];
+    const params = new URLSearchParams();
+
+    // Validate all required fields are provided and construct POST request parameters.
+    for (const input of inputArray) {
+        if (input.value === '') {
+            window.alert('Please fill all missing values.')
+            return;
+        }
+        params.append(input.id, input.value); 
+    }
+
+    // If confirmed, fetch url to create and run a new simulation.
+    var confirmed = confirm("Create and run a new simulation?")
+    if (confirmed) {
+        fetch('/new-simulation', {method: 'POST', body: params})
+        .then(response => response.text())
+        .then(message => window.alert(message));
+    }
 }

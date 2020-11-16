@@ -10,7 +10,7 @@
     <h1>Create and Run a New BLETH Simulation</h1>
     
     <!-- A form for a new simulation initialization. -->
-    <form onload="setAllDynamicUpperBounds()" onchange="setAllDynamicUpperBounds()">
+    <form onload="setAllDynamicUpperBounds()" onchange="setAllDynamicUpperBounds()" id="newSimulationForm">
         <!-- Number of rounds, agents, rows and cols. -->
         <label for="roundsNum">Number of Rounds</label><br>
         <input type="number" id="roundsNum" value=100 max=100000 min=1><br>
@@ -36,11 +36,16 @@
         <datalist id="movementStrategy"></datalist>
         <datalist id="awakenessStrategy"></datalist>
 
-        <!-- Observers' awakeness cycle and duration. -->
+        <!-- Observers' awakeness cycle and duration, transmission threshold radius. -->
         <label for="awakenessCycle">Awakeness Cycle</label><br>
         <input type="number" id="awakenessCycle" value=2 min=2><br>
         <label for="awakenessDuration">Awakeness Duration</label><br> 
         <input type="number" id="awakenessDuration" value=1 min=1><br>
+        <label for="transmissionThresholdRadius">Transmission Threshold Radius</label><br>
+        <input type="number" id="transmissionThresholdRadius" value=10 max=50 min=0 step=0.1><br>
+
+        <!-- Submit button. -->
+        <input type="button" value="Submit" onclick="createNewSimulation()">
         
       </form>
 </body>

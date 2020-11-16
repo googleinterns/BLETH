@@ -14,6 +14,10 @@
         <servlet-name>ListStrategiesServlet</servlet-name>
         <servlet-class>com.google.research.bleth.servlets.ListStrategiesServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>NewSimulationServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.NewSimulationServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>ReadBoardStateServlet</servlet-name>
@@ -22,6 +26,10 @@
     <servlet-mapping>
         <servlet-name>ListStrategiesServlet</servlet-name>
         <url-pattern>/list-strategies</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NewSimulationServlet</servlet-name>
+        <url-pattern>/new-simulation</url-pattern>
     </servlet-mapping>
 
 </web-app>
