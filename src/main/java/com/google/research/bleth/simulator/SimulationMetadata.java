@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.ImmutableMap;
 
 /** A class for storing, reading and writing simulation metadata. */
 public class SimulationMetadata {
@@ -89,6 +90,21 @@ public class SimulationMetadata {
         PreparedQuery simulationIdPreparedQuery = datastore.prepare(simulationIdQuery);
         Entity simulationMetadataEntity = simulationIdPreparedQuery.asSingleEntity();
         return new SimulationMetadata(simulationMetadataEntity);
+    }
+
+    /**
+     * Read all existing SimulationMetadata entites from the db, and return them as a hashmap.
+     * @return a hashmap mapping a simulationId to the corresponding SimulationMetadata object.
+     */
+    public static ImmutableMap<String, SimulationMetadata> listSimulations() {
+        ImmutableMap.Builder<String, SimulationMetadata> simulations = new ImmutableMap.Builder<>();
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query simulationMetadataQuery = new Query(Schema.SimulationMetadata.entityKind);
+        PreparedQuery simulationMetadataPreparedQuery = datastore.prepare(simulationMetadataQuery);
+        for (Entity entity : simulationMetadataPreparedQuery.asIterable()) {
+            simulations.put(KeyFactory.keyToString(entity.getKey()), new SimulationMetadata(entity));
+        }
+        return simulations.build();
     }
 
     /** Return true if provided round exists in the simulation associated with the provided simulation id, and false otherwise. */

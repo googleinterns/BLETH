@@ -18,6 +18,10 @@
         <servlet-name>NewSimulationServlet</servlet-name>
         <servlet-class>com.google.research.bleth.servlets.NewSimulationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ListSimulationsServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.ListSimulationsServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>ReadBoardStateServlet</servlet-name>
@@ -30,6 +34,10 @@
     <servlet-mapping>
         <servlet-name>NewSimulationServlet</servlet-name>
         <url-pattern>/new-simulation</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListSimulationsServlet</servlet-name>
+        <url-pattern>/list-simulations</url-pattern>
     </servlet-mapping>
 
 </web-app>
