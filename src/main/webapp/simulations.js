@@ -55,7 +55,9 @@ function addSimulationRows(table, simulations) {
         var visualizeSimulationButton = document.createElement('button');
         visualizeSimulationButton.innerText = 'Visualize Simulation';
         visualizeSimulationButton.addEventListener('click', () => {
-            // todo: call a method for simulation visualizing.
+            simulationWithId = JSON.parse(JSON.stringify(simulation));
+            simulationWithId['id'] = id;
+            window.location.replace('simulation_visualization.html?' + toQueryString(simulationWithId));
         });
 
         row.insertCell(0).appendChild(visualizeSimulationButton);
@@ -64,4 +66,16 @@ function addSimulationRows(table, simulations) {
             row.insertCell(i++).innerHTML = simulation[property];
         }
     }
+}
+
+/**
+ * Convert an object to a query string.
+ * @param {object} params is the converted object.
+ */
+function toQueryString(params) {
+    const keyValuePairs = [];
+    for (const key in params) {
+      keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
+    }
+    return keyValuePairs.join('&');
 }
