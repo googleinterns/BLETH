@@ -29,7 +29,7 @@ public class NewSimulationServlet extends HttpServlet {
         String observerAwakenessStrategyAsString = request.getParameter("observerAwakenessStrategy");
         int awakenessCycle = Integer.parseInt(request.getParameter("awakenessCycle"));
         int awakenessDuration = Integer.parseInt(request.getParameter("awakenessDuration"));
-        Double transmissionThresholdRadius = Double.parseDouble(request.getParameter("transmissionThresholdRadius"));
+        double transmissionThresholdRadius = Double.parseDouble(request.getParameter("transmissionThresholdRadius"));
 
         // Mapping strategies string to types.
         StrategiesMapper strategiesMapper = StrategiesMapper.getInstance();
