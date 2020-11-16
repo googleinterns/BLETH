@@ -5,12 +5,11 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Objects;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
 import com.google.research.bleth.exceptions.BoardStateAlreadyExistsException;
 import com.google.research.bleth.exceptions.ExceedingRoundException;
 

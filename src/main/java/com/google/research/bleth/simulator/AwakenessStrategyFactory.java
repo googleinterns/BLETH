@@ -49,12 +49,12 @@ public class AwakenessStrategyFactory {
     }
 
     private IAwakenessStrategy createFixedStrategy(int awakenessCycle, int awakenessDuration) {
-        int firstAwakenessTime = rand.nextInt(awakenessCycle - awakenessDuration);
+        int firstAwakenessTime = rand.nextInt(awakenessCycle - awakenessDuration + 1);
         return new FixedAwakenessStrategy(awakenessCycle, awakenessDuration, firstAwakenessTime);
     }
 
     private IAwakenessStrategy createRandomStrategy(int awakenessCycle, int awakenessDuration) {
-        int firstAwakenessTime = rand.nextInt(awakenessCycle - awakenessDuration);
+        int firstAwakenessTime = rand.nextInt(awakenessCycle - awakenessDuration + 1);
         return new RandomAwakenessStrategy(awakenessCycle, awakenessDuration, firstAwakenessTime);
     }
 }
