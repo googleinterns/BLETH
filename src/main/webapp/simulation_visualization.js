@@ -1,16 +1,9 @@
-function visualize() {
-    simulation = getUrlVars();
-    console.log(simulation);
-}
+import { toQueryString, getUrlVars, sleep } from './utils.js';
 
-function getUrlVars() {
-    var vars = {}; 
-    const startIndex = window.location.href.indexOf('?') + 1;
-    const pairs = window.location.href.slice(startIndex).split('&');
-    for(var i = 0; i < pairs.length; i++) {
-        const pair = pairs[i].split('=');
-        const key = pair[0]; const value = pair[1];
-        vars[key] = value;
-    }
-    return vars;
+window.visualize = visualize; // Add function to global scope.
+
+async function visualize() {
+    var simulation = getUrlVars();
+    await sleep(3000);
+    console.log(simulation);
 }

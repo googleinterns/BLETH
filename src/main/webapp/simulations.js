@@ -1,3 +1,7 @@
+import { toQueryString } from './utils.js';
+
+window.retrieveSimulations = retrieveSimulations; // Add function to global scope.
+
 /**
  * Fetch url and retrieve a JSON object storing simulations' metadata,
  * and display as an html table.
@@ -55,7 +59,7 @@ function addSimulationRows(table, simulations) {
         var visualizeSimulationButton = document.createElement('button');
         visualizeSimulationButton.innerText = 'Visualize Simulation';
         visualizeSimulationButton.addEventListener('click', () => {
-            simulationWithId = JSON.parse(JSON.stringify(simulation));
+            var simulationWithId = JSON.parse(JSON.stringify(simulation));
             simulationWithId['id'] = id;
             window.location.replace('simulation_visualization.html?' + toQueryString(simulationWithId));
         });
@@ -66,16 +70,4 @@ function addSimulationRows(table, simulations) {
             row.insertCell(i++).innerHTML = simulation[property];
         }
     }
-}
-
-/**
- * Convert an object to a query string.
- * @param {object} params is the converted object.
- */
-function toQueryString(params) {
-    const keyValuePairs = [];
-    for (const key in params) {
-      keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
-    }
-    return keyValuePairs.join('&');
 }
