@@ -23,14 +23,14 @@ async function visualize() {
         // Request real board state.
         params['isReal'] = true;
         queryString = toQueryString(params);
-        fetch(`/read-board-state?${queryString}`)
+        await fetch(`/read-board-state?${queryString}`)
         .then(response => response.json())
         .then(boardState => visualizeBoardState(boardState.array, realBoardElementId));
 
         // Request estimated board state.
         params['isReal'] = false;
         queryString = toQueryString(params);
-        fetch(`/read-board-state?${queryString}`)
+        await fetch(`/read-board-state?${queryString}`)
         .then(response => response.json())
         .then(boardState => visualizeBoardState(boardState.array, estimatedBoardElementId));
 
@@ -47,11 +47,11 @@ async function visualize() {
 function visualizeBoardState(board, tableId) {
 
     // Set table and table body
-    var gameBoardTable = document.getElementById(tableId);
-    var gameBoardTableBody = document.createElement('tbody');
+    var boardTable = document.getElementById(tableId);
+    var boardTableBody = document.createElement('tbody');
 
     // Clear last state of table
-    gameBoardTable.innerHTML = '';
+    boardTable.innerHTML = '';
 
     // Change cells' classes according to board.
     board.forEach(function(rowData) {
@@ -66,11 +66,11 @@ function visualizeBoardState(board, tableId) {
             row.appendChild(cell);
         });
 
-        gameBoardTableBody.appendChild(row);
+        boardTableBody.appendChild(row);
     });
 
-    gameBoardTable.appendChild(gameBoardTableBody);
-    document.body.appendChild(gameBoardTable);
+    boardTable.appendChild(boardTableBody);
+    document.body.appendChild(boardTable);
 }
 
 /**
