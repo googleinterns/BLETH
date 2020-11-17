@@ -16,7 +16,7 @@ function retrieveSimulations() {
 
 /**
  * Given a json object storing simulations' metadata, write all data to an html table.
- * @param simulations is an object storing simulations' unique id and metadata.
+ * @param {Object} simulations is an object storing simulations' unique id and metadata.
  */
 function displaySimulationAsTable(simulations) {
     const allSimulationIds = Object.keys(simulations);
@@ -33,8 +33,8 @@ function displaySimulationAsTable(simulations) {
 
 /**
  * Given a table and an array of strings, add a header based on the array's items.
- * @param table is the html table to be updated.
- * @param properties is an array of header properties.
+ * @param {HTMLElement} table is the html table to be updated.
+ * @param {String[]} properties is an array of header properties.
  */
 function addSimulationHeader(table, properties) {
     var header = table.createTHead();
@@ -48,8 +48,8 @@ function addSimulationHeader(table, properties) {
 
 /**
  * Given a table and an object storing simulations' metadata, add a row for each simulation.
- * @param table is the table to be updated.
- * @param simulations is an object storing simulations' id and metadata.
+ * @param {HTMLElement} table is the table to be updated.
+ * @param {Object} simulations is an object storing simulations' id and metadata.
  */
 function addSimulationRows(table, simulations) {
     for (const id in simulations) {

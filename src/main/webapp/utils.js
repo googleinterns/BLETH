@@ -1,6 +1,7 @@
 /**
  * Convert an object to a query string.
- * @param {object} params is the converted object.
+ * @param {Object} params is the converted object.
+ * @returns {String} a query string.
  */
 export function toQueryString(params) {
     const keyValuePairs = [];
@@ -12,6 +13,7 @@ export function toQueryString(params) {
 
 /**
  * Get url variables as JSON.
+ * @returns {Object} a JSON storing all variables from url.
  */
 export function getUrlVars() {
     var vars = {}; 
@@ -27,7 +29,8 @@ export function getUrlVars() {
 
 /**
  * JS sleep method implementation.
- * @param {number} ms number of milliseconds to sleep.
+ * @param {Number} ms number of milliseconds to sleep.
+ * @returns {Promise} a promise which resolves after ms milliseconds.
  */
 export function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

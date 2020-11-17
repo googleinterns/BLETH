@@ -1,29 +1,29 @@
-.game-board-table {
+.board-table {
     position: relative;
     border: 1px solid black;
     width: 30%;
     height: 30%;
 }
 
-.game-board-th {
+.board-th {
     border: 1px solid black;
     overflow: hidden;
 }
   
-.game-board-td {
+.board-td {
     border: 1px solid black;
     overflow: hidden;
     width: 10%;
     position: relative;
 }
 
-.game-board-td:after {
+.board-td:after {
     content: '';
     display: block;
     margin-top: 100%;
 }
 
-.game-board-td .content {
+.board-td .content {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -31,15 +31,15 @@
     right: 0;
 }
 
-.game-board-td-empty {
+.board-td-empty {
     background-color: white;
 }
 
-.game-board-td-observers-only {
+.board-td-observers-only {
     background-color: orange;
 }
 
-.game-board-td-contains-beacon {
+.board-td-contains-beacon {
     background-color: blue;
 }
 

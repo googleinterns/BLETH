@@ -41,8 +41,8 @@ async function visualize() {
 
 /**
  * Given a boars state and an id of an html table element, update the table to display the board state.
- * @param {Array} board is the board state to visualize. 
- * @param {*} tableId is the id of the html table element to be updated.
+ * @param {String[][]} board is the board state to visualize. 
+ * @param {String} tableId is the id of the html table element to be updated.
  */
 function visualizeBoardState(board, tableId) {
 
@@ -57,11 +57,11 @@ function visualizeBoardState(board, tableId) {
     board.forEach(function(rowData) {
 
         var row = document.createElement('tr');
-        row.classList.add('game-board-tr')
+        row.classList.add('board-tr')
 
         rowData.forEach(function(cellData) {
             var cell = document.createElement('td');
-            cell.classList.add('game-board-td');
+            cell.classList.add('board-td');
             cell.classList.add(determineCellClass(cellData));
             row.appendChild(cell);
         });
@@ -75,12 +75,13 @@ function visualizeBoardState(board, tableId) {
 
 /**
  * return the css class name representing the correct state of the cell (empty/contains beacons/observers only).
- * @param {Array} agents a list of agents ids located in the same cell of the board.
+ * @param {String[]} agents a list of agents ids located in the same cell of the board.
+ * @returns {String} the correct css class name.
  */
 function determineCellClass(agents) {
-    if (agents.length === 0) { return 'game-board-td-empty'; }
+    if (agents.length === 0) { return 'board-td-empty'; }
     for (var i = 0; i < agents.length; i++) {
-        if (agents[i].charAt(0) === 'B') { return 'game-board-td-contains-beacon'; }
+        if (agents[i].charAt(0) === 'B') { return 'board-td-contains-beacon'; }
     }
-    return 'game-board-td-observers-only';
+    return 'board-td-observers-only';
 }
