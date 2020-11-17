@@ -3,6 +3,8 @@
     border: 1px solid black;
     width: 30%;
     height: 30%;
+    float: left;
+    margin-left: 10%;
 }
 
 .board-th {
@@ -41,12 +43,4 @@
 
 .board-td-contains-beacon {
     background-color: blue;
-}
-
-#real-board-table {
-    float: left;
-}
-
-#estimated-board-table {
-    float: right;
 }
