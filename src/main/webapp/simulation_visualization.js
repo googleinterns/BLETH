@@ -2,6 +2,10 @@ import { toQueryString, getUrlVars, sleep } from './utils.js';
 
 window.visualize = visualize; // Add function to global scope.
 
+/**
+ * Get the simulation metadata encoded as a query string, iterate over all rounds and visualize
+ * the real and estimated board state at each round (with a 1000 ms delay between two consecutive rounds).
+ */
 async function visualize() {
     const realBoardElementId = 'real-board-table';
     const estimatedBoardElementId = 'estimated-board-table';
@@ -35,6 +39,11 @@ async function visualize() {
     }
 }
 
+/**
+ * Given a boars state and an id of an html table element, update the table to display the board state.
+ * @param {Array} board is the board state to visualize. 
+ * @param {*} tableId is the id of the html table element to be updated.
+ */
 function visualizeBoardState(board, tableId) {
 
     // Set table and table body
