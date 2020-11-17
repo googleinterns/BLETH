@@ -91,7 +91,12 @@ public abstract class AbstractSimulation {
     }
 
     /** Write current-round state of the simulation to db. */
-    void writeRoundState() { }
+    void writeRoundState() {
+        BoardState realBoardState = BoardStateFactory.create(this.board, this.id, this.currentRound);
+        BoardState estimatedBoardState = BoardStateFactory.create(this.resolver.getBoard(), this.id, this.currentRound);
+        realBoardState.write();
+        estimatedBoardState.write();
+    }
 
     /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
     void updateSimulationStats() { }
