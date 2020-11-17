@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>BLETH</title>
+    <link rel='stylesheet' href='board.css' type="text/css"> 
     <script type='module' src='simulation_visualization.js'></script>
 </head>
 
 <body onload="visualize()">
     <h2 id='simulation-visualization-header'></h2>
-    <table id="real-board-table"></table>
-    <table id="estimated-board-table"></table>
+    <h3 id='current-round-header'></h3>
+    <table id="real-board-table" class="game-board-table"></table>
+    <table id="estimated-board-table" class="game-board-table"></table>
 </body>
 </html>
