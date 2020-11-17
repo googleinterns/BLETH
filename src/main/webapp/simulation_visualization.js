@@ -21,7 +21,6 @@ async function visualize() {
         queryString = toQueryString(params);
         fetch(`/read-board-state?${queryString}`)
         .then(response => response.json())
-        .then(x => console.log(x))
         .then(boardState => visualizeBoardState(boardState.array, realBoardElementId));
 
         // Request estimated board state.
@@ -37,7 +36,6 @@ async function visualize() {
 }
 
 function visualizeBoardState(board, tableId) {
-    console.log(board);
 
     // Set table and table body
     var gameBoardTable = document.getElementById(tableId);
