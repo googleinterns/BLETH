@@ -15,7 +15,7 @@ import java.util.Map;
 /** A mediator between the statistics the simulation gathered and their storage on datastore. */
 public class StatisticsState {
     private final String simulationId;
-    private final  Map<String, Double> distanceStats;
+    private final Map<String, Double> distanceStats;
     private final Map<String, Double> beaconsObservedPercent;
 
     /**
@@ -46,9 +46,7 @@ public class StatisticsState {
 
         Entity entity = new Entity(Schema.StatisticsState.entityKindDistance);
         entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
-        for (Map.Entry<String, Double> entry : distanceStats.entrySet()) {
-            entity.setProperty(entry.getKey(), entry.getValue());
-        }
+        distanceStats.forEach((key, value) -> entity.setProperty(key, value));
         datastore.put(entity);
     }
 
@@ -67,9 +65,7 @@ public class StatisticsState {
 
         Entity entity = new Entity(Schema.StatisticsState.entityKindBeaconsObservedPercent);
         entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
-        for (Map.Entry<String, Double> entry : beaconsObservedPercent.entrySet()) {
-            entity.setProperty(entry.getKey(), entry.getValue());
-        }
+        beaconsObservedPercent.forEach((key, value) -> entity.setProperty(key, value));
         datastore.put(entity);
     }
 
