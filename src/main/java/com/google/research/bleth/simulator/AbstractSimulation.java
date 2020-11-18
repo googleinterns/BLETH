@@ -128,7 +128,8 @@ public abstract class AbstractSimulation {
         for (Beacon beacon : beacons) {
             String beaconId = String.valueOf(beacon.getId());
             beaconsObservedSum.putIfAbsent(beaconId, 0D);
-            beaconsObservedSum.put(beaconId, beaconsObservedSum.get(beaconId) / (currentRound - 1));
+            beaconsObservedSum.put(beaconId, beaconsObservedSum.get(beaconId)
+                                  / (currentRound - 1)); // to get the percentage, which doesn't depend on the number of rounds
         }
         StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedSum);
         statsState.writeDistancesStats();

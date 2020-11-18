@@ -187,6 +187,8 @@ public class TracingSimulationIT {
         int observersNum = 1;
         double transmissionRadius = 2.0; // Includes the whole board
 
+        double observerAwakenessRatio = (double) AWAKENESS_DURATION_EQUALS_ONE / AWAKENESS_CYCLE_EQUALS_TWO;
+
         AbstractSimulation simulation = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
                 .setRowNum(rowsNum)
@@ -207,7 +209,7 @@ public class TracingSimulationIT {
         Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
 
         for (String beacon : observersStats.keySet()) {
-            assertThat(observersStats.get(beacon)).isEqualTo(0.5);
+            assertThat(observersStats.get(beacon)).isEqualTo(observerAwakenessRatio);
         }
     }
 
@@ -220,6 +222,8 @@ public class TracingSimulationIT {
         int observersNum = 100;
         double transmissionRadius = 2.0; // Includes the whole board
 
+        double observersAwakenessRatio = 1; // At least one observer is awake each round
+
         AbstractSimulation simulation = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
                 .setRowNum(rowsNum)
@@ -240,7 +244,7 @@ public class TracingSimulationIT {
         Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
 
         for (String beacon : observersStats.keySet()) {
-            assertThat(observersStats.get(beacon)).isEqualTo(1);
+            assertThat(observersStats.get(beacon)).isEqualTo(observersAwakenessRatio);
         }
     }
 
@@ -253,6 +257,8 @@ public class TracingSimulationIT {
         int observersNum = 1;
         double transmissionRadius = 2.0; // Includes the whole board
 
+        double observerAwakenessRatio = (double) AWAKENESS_DURATION_EQUALS_ONE / AWAKENESS_CYCLE_EQUALS_TWO;
+
         AbstractSimulation simulation = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
                 .setRowNum(rowsNum)
@@ -273,7 +279,7 @@ public class TracingSimulationIT {
         Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
 
         for (String beacon : observersStats.keySet()) {
-            assertThat(observersStats.get(beacon)).isEqualTo(0.5);
+            assertThat(observersStats.get(beacon)).isEqualTo(observerAwakenessRatio);
         }
     }
 
@@ -285,6 +291,8 @@ public class TracingSimulationIT {
         int beaconsNum = 10;
         int observersNum = 1;
         double transmissionRadius = 2.0; // Includes the whole board
+
+        double distanceFromBeacons = 0.0; // The observer and the beacons are in the only location in the board
 
         AbstractSimulation simulation = new TracingSimulation.Builder()
                 .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
@@ -306,7 +314,7 @@ public class TracingSimulationIT {
         Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
 
         for (String aggregateFunction : distancesStats.keySet()) {
-            assertThat(distancesStats.get(aggregateFunction)).isEqualTo(0.0);
+            assertThat(distancesStats.get(aggregateFunction)).isEqualTo(distanceFromBeacons);
         }
     }
 
@@ -339,7 +347,7 @@ public class TracingSimulationIT {
         Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
 
         assertThat(distancesStats.get("max")).isEqualTo(transmissionRadius);
-        assertThat(distancesStats.get("min")).isEqualTo(0.0);
+        assertThat(distancesStats.get("min")).isEqualTo(0.0); // the observer shares its location with some beacons
     }
 
     @Test
