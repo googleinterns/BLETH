@@ -50,9 +50,6 @@ function visualizeBoardState(board, tableId) {
     var boardTable = document.getElementById(tableId);
     var boardTableBody = document.createElement('tbody');
 
-    // Clear last state of table
-    boardTable.innerHTML = '';
-
     // Change cells' classes according to board.
     board.forEach(function(rowData) {
 
@@ -69,8 +66,14 @@ function visualizeBoardState(board, tableId) {
         boardTableBody.appendChild(row);
     });
 
+    // Clear last state of table (if table body exists).
+    var oldTableBodies = boardTable.tBodies;
+    if (oldTableBodies.length > 0) {
+        boardTable.removeChild(oldTableBodies[0]);
+    }
+    
+    // Append updated table body.
     boardTable.appendChild(boardTableBody);
-    document.body.appendChild(boardTable);
 }
 
 /**
