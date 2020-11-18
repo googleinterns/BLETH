@@ -40,7 +40,7 @@ async function visualize() {
 }
 
 /**
- * Given a boars state and an id of an html table element, update the table to display the board state.
+ * Given a board state and an id of an html table element, update the table to display the board state.
  * @param {String[][]} board is the board state to visualize. 
  * @param {String} tableId is the id of the html table element to be updated.
  */
