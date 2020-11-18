@@ -67,7 +67,7 @@ public final class GlobalResolver implements IGlobalResolver {
         return estimatedBoard;
     }
 
-    /** Returns the map between each beacon and its estimated location. */
+    @Override
     public Map<Beacon, Location> getBeaconsToEstimatedLocations() {
        return ImmutableMap.copyOf(beaconsToEstimatedLocations);
     }

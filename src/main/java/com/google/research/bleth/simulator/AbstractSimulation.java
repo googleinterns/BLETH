@@ -106,7 +106,7 @@ public abstract class AbstractSimulation {
 
     /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
     void updateSimulationStats() {
-        Map<Beacon, Location> beaconsToEstimatedLocations = ((GlobalResolver) resolver).getBeaconsToEstimatedLocations();
+        Map<Beacon, Location> beaconsToEstimatedLocations = resolver.getBeaconsToEstimatedLocations();
         List<Double> distances = beaconsToEstimatedLocations.keySet().stream() // ignore beacons that have never been observed
                 .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toImmutableList());
 

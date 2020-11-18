@@ -1,5 +1,7 @@
 package com.google.research.bleth.simulator;
 
+import java.util.Map;
+
 /** Represent a trusted cloud global resolver. */
 public interface IGlobalResolver extends IResolver {
 
@@ -8,4 +10,7 @@ public interface IGlobalResolver extends IResolver {
 
     /** Returns the estimated board that the resolver contains. */
     EstimatedBoard getBoard();
+
+    /** Returns the map between each beacon and its estimated location. */
+    Map<Beacon, Location> getBeaconsToEstimatedLocations();
 }
