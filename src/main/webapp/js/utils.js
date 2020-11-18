@@ -21,7 +21,8 @@ export function getUrlVars() {
     const pairs = window.location.href.slice(startIndex).split('&');
     for(var i = 0; i < pairs.length; i++) {
         const pair = pairs[i].split('=');
-        const key = pair[0]; const value = pair[1];
+        const key = pair[0]; 
+        const value = pair[1];
         vars[key] = value;
     }
     return vars;
