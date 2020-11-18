@@ -1,6 +1,6 @@
 package com.google.research.bleth.simulator;
 
-import static java.util.stream.Collectors.toList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -74,20 +74,19 @@ public abstract class AbstractSimulation {
      */
     void beaconsToObservers() {
         for (Beacon beacon : beacons) {
-            boolean observed = false; // for stats
+            boolean observed = false;
             Transmission transmission = beacon.transmit();
             for (Observer observer : observers) {
                 if (observer.isAwake()) {
                     double distance = distance(beacon.getLocation(), observer.getLocation());
                     if (distance <= transmissionThresholdRadius) {
                         observer.observe(transmission);
-                        observed = true; // for stats
+                        observed = true;
                     }
                 }
             }
             if (observed) {
-                beaconsObservedSum.put(String.valueOf(beacon.getId()),
-                        beaconsObservedSum.getOrDefault(String.valueOf(beacon.getId()), 0D) + 1); // for stats
+                beaconsObservedSum.merge(String.valueOf(beacon.getId()), 1.0D, Double::sum);
             }
         }
     }
@@ -109,14 +108,14 @@ public abstract class AbstractSimulation {
     void updateSimulationStats() {
         Map<Beacon, Location> beaconsToEstimatedLocations = ((GlobalResolver) resolver).getBeaconsToEstimatedLocations();
         List<Double> distances = beaconsToEstimatedLocations.keySet().stream() // ignore beacons that have never been observed
-                .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toList());
+                .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toImmutableList());
 
         if (!distances.isEmpty()) { // distances is empty until the first round an observer observed a beacon
             double min = distances.stream().min(Double::compareTo).get();
-            distancesStats.put("min", Math.min(distancesStats.getOrDefault("min", Double.POSITIVE_INFINITY), min));
+            distancesStats.merge("min", min, Double::min);
 
             double max = distances.stream().max(Double::compareTo).get();
-            distancesStats.put("max", Math.max(distancesStats.getOrDefault("max", Double.NEGATIVE_INFINITY), max));
+            distancesStats.merge("max", max, Double::max);
 
             double average = distances.stream().mapToDouble(Double::doubleValue).sum() / distances.size();
             double allRoundsAverage = (distancesStats.getOrDefault("avg", 0D) * (currentRound - 1) + average) / currentRound;
