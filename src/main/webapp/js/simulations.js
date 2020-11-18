@@ -58,9 +58,16 @@ function addSimulationRows(table, simulations) {
         
         var visualizeSimulationButton = document.createElement('button');
         visualizeSimulationButton.innerText = 'Visualize Simulation';
+        /**
+         * For each simulation add a button redirecting to simulation_visualization.html
+         * Simulation metadata is encoded as a query string.
+         */
         visualizeSimulationButton.addEventListener('click', () => {
+            // Create a deep copy of simulation JSON, and the simulation id as a new key.
             var simulationWithId = JSON.parse(JSON.stringify(simulation));
             simulationWithId['id'] = id;
+            
+            // Redirect.
             window.location.replace('simulation_visualization.html?' + toQueryString(simulationWithId));
         });
 
