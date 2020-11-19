@@ -14,7 +14,6 @@ async function visualize() {
     var roundHeader = document.getElementById('current-round-header');
     mainHeader.innerText = 'Visualizing Simulation\n' + simulation.id;
     var params = {};
-    var queryString;
     params['simulationId'] = simulation.id;
     for (var round = 0; round < simulation.roundsNum; round++) {
         roundHeader.innerText = 'Current Round: ' + round;
@@ -22,21 +21,28 @@ async function visualize() {
 
         // Request real board state.
         params['isReal'] = true;
-        queryString = toQueryString(params);
-        await fetch(`/read-board-state?${queryString}`)
-        .then(response => response.json())
-        .then(boardState => visualizeBoardState(boardState.array, realBoardElementId));
+        await fetchReadBoardState(params, realBoardElementId);
 
         // Request estimated board state.
         params['isReal'] = false;
-        queryString = toQueryString(params);
-        await fetch(`/read-board-state?${queryString}`)
-        .then(response => response.json())
-        .then(boardState => visualizeBoardState(boardState.array, estimatedBoardElementId));
+        await fetchReadBoardState(params, estimatedBoardElementId);
 
         // Delay.
         await sleep(1000);
     }
+}
+
+/**
+ * Fetch board state from servlet by given parameters, and update an HTML table corresponding to given
+ * board element id to visualize the board's state.
+ * @param {Object} params is an object storing parameters for http request.
+ * @param {String} boardElementId is the id of the html table element to be updated.
+ */
+async function fetchReadBoardState(params, boardElementId) {
+    const queryString = toQueryString(params);
+    fetch(`/read-board-state?${queryString}`)
+    .then(response => response.json())
+    .then(boardState => visualizeBoardState(boardState.array, boardElementId));
 }
 
 /**
