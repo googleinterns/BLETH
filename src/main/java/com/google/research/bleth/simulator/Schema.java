@@ -31,4 +31,11 @@ public class Schema {
         public static final String rowNum = "rowNum";
         public static final String colNum = "colNum";
     }
+
+    /** A class providing a single access point for the StatsState entity schema. */
+    public static class StatisticsState {
+        public static final String simulationId = "simulationId";
+        public static final String entityKindDistance = "DistanceStats";
+        public static final String entityKindBeaconsObservedPercent = "BeaconsObservedPercentStats";
+    }
 }

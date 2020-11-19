@@ -1,26 +1,28 @@
 package com.google.research.bleth.simulator;
 
-import com.google.common.collect.ImmutableList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * An abstract class representing a BLETH simulation.
- * Can be either a Tracing simulation or a Stalking simulation.
- */
+/** An abstract class representing a BLETH simulation. */
 public abstract class AbstractSimulation {
 
     private final String id;
     private int currentRound = 0;
     private final int maxNumberOfRounds;
-    private RealBoard board;
+    private final RealBoard board;
     protected final ImmutableList<Beacon> beacons;
     protected final ImmutableList<Observer> observers;
-    private IGlobalResolver resolver;
+    private final IGlobalResolver resolver;
     private final double transmissionThresholdRadius;
-    private HashMap<String, Double> stats = new HashMap<>();
+
+    private final HashMap<String, Double> distancesStats = new HashMap<>();
+    private final HashMap<String, Double> beaconsObservedSum = new HashMap<>();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -51,6 +53,11 @@ public abstract class AbstractSimulation {
         writeSimulationStats();
     }
 
+    /** Returns the simulation's Id. */
+    public String getId() {
+        return id;
+    }
+
     /** Move all agents according to their movement strategies and update the real board. */
     void moveAgents() {
         beacons.forEach((AbstractAgent::move));
@@ -68,14 +75,19 @@ public abstract class AbstractSimulation {
      */
     void beaconsToObservers() {
         for (Beacon beacon : beacons) {
+            boolean observed = false;
             Transmission transmission = beacon.transmit();
             for (Observer observer : observers) {
                 if (observer.isAwake()) {
                     double distance = distance(beacon.getLocation(), observer.getLocation());
                     if (distance <= transmissionThresholdRadius) {
                         observer.observe(transmission);
+                        observed = true;
                     }
                 }
+            }
+            if (observed) {
+                beaconsObservedSum.merge(String.valueOf(beacon.getId()), 1.0D, Double::sum);
             }
         }
     }
@@ -94,10 +106,36 @@ public abstract class AbstractSimulation {
     void writeRoundState() { }
 
     /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
-    void updateSimulationStats() { }
+    void updateSimulationStats() {
+        Map<Beacon, Location> beaconsToEstimatedLocations = resolver.getBeaconsToEstimatedLocations();
+        List<Double> distances = beaconsToEstimatedLocations.keySet().stream() // ignore beacons that have never been observed
+                .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toImmutableList());
+
+        if (!distances.isEmpty()) { // distances is empty until the first round an observer observed a beacon
+            double min = distances.stream().min(Double::compareTo).get();
+            distancesStats.merge("min", min, Double::min);
+
+            double max = distances.stream().max(Double::compareTo).get();
+            distancesStats.merge("max", max, Double::max);
+
+            double average = distances.stream().mapToDouble(Double::doubleValue).sum() / distances.size();
+            double allRoundsAverage = (distancesStats.getOrDefault("avg", 0D) * (currentRound - 1) + average) / currentRound;
+            distancesStats.put("avg", allRoundsAverage);
+        }
+    }
 
     /** Write final simulation statistical data to db. */
-    void writeSimulationStats() { }
+    void writeSimulationStats() {
+        for (Beacon beacon : beacons) {
+            beaconsObservedSum.putIfAbsent(String.valueOf(beacon.getId()), 0D);
+        }
+        Map<String, Double> beaconsObservedPercent = beaconsObservedSum.entrySet().stream()
+                .collect(toImmutableMap(e -> e.getKey(), e -> e.getValue() / (currentRound - 1)));
+
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
+        statsState.writeDistancesStats();
+        statsState.writeBeaconsObservedPercentStats();
+    }
 
     /** An abstract builder class designed to separate the construction of a simulation from its representation. */
     public static abstract class Builder {

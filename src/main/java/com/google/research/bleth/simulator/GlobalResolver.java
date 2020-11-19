@@ -67,6 +67,11 @@ public final class GlobalResolver implements IGlobalResolver {
         return estimatedBoard;
     }
 
+    @Override
+    public Map<Beacon, Location> getBeaconsToEstimatedLocations() {
+       return ImmutableMap.copyOf(beaconsToEstimatedLocations);
+    }
+
     private GlobalResolver(EstimatedBoard estimatedBoard, Map<Transmission, Beacon> transmissionsToBeacons) {
         this.estimatedBoard = estimatedBoard;
         this.transmissionsToBeacons = transmissionsToBeacons;
