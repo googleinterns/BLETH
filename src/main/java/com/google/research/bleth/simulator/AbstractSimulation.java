@@ -1,6 +1,7 @@
 package com.google.research.bleth.simulator;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -126,12 +127,12 @@ public abstract class AbstractSimulation {
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() {
         for (Beacon beacon : beacons) {
-            String beaconId = String.valueOf(beacon.getId());
-            beaconsObservedSum.putIfAbsent(beaconId, 0D);
-            beaconsObservedSum.put(beaconId, beaconsObservedSum.get(beaconId)
-                                  / (currentRound - 1)); // to get the percentage, which doesn't depend on the number of rounds
+            beaconsObservedSum.putIfAbsent(String.valueOf(beacon.getId()), 0D);
         }
-        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedSum);
+        Map<String, Double> beaconsObservedPercent = beaconsObservedSum.entrySet().stream()
+                .collect(toImmutableMap(e -> e.getKey(), e -> e.getValue() / (currentRound - 1)));
+
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
         statsState.writeDistancesStats();
         statsState.writeBeaconsObservedPercentStats();
     }
