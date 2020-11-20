@@ -20,7 +20,7 @@ public class BoardStateFactory {
      * @param round is the round associated with the board state.
      * @return a board state.
      */
-    public static BoardState create(Board board, String simulationId, int round) {
+    public static BoardState create(AbstractBoard board, String simulationId, int round) {
         checkArgument(round >= 0);
         checkNotNull(board);
         String entityKind = determineBoardStateEntityKind(board);
@@ -52,7 +52,7 @@ public class BoardStateFactory {
         return table;
     }
 
-    private static ArrayTable<Integer, Integer, ArrayList<String>> toArrayTable(Board board) {
+    private static ArrayTable<Integer, Integer, ArrayList<String>> toArrayTable(AbstractBoard board) {
         int rowNum = board.getRowNum();
         int colNum = board.getColNum();
         ArrayTable<Integer, Integer, ArrayList<String>> boardStateTable = createEmptyTable(rowNum, colNum);
@@ -66,7 +66,7 @@ public class BoardStateFactory {
         return boardStateTable;
     }
 
-    private static String determineBoardStateEntityKind(Board board) {
+    private static String determineBoardStateEntityKind(AbstractBoard board) {
         if (board instanceof RealBoard) { return Schema.BoardState.entityKindReal; }
         return Schema.BoardState.entityKindEstimated;
     }

@@ -23,7 +23,7 @@ class FakeResolver implements IResolver {
         return transmissions;
     }
 
-    public Board getBoard() {
+    public AbstractBoard getBoard() {
         return null;
     }
 }
