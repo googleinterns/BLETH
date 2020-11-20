@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /** A container for all the agents, representing their locations, either real or estimated. */
-public abstract class Board {
+public abstract class AbstractBoard {
     private final int rowNum;
     private final int colNum;
     private ArrayTable<Integer, Integer, ArrayList<IAgent>> matrix;
@@ -24,7 +24,7 @@ public abstract class Board {
      * @param rows is number of rows.
      * @param cols is number of columns.
      */
-    public Board(int rows, int cols) {
+    public AbstractBoard(int rows, int cols) {
         rowNum = rows;
         colNum = cols;
         matrix = ArrayTable.create(IntStream.range(0, rows).boxed().collect(Collectors.toList()),
