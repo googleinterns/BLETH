@@ -15,7 +15,7 @@ function retrieveStrategies() {
 
 /**
  * Update form datalists to enable choosing strategies from a closed list.
- * @param {Array} strategies is a JSON object stirng lists of movement and awakeness strategies (as strings).
+ * @param {String[]} strategies is a JSON object stirng lists of movement and awakeness strategies (as strings).
  */
 function updateFormStrategiesList(strategies) {
     updateDatalistValuesFromArray('movementStrategy', strategies.movement);
@@ -25,7 +25,7 @@ function updateFormStrategiesList(strategies) {
 /**
  * Add values stored in an array to a datalist corresponding to a given id.
  * @param {String} datalistId is the datalist id.
- * @param {Array} valuesArray is an array of values to be added to the datalist.
+ * @param {String[]} valuesArray is an array of values to be added to the datalist.
  */
 function updateDatalistValuesFromArray(datalistId, valuesArray) {
     var valuesHtml = '';

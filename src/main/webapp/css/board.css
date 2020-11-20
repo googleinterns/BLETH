@@ -1,0 +1,46 @@
+.board-table {
+    position: relative;
+    border: 1px solid black;
+    width: 30%;
+    height: 30%;
+    float: left;
+    margin-left: 10%;
+}
+
+.board-th {
+    border: 1px solid black;
+    overflow: hidden;
+}
+  
+.board-td {
+    border: 1px solid black;
+    overflow: hidden;
+    width: 10%;
+    position: relative;
+}
+
+.board-td:after {
+    content: '';
+    display: block;
+    margin-top: 100%;
+}
+
+.board-td .content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.board-td-empty {
+    background-color: white;
+}
+
+.board-td-observers-only {
+    background-color: orange;
+}
+
+.board-td-contains-beacon {
+    background-color: blue;
+}

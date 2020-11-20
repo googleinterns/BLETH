@@ -1,3 +1,7 @@
+import { toQueryString } from './utils.js';
+
+window.retrieveSimulations = retrieveSimulations; // Add function to global scope.
+
 /**
  * Fetch url and retrieve a JSON object storing simulations' metadata,
  * and display as an html table.
@@ -12,7 +16,7 @@ function retrieveSimulations() {
 
 /**
  * Given a json object storing simulations' metadata, write all data to an html table.
- * @param simulations is an object storing simulations' unique id and metadata.
+ * @param {Object} simulations is an object storing simulations' unique id and metadata.
  */
 function displaySimulationAsTable(simulations) {
     const allSimulationIds = Object.keys(simulations);
@@ -29,8 +33,8 @@ function displaySimulationAsTable(simulations) {
 
 /**
  * Given a table and an array of strings, add a header based on the array's items.
- * @param table is the html table to be updated.
- * @param properties is an array of header properties.
+ * @param {HTMLElement} table is the html table to be updated.
+ * @param {String[]} properties is an array of header properties.
  */
 function addSimulationHeader(table, properties) {
     var header = table.createTHead();
@@ -44,8 +48,8 @@ function addSimulationHeader(table, properties) {
 
 /**
  * Given a table and an object storing simulations' metadata, add a row for each simulation.
- * @param table is the table to be updated.
- * @param simulations is an object storing simulations' id and metadata.
+ * @param {HTMLElement} table is the table to be updated.
+ * @param {Object} simulations is an object storing simulations' id and metadata.
  */
 function addSimulationRows(table, simulations) {
     for (const id in simulations) {
@@ -54,8 +58,17 @@ function addSimulationRows(table, simulations) {
         
         var visualizeSimulationButton = document.createElement('button');
         visualizeSimulationButton.innerText = 'Visualize Simulation';
+        /**
+         * For each simulation add a button redirecting to simulation_visualization.html
+         * Simulation metadata is encoded as a query string.
+         */
         visualizeSimulationButton.addEventListener('click', () => {
-            // todo: call a method for simulation visualizing.
+            // Create a deep copy of simulation JSON, and the simulation id as a new key.
+            var simulationWithId = JSON.parse(JSON.stringify(simulation));
+            simulationWithId['id'] = id;
+            
+            // Redirect.
+            window.location.replace('simulation_visualization.html?' + toQueryString(simulationWithId));
         });
 
         row.insertCell(0).appendChild(visualizeSimulationButton);
