@@ -29,8 +29,8 @@ public class Queries {
      * @param primaryEntityKind is the primary entity kind.
      * @param secondaryEntityKind is the secondary entity kind.
      * @param foreignKey is the join property of secondaryEntityKind (the join property of primaryEntityKind is the key).
-     * @param primaryEntityFilter is a simple or composed filter to apply on primaryEntityKind prior to the join operation.
-     * @return
+     * @param primaryEntityFilter is a simple or composed filter to apply on primaryEntityKind prior to the join operation (optional).
+     * @return a list of secondary entities matching the primary entities retrieved.
      */
     public static List<Entity> Join(String primaryEntityKind, String secondaryEntityKind,
                                     String foreignKey, Optional<Query.Filter> primaryEntityFilter) {
