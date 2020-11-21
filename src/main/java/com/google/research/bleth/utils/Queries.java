@@ -41,7 +41,7 @@ public class Queries {
         // Iterate over two queries results and add secondary entities with a matching foreign key.
         String primaryKey = primaryKeyIterator.next();
         Entity secondaryEntity = secondaryEntityIterator.next();
-        String secondaryKey = (String) secondaryEntity.getProperty(foreignKey);
+        String secondaryKey = String.valueOf(secondaryEntity.getProperty(foreignKey));
         while (primaryKeyIterator.hasNext() && secondaryEntityIterator.hasNext()) {
             if (primaryKey.compareTo(secondaryKey) > 0) {
                 // primaryKey > secondaryKey
