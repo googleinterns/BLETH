@@ -16,7 +16,7 @@ import java.util.Optional;
 public class Queries {
 
     /**
-     * Given a primary entity kind and secondary entity kind, a foreign key and a filter, return a list of all entities
+     * Given a primary entity kind, a secondary entity kind, a foreign key and a filter, return a list of all entities
      * of the secondary entity matching an entity of the primary entity kind.
      *
      * Equivalent SQL syntax:
@@ -37,7 +37,7 @@ public class Queries {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         List<Entity> result = new ArrayList<>();
 
-        // Retrieve all primaryEntity ordered by their key, filtered by primaryEntityFilter (if provided).
+        // Retrieve all primaryEntity keys ordered by their key, filtered by primaryEntityFilter (if provided).
         Query primaryMatchingFilterCondition = new Query(primaryEntityKind);
         primaryEntityFilter.ifPresent(primaryMatchingFilterCondition::setFilter);
         Iterator<String> primaryKeyIterator = datastore.prepare(primaryMatchingFilterCondition)
