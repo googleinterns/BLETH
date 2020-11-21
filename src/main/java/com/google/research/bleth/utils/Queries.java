@@ -12,7 +12,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+/** A utility class providing method for db related operations, such as join and group by. */
 public class Queries {
+
+    /**
+     * Given a primary entity kind and secondary entity kind, a foreign key and a filter, return a list of all entities
+     * of the secondary entity matching an entity of the primary entity kind.
+     *
+     * Equivalent SQL syntax:
+     *
+     * SELECT secondaryEntityKind.a_1, ... secondaryEntityKind.a_n
+     * FROM primaryEntityKind INNER JOIN secondaryEntityKind
+     * ON primaryEntityKind.__key__ = secondaryEntityKind.foreignKey
+     * WHERE primaryEntityFilter
+     *
+     * @param primaryEntityKind is the primary entity kind.
+     * @param secondaryEntityKind is the secondary entity kind.
+     * @param foreignKey is the join property of secondaryEntityKind (the join property of primaryEntityKind is the key).
+     * @param primaryEntityFilter is a simple or composed filter to apply on primaryEntityKind prior to the join operation.
+     * @return
+     */
     public static List<Entity> Join(String primaryEntityKind, String secondaryEntityKind,
                                     String foreignKey, Optional<Query.Filter> primaryEntityFilter) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
