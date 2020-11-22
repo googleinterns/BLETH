@@ -36,7 +36,36 @@ function updateDatalistValuesFromArray(datalistId, valuesArray) {
     document.getElementById(datalistId).innerHTML = valuesHtml;
 }
 
-// Inputs' Dynamic Upper Boundes
+// Inputs' Dynamic Bounds
+
+/** Verify that the values of all input tags are legal, change illegal values. */
+function enforceRigidBounds() {
+    var roundsNum = document.getElementById('roundsNum').value;
+    document.getElementById('roundsNum').value = Math.max(1, roundsNum);
+
+    var beaconsNum = document.getElementById('beaconsNum').value;
+    document.getElementById('beaconsNum').value = Math.max(1, beaconsNum);
+
+    var observersNum = document.getElementById('observersNum').value;
+    document.getElementById('observersNum').value = Math.max(1, observersNum);
+
+    var currentRows = document.getElementById('rowsNum').value;
+    var maxRows = document.getElementById('rowsNum').max;
+    document.getElementById('rowsNum').value = Math.max(1, Math.min(maxRows, currentRows));
+
+    var currentCols = document.getElementById('colsNum').value;
+    var maxCols = document.getElementById('colsNum').max;
+    document.getElementById('colsNum').value = Math.max(1, Math.min(maxCols, currentCols));
+
+    var awakenessCycle = document.getElementById('awakenessCycle').value;
+    document.getElementById('awakenessCycle').value = Math.max(1, awakenessCycle);
+
+    var awakenessDuration = document.getElementById('awakenessDuration').value;
+    document.getElementById('awakenessDuration').value = Math.max(1, awakenessDuration);
+
+    var radius = document.getElementById('transmissionThresholdRadius').value;
+    document.getElementById('transmissionThresholdRadius').value = Math.max(0, radius);
+}
 
 /**
  * Given two id's of HTML input tags, dynamically bound the value of the first input tag 
@@ -55,8 +84,10 @@ function setDynamicUpperBound(boundedInputId, boundingInputId) {
  * Verify the following constrains are kept:
  * awakenessCycle <= roundsNum
  * awakenessDuration <= awakenessCycle
+ * all input tags' values are legal
  */
 function setAllDynamicUpperBounds() {
+    enforceRigidBounds();
     setDynamicUpperBound('awakenessCycle', 'roundsNum');
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
 }
