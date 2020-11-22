@@ -1,0 +1,24 @@
+body {
+    margin: 1em;
+}
+
+nav {
+    background-color: rgb(4, 104, 21);
+    overflow: hidden;
+    display: grid;
+  }
+  
+nav ul {
+    padding-left: 0;
+}
+
+nav ul li {
+    list-style-type: none;
+}
+
+nav span, a {
+    float: left;
+    color: #f2f2f2;
+    padding: 8px 12px;
+    font-size: 17px;
+}
