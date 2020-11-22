@@ -36,7 +36,46 @@ function updateDatalistValuesFromArray(datalistId, valuesArray) {
     document.getElementById(datalistId).innerHTML = valuesHtml;
 }
 
-// Inputs' Dynamic Upper Boundes
+// Inputs' Dynamic Bounds
+
+/**
+ * Verify that the input tag doesn't exceed its limit.
+ * @param {String} fieldId is the bounded element.
+ * @param {Number} maxValue is the largest value the element can hold.
+ */
+function setStaticUpperBound(fieldId, maxValue) {
+    var currentValue = document.getElementById(fieldId).value;
+    document.getElementById(fieldId).value = Math.min(currentValue, maxValue);
+}
+
+/**
+ * Verify that the input tag is positive.
+ * @param {String} fieldId is the bounded element.
+ * @param {Number} minValue is the lowest positive value the element can hold.
+ */
+function setStaticLowerBound(fieldId, minValue) {
+    var currentValue = document.getElementById(fieldId).value;
+    document.getElementById(fieldId).value = Math.max(currentValue, minValue);
+}
+
+/** Verify that the values of all input tags are legal, change illegal values. */
+function setRigidBounds() {
+    setStaticLowerBound('roundsNum', 1);
+    setStaticLowerBound('beaconsNum', 1);
+    setStaticLowerBound('observersNum', 1);
+
+    setStaticLowerBound('rowsNum', 1);
+    var maxRows = document.getElementById('rowsNum').max;
+    setStaticUpperBound('rowsNum', maxRows);
+
+    setStaticLowerBound('colsNum', 1);
+    var maxCols = document.getElementById('colsNum').max;
+    setStaticUpperBound('colsNum', maxCols);
+
+    setStaticLowerBound('awakenessCycle', 1);
+    setStaticLowerBound('awakenessDuration', 1);
+    setStaticLowerBound('transmissionThresholdRadius', 0);
+}
 
 /**
  * Given two id's of HTML input tags, dynamically bound the value of the first input tag 
@@ -55,8 +94,10 @@ function setDynamicUpperBound(boundedInputId, boundingInputId) {
  * Verify the following constrains are kept:
  * awakenessCycle <= roundsNum
  * awakenessDuration <= awakenessCycle
+ * all input tags' values are legal
  */
 function setAllDynamicUpperBounds() {
+    setRigidBounds();
     setDynamicUpperBound('awakenessCycle', 'roundsNum');
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
 }
