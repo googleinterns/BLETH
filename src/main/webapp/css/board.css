@@ -5,6 +5,7 @@
     height: 30%;
     float: left;
     margin-left: 10%;
+    table-layout: fixed;
 }
 
 .board-th {
