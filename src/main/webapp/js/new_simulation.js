@@ -38,33 +38,43 @@ function updateDatalistValuesFromArray(datalistId, valuesArray) {
 
 // Inputs' Dynamic Bounds
 
+/**
+ * Verify that the input tag doesn't exceed its limit.
+ * @param {String} fieldId is the bounded element.
+ * @param {Number} maxValue is the largest value the element can hold.
+ */
+function setStaticUpperBound(fieldId, maxValue) {
+    var currentValue = document.getElementById(fieldId).value;
+    document.getElementById(fieldId).value = Math.min(currentValue, maxValue);
+}
+
+/**
+ * Verify that the input tag is positive.
+ * @param {String} fieldId is the bounded element.
+ * @param {Number} minValue is the lowest positive value the element can hold.
+ */
+function setStaticLowerBound(fieldId, minValue) {
+    var currentValue = document.getElementById(fieldId).value;
+    document.getElementById(fieldId).value = Math.max(currentValue, minValue);
+}
+
 /** Verify that the values of all input tags are legal, change illegal values. */
-function enforceRigidBounds() {
-    var roundsNum = document.getElementById('roundsNum').value;
-    document.getElementById('roundsNum').value = Math.max(1, roundsNum);
+function setRigidBounds() {
+    setStaticLowerBound('roundsNum', 1);
+    setStaticLowerBound('beaconsNum', 1);
+    setStaticLowerBound('observersNum', 1);
 
-    var beaconsNum = document.getElementById('beaconsNum').value;
-    document.getElementById('beaconsNum').value = Math.max(1, beaconsNum);
-
-    var observersNum = document.getElementById('observersNum').value;
-    document.getElementById('observersNum').value = Math.max(1, observersNum);
-
-    var currentRows = document.getElementById('rowsNum').value;
+    setStaticLowerBound('rowsNum', 1);
     var maxRows = document.getElementById('rowsNum').max;
-    document.getElementById('rowsNum').value = Math.max(1, Math.min(maxRows, currentRows));
+    setStaticUpperBound('rowsNum', maxRows);
 
-    var currentCols = document.getElementById('colsNum').value;
+    setStaticLowerBound('colsNum', 1);
     var maxCols = document.getElementById('colsNum').max;
-    document.getElementById('colsNum').value = Math.max(1, Math.min(maxCols, currentCols));
+    setStaticUpperBound('colsNum', maxCols);
 
-    var awakenessCycle = document.getElementById('awakenessCycle').value;
-    document.getElementById('awakenessCycle').value = Math.max(1, awakenessCycle);
-
-    var awakenessDuration = document.getElementById('awakenessDuration').value;
-    document.getElementById('awakenessDuration').value = Math.max(1, awakenessDuration);
-
-    var radius = document.getElementById('transmissionThresholdRadius').value;
-    document.getElementById('transmissionThresholdRadius').value = Math.max(0, radius);
+    setStaticLowerBound('awakenessCycle', 1);
+    setStaticLowerBound('awakenessDuration', 1);
+    setStaticLowerBound('transmissionThresholdRadius', 0);
 }
 
 /**
@@ -87,7 +97,7 @@ function setDynamicUpperBound(boundedInputId, boundingInputId) {
  * all input tags' values are legal
  */
 function setAllDynamicUpperBounds() {
-    enforceRigidBounds();
+    setRigidBounds();
     setDynamicUpperBound('awakenessCycle', 'roundsNum');
     setDynamicUpperBound('awakenessDuration', 'awakenessCycle');
 }
