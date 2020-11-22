@@ -12,6 +12,7 @@ async function visualize() {
     var simulation = getUrlVars();
     var mainHeader = document.getElementById('simulation-visualization-header');
     var roundHeader = document.getElementById('current-round-header');
+    var delay;
     mainHeader.innerText = 'Visualizing Simulation\n' + simulation.id;
     var params = {};
     params['simulationId'] = simulation.id;
@@ -28,7 +29,8 @@ async function visualize() {
         await fetchReadBoardState(params, estimatedBoardElementId);
 
         // Delay.
-        await sleep(1000);
+        delay = 1/document.getElementById('speed-controller').value;
+        await sleep(delay);
     }
 }
 
