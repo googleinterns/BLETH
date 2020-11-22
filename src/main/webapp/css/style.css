@@ -22,3 +22,11 @@ nav span, a {
     padding: 8px 12px;
     font-size: 17px;
 }
+
+.speed-controller {
+    margin-top: 5%;
+}
+
+#speed-controller {
+    width: 40%;
+}
