@@ -1,10 +1,14 @@
+.boards {
+    display: flex;
+}
+
 .board-table {
     position: relative;
     border: 1px solid black;
-    width: 30%;
-    height: 30%;
+    width: 90%;
+    height: 90%;
     float: left;
-    margin-left: 10%;
+    table-layout: fixed;
 }
 
 .board-th {
