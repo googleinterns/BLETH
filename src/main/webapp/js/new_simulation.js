@@ -47,6 +47,8 @@ function updateDatalistValuesFromArray(datalistId, valuesArray) {
 function setDynamicUpperBound(boundedInputId, boundingInputId) {
     var boundingValue = document.getElementById(boundingInputId).value;
     document.getElementById(boundedInputId).setAttribute("max", boundingValue);
+    var currentValue = document.getElementById(boundedInputId).value
+    document.getElementById(boundedInputId).value = Math.min(boundingValue, currentValue);
 }
 
 /**
