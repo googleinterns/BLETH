@@ -24,6 +24,16 @@ nav span, a {
     font-size: 17px;
 }
 
+/* speed controller */
+.speed-controller {
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
+}
+
+#speed-controller {
+    width: 40%;
+}
+
 /* simulations' table */
 #simulations-table td {
     font-size: 90%;

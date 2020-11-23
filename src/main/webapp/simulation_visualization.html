@@ -22,6 +22,16 @@
     <h2 id='simulation-visualization-header'></h2>
     <h3 id='current-round-header'></h3>
 
+    <!-- Speed Controller. -->
+    <div class="speed-controller">
+        <div>
+            Speed: 
+            <input type="range" min="0.0001" max="0.01" value="0.001"
+                   step="0.0000001" class="slider" id="speed-controller">
+        </div>
+    </div>
+
+    <!-- Simulation Boards. -->
     <div class="boards">
         <div>
             <h4>Real Board</h4>
@@ -32,6 +42,6 @@
             <table id="estimated-board-table" class="board-table"></table>
         </div>
     </div>
-    
+
 </body>
 </html>
