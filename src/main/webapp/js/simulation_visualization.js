@@ -68,6 +68,7 @@ function visualizeBoardState(board, tableId) {
             var cell = document.createElement('td');
             cell.classList.add('board-td');
             cell.classList.add(determineCellClass(cellData));
+            cell.setAttribute('title', extractBeaconsIds(cellData).join(","));
             row.appendChild(cell);
         });
 
@@ -95,4 +96,14 @@ function determineCellClass(agents) {
         if (agents[i].charAt(0) === 'B') { return 'board-td-contains-beacon'; }
     }
     return 'board-td-observers-only';
+}
+
+/**
+ * Returns a sorted list of all the beacons' ids in the given list.
+ * @param {String[]} agents is a list of agents ids located in the same cell of the board. 
+ */
+function extractBeaconsIds(agents) {
+    var beaconsIds = agents.filter(function(agent) {return agent.charAt(0) === 'B';})
+                    .map(function(agent) {return agent.slice(6);});
+    return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
 }
