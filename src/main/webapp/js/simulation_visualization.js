@@ -68,7 +68,13 @@ function visualizeBoardState(board, tableId) {
             var cell = document.createElement('td');
             cell.classList.add('board-td');
             cell.classList.add(determineCellClass(cellData));
-            cell.setAttribute('title', extractBeaconsIds(cellData).join(","));
+            var beaconsIdsInsideCell = extractBeaconsIds(cellData);
+            cell.setAttribute('title', beaconsIdsInsideCell.join(","));
+
+            var beaconOnFocus = document.getElementById("beacon-id").value;
+            if (beaconOnFocus != "" && beaconsIdsInsideCell.includes(beaconOnFocus)) {
+                cell.classList.add('board-td-contains-wanted-beacon');
+            }
             row.appendChild(cell);
         });
 

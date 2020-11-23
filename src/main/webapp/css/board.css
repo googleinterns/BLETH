@@ -48,3 +48,7 @@
 .board-td-contains-beacon {
     background-color: blue;
 }
+
+.board-td-contains-wanted-beacon {
+    background-color: blueviolet;
+}
