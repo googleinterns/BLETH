@@ -63,14 +63,11 @@ public class Queries {
         String secondaryKey = String.valueOf(secondaryEntity.getProperty(foreignKey));
         while (primaryKeyIterator.hasNext() && secondaryEntityIterator.hasNext()) {
             if (primaryKey.compareTo(secondaryKey) > 0) {
-                // primaryKey > secondaryKey
                 secondaryEntity = secondaryEntityIterator.next();
                 secondaryKey = (String) secondaryEntity.getProperty(foreignKey);
             } else if (primaryKey.compareTo(secondaryKey) < 0) {
-                // primaryKey < secondaryKey
                 primaryKey = primaryKeyIterator.next();
             } else {
-                // primaryKey = secondaryKey
                 result.add(secondaryEntity);
                 primaryKey = primaryKeyIterator.next();
                 secondaryEntity = secondaryEntityIterator.next();
