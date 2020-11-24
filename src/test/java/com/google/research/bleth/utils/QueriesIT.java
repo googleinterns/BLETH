@@ -2,7 +2,11 @@ package com.google.research.bleth.utils;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.dev.LocalDatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -27,12 +31,17 @@ public class QueriesIT {
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
                     .setAutoIdAllocationPolicy(LocalDatastoreService.AutoIdAllocationPolicy.SCATTERED));
+    private static final String ENTITY_KIND = "entityKind";
     private static final String NON_EXISTING_PROPERTY = "nonExistingProperty";
+    private static final String EXISTING_PROPERTY = "existingProperty";
+
 
     @Before
     public void setUp() {
         helper.setUp();
     }
+
+    // Join Test Cases.
 
     @Test
     public void createThreeSimulations_shouldRetrieveThreeStatsEntities() {
@@ -352,8 +361,77 @@ public class QueriesIT {
         assertThat(stats).isEmpty();
     }
 
+    // Single-property Aggregation Test Cases.
+
+    @Test
+    public void writeThreeEntitiesWithProperty_shouldCalculateAverageOfThreeValues() {
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 1.5);
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 0.5);
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 4.0);
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = 2.0;
+
+        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
+    @Test
+    public void writeTwoEntitiesWithPropertyAndOneEntityWithoutProperty_shouldCalculateAverageOfTwoValues() {
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 1.5);
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 0.5);
+        writeEntityWithoutProperty(ENTITY_KIND);
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = 1.0;
+
+        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
+    @Test
+    public void noEntitiesExists_shouldCalculateAverageAsNaN() {
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = Double.NaN;
+
+        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
+    @Test
+    public void writeSingleEntityWithoutProperty_shouldCalculateAverageAsNaN() {
+        writeEntityWithoutProperty(ENTITY_KIND);
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = Double.NaN;
+
+        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
     @After
     public void tearDown() {
         helper.tearDown();
+    }
+
+    private void writeEntityWithProperty(String entityKind, String property, double value) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        entity.setProperty(property, value);
+        datastore.put(entity);
+    }
+
+    private void writeEntityWithoutProperty(String entityKind) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        datastore.put(entity);
+    }
+
+    private List<Entity> retrieveEntities(String entityKind) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query entitiesQuery = new Query(entityKind);
+        PreparedQuery entitiesPreparedQuery = datastore.prepare(entitiesQuery);
+        return entitiesPreparedQuery.asList(FetchOptions.Builder.withDefaults());
     }
 }
