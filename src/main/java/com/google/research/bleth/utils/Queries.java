@@ -8,9 +8,12 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /** A utility class providing method for db related operations, such as join and group by. */
 public class Queries {
@@ -98,5 +101,50 @@ public class Queries {
                 .mapToDouble(entity -> (double) entity.getProperty(property))
                 .average()
                 .orElse(Double.NaN);
+    }
+
+    /**
+     * Return the average of entities multiple properties values (an average for each property).
+     * For each property, include only entities which have the property.
+     * @param entities is a list of entities.
+     * @param properties is a list of properties.
+     * @return a map where keys indicating properties' names and values indicating the averages (for each entry, Nan
+     * value indicating no entity with property exists within entities list).
+     */
+    public static Map<String, Double> Average(List<Entity> entities, Set<String> properties) {
+        Map<String, Double> resultMap = new HashMap(); // Maintains the average for each property.
+        Map<String, Integer> countersMap = new HashMap<>(); // Maintains the counter for each property.
+        properties.forEach(property -> initializeMaps(resultMap, countersMap, property));
+        if (entities.isEmpty()) {
+            return resultMap;
+        }
+
+        entities.forEach(entity -> updateMaps(resultMap, countersMap, properties, entity));
+        return resultMap;
+    }
+
+    private static void initializeMaps(Map<String, Double> resultMap, Map<String, Integer> countersMap, String property) {
+        resultMap.put(property, Double.NaN);
+        countersMap.put(property, 0);
+    }
+
+    private static void updateMaps(Map<String, Double> resultMap, Map<String, Integer> countersMap,
+                                   Set<String> properties, Entity entity) {
+        for (String property : entity.getProperties().keySet()) {
+            if (properties.contains(property)) {
+                int propertyCount = countersMap.get(property); // Property counter excluding current entity.
+                double propertyValue = (double) entity.getProperty(property);
+                if (propertyCount == 0) {
+                    // For the first occurrence of property, initialize counter as 1 and average of entity's value.
+                    countersMap.put(property, 1);
+                    resultMap.put(property, propertyValue);
+                } else {
+                    // Otherwise, restore previous sum using old counter and current average, and recompute the average.
+                    double currentAverage = resultMap.get(property);
+                    countersMap.put(property, propertyCount + 1);
+                    resultMap.put(property, (currentAverage * propertyCount + propertyValue) / (propertyCount + 1));
+                }
+            }
+        }
     }
 }
