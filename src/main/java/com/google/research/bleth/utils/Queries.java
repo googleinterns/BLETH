@@ -82,4 +82,21 @@ public class Queries {
 
         return result;
     }
+
+    /**
+     * Return the average of entities property value. Does not include entities which don't have property.
+     * @param entities is a list of entities.
+     * @param property is the property to average.
+     * @return The average value (or Nan if entities is empty or no entity with value exists).
+     */
+    public static double Average(List<Entity> entities, String property) {
+        if (entities.isEmpty()) {
+            return Double.NaN;
+        }
+        return entities.stream()
+                .filter(entity -> entity.hasProperty(property))
+                .mapToDouble(entity -> (double) entity.getProperty(property))
+                .average()
+                .orElse(Double.NaN);
+    }
 }
