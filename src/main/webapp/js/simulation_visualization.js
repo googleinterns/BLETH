@@ -110,7 +110,7 @@ function determineCellClass(agents) {
  * @param {String[]} agents is a list of agents ids located in the same cell of the board. 
  */
 function extractBeaconsIds(agents) {
-    var beaconsIds = agents.filter(function(agent) {return agent.charAt(0) === 'B';})
-                    .map(function(agent) {return agent.slice(6);});
+    var beaconsIds = agents.filter(agent => agent.charAt(0) === 'B')
+                    .map(agent => agent.slice(6));
     return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
 }
