@@ -67,13 +67,14 @@ function visualizeBoardState(board, tableId) {
         rowData.forEach(function(cellData) {
             var cell = document.createElement('td');
             cell.classList.add('board-td');
-            cell.classList.add(determineCellClass(cellData));
             var beaconsIdsInsideCell = extractBeaconsIds(cellData);
             cell.setAttribute('title', beaconsIdsInsideCell.join(","));
 
             var beaconOnFocus = document.getElementById("beacon-id").value;
             if (beaconOnFocus != "" && beaconsIdsInsideCell.includes(beaconOnFocus)) {
                 cell.classList.add('board-td-contains-wanted-beacon');
+            } else {
+                cell.classList.add(determineCellClass(cellData));
             }
             row.appendChild(cell);
         });
