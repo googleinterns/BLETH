@@ -67,15 +67,7 @@ function visualizeBoardState(board, tableId) {
         rowData.forEach(function(cellData) {
             var cell = document.createElement('td');
             cell.classList.add('board-td');
-            var beaconsIdsInsideCell = extractBeaconsIds(cellData);
-            cell.setAttribute('title', beaconsIdsInsideCell.join(","));
-
-            var beaconOnFocus = document.getElementById("beacon-id").value;
-            if (beaconOnFocus != "" && beaconsIdsInsideCell.includes(beaconOnFocus)) {
-                cell.classList.add('board-td-contains-wanted-beacon');
-            } else {
-                cell.classList.add(determineCellClass(cellData));
-            }
+            updateCell(cell, cellData);
             row.appendChild(cell);
         });
 
@@ -93,14 +85,33 @@ function visualizeBoardState(board, tableId) {
 }
 
 /**
+ * Update the cell according to the agents inside it.
+ * @param {HTMLTableDataCellElement} cell is an HTML element from type <td>, representing a cell on the board. 
+ * @param {String[]} agents is a list of agents ids located inside the cell. 
+ */
+function updateCell(cell, agents) {
+    var beaconsIdsInsideCell = extractBeaconsIds(agents);
+    cell.setAttribute('title', beaconsIdsInsideCell.join(","));
+
+    var beaconToFocusOn = document.getElementById("beacon-id").value;
+    var isBeaconToFocusOnInCell = beaconToFocusOn != "" && beaconsIdsInsideCell.includes(beaconToFocusOn);
+    cell.classList.add(determineCellClass(agents, beaconsIdsInsideCell.length, isBeaconToFocusOnInCell));
+}
+
+/**
  * return the css class name representing the correct state of the cell (empty/contains beacons/observers only).
  * @param {String[]} agents a list of agents ids located in the same cell of the board.
  * @returns {String} the correct css class name.
  */
-function determineCellClass(agents) {
-    if (agents.length === 0) { return 'board-td-empty'; }
-    for (var i = 0; i < agents.length; i++) {
-        if (agents[i].charAt(0) === 'B') { return 'board-td-contains-beacon'; }
+function determineCellClass(agents, numberOfBeacons, isBeaconToFocusOnInCell) {
+    if (agents.length === 0) { 
+        return 'board-td-empty'; 
+    }
+    if (isBeaconToFocusOnInCell) {
+        return 'board-td-contains-wanted-beacon';
+    }
+    if (numberOfBeacons > 0) {
+       return 'board-td-contains-beacon';
     }
     return 'board-td-observers-only';
 }
