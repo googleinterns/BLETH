@@ -22,8 +22,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueriesIT {
@@ -34,6 +39,9 @@ public class QueriesIT {
     private static final String ENTITY_KIND = "entityKind";
     private static final String NON_EXISTING_PROPERTY = "nonExistingProperty";
     private static final String EXISTING_PROPERTY = "existingProperty";
+    private static final String PROPERTY_A = "propertyA";
+    private static final String PROPERTY_B = "propertyB";
+    private static final String PROPERTY_C = "propertyC";
 
 
     @Before
@@ -410,6 +418,74 @@ public class QueriesIT {
         assertThat(actualAverage).isEqualTo(expectedAverage);
     }
 
+    // Multiple-properties Aggregation Test Cases.
+
+    @Test
+    public void writeMultipleEntitiesWithMultipleProperties_shouldCalculateAverageAsExpected() {
+        // Write multiple entities with multiple properties/
+        Map<String, Double> firstEntityPropertiesValues = new HashMap<>();
+        firstEntityPropertiesValues.put(PROPERTY_A, 1.0);
+        firstEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        firstEntityPropertiesValues.put(PROPERTY_C, 2.0);
+        writeEntityWithProperties(ENTITY_KIND, firstEntityPropertiesValues);
+
+        Map<String, Double> secondEntityPropertiesValues = new HashMap<>();
+        secondEntityPropertiesValues.put(PROPERTY_A, 0.0);
+        secondEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        secondEntityPropertiesValues.put(PROPERTY_C, 0.0);
+        writeEntityWithProperties(ENTITY_KIND, secondEntityPropertiesValues);
+
+        Map<String, Double> thirdEntityPropertiesValues = new HashMap<>();
+        thirdEntityPropertiesValues.put(PROPERTY_A, 2.0);
+        thirdEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        thirdEntityPropertiesValues.put(PROPERTY_C, 4.0);
+        writeEntityWithProperties(ENTITY_KIND, thirdEntityPropertiesValues);
+
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        Set<String> properties = new HashSet<>(Arrays.asList(PROPERTY_A, PROPERTY_B, PROPERTY_C));
+        Map<String, Double> expectedResult = new HashMap<>();
+        expectedResult.put(PROPERTY_A, 1.0);
+        expectedResult.put(PROPERTY_B, 1.5);
+        expectedResult.put(PROPERTY_C, 2.0);
+
+        Map<String, Double> actualResult = Queries.Average(entities, properties);
+
+        for (String property : properties) {
+            assertThat(actualResult.get(property)).isEqualTo(expectedResult.get(property));
+        }
+    }
+
+    @Test
+    public void writeMultipleEntitiesWithMissingProperties_shouldCalculateAverageAsExpected() {
+        // Write multiple entities with multiple properties/
+        Map<String, Double> firstEntityPropertiesValues = new HashMap<>();
+        firstEntityPropertiesValues.put(PROPERTY_A, 1.0);
+        writeEntityWithProperties(ENTITY_KIND, firstEntityPropertiesValues);
+
+        Map<String, Double> secondEntityPropertiesValues = new HashMap<>();
+        secondEntityPropertiesValues.put(PROPERTY_A, 0.0);
+        secondEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        writeEntityWithProperties(ENTITY_KIND, secondEntityPropertiesValues);
+
+        Map<String, Double> thirdEntityPropertiesValues = new HashMap<>();
+        thirdEntityPropertiesValues.put(PROPERTY_A, 2.0);
+        thirdEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        writeEntityWithProperties(ENTITY_KIND, thirdEntityPropertiesValues);
+
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        Set<String> properties = new HashSet<>(Arrays.asList(PROPERTY_A, PROPERTY_B, PROPERTY_C));
+        Map<String, Double> expectedResult = new HashMap<>();
+        expectedResult.put(PROPERTY_A, 1.0);
+        expectedResult.put(PROPERTY_B, 1.5);
+        expectedResult.put(PROPERTY_C, Double.NaN);
+
+        Map<String, Double> actualResult = Queries.Average(entities, properties);
+
+        for (String property : properties) {
+            assertThat(actualResult.get(property)).isEqualTo(expectedResult.get(property));
+        }
+    }
+
     @After
     public void tearDown() {
         helper.tearDown();
@@ -419,6 +495,15 @@ public class QueriesIT {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity entity = new Entity(entityKind);
         entity.setProperty(property, value);
+        datastore.put(entity);
+    }
+
+    private void writeEntityWithProperties(String entityKind, Map<String, Double> propertiesValues) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        for (Map.Entry<String, Double> entry : propertiesValues.entrySet()) {
+            entity.setProperty(entry.getKey(), entry.getValue());
+        }
         datastore.put(entity);
     }
 
