@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /** A factory class to create new observers. */
 public class ObserverFactory {
-    static int observerId = 0; // used for generating unique id for each observer.
+    private int observerId = 0; // used for generating unique id for each observer.
 
     /**
      * Create new observer, according to the given parameters.

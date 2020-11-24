@@ -5,7 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /** A factory class to create new beacons. */
 public class BeaconFactory {
-    static int beaconId = 0; // used for generating unique id for each beacon.
+    private int beaconId = 0; // used for generating unique id for each beacon.
 
     /**
      * Create new beacon, according to the given parameters.
