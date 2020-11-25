@@ -9,12 +9,13 @@ import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /** A utility class providing method for db related operations, such as join and group by. */
 public class Queries {
@@ -112,16 +113,14 @@ public class Queries {
      * @throws ClassCastException if one of properties values cannot be casted to double (for some entity).
      */
     public static Map<String, Double> Average(List<Entity> entities, Set<String> properties) throws ClassCastException {
-        Map<String, Double> resultMap = new HashMap<>(); // Maintains the average for each property.
-        Map<String, Integer> countersMap = new HashMap<>(); // Maintains the counter for each property.
-        properties.forEach(property -> initializeMaps(resultMap, countersMap, property));
+        // Maintains the average for each property.
+        Map<String, Double> resultMap =
+                properties.stream().collect(Collectors.toMap(Function.identity(), p -> Double.NaN));
+        // Maintains the counter for each property.
+        Map<String, Integer> countersMap =
+                properties.stream().collect(Collectors.toMap(Function.identity(), p -> 0));
         entities.forEach(entity -> updateMaps(resultMap, countersMap, properties, entity));
         return ImmutableMap.copyOf(resultMap);
-    }
-
-    private static void initializeMaps(Map<String, Double> resultMap, Map<String, Integer> countersMap, String property) {
-        resultMap.put(property, Double.NaN);
-        countersMap.put(property, 0);
     }
 
     private static void updateMaps(Map<String, Double> resultMap, Map<String, Integer> countersMap,
