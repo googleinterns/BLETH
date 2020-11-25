@@ -131,11 +131,10 @@ public class Queries {
                 int propertyCount = countersMap.get(property); // Property counter excluding current entity.
                 double propertyValue = (double) entity.getProperty(property);
                 if (propertyCount == 0) {
-                    // For the first occurrence of property, initialize counter as 1 and average of entity's value.
                     countersMap.put(property, 1);
                     resultMap.put(property, propertyValue);
                 } else {
-                    // Otherwise, restore previous sum using old counter and current average, and recompute the average.
+                    // Restore previous sum using old counter and current average, and recompute the average.
                     double currentAverage = resultMap.get(property);
                     countersMap.put(property, propertyCount + 1);
                     resultMap.put(property, (currentAverage * propertyCount + propertyValue) / (propertyCount + 1));
