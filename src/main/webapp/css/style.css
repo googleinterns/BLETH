@@ -17,14 +17,14 @@ nav ul li {
     list-style-type: none;
 }
 
-nav span, a {
+nav span, nav a {
     float: left;
     color: #f2f2f2;
     padding: 8px 12px;
     font-size: 17px;
 }
 
-/* speed controller */
+/* speed */
 .speed-controller {
     margin-top: 2.5%;
     margin-bottom: 2.5%;
