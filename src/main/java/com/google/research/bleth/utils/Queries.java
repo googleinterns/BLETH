@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class Queries {
         Map<String, Integer> countersMap = new HashMap<>(); // Maintains the counter for each property.
         properties.forEach(property -> initializeMaps(resultMap, countersMap, property));
         entities.forEach(entity -> updateMaps(resultMap, countersMap, properties, entity));
-        return resultMap;
+        return ImmutableMap.copyOf(resultMap);
     }
 
     private static void initializeMaps(Map<String, Double> resultMap, Map<String, Integer> countersMap, String property) {
