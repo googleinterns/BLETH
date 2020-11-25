@@ -19,6 +19,7 @@ public class NewSimulationServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Get request parameters.
+        String simulationDescription = request.getParameter("simulationDescription");
         int roundsNum = Integer.parseInt(request.getParameter("roundsNum"));
         int rowsNum = Integer.parseInt(request.getParameter("rowsNum"));
         int colsNum = Integer.parseInt(request.getParameter("colsNum"));
@@ -41,6 +42,7 @@ public class NewSimulationServlet extends HttpServlet {
         try {
             // Create a new simulation.
             AbstractSimulation simulation = new TracingSimulation.Builder()
+                    .setDescription(simulationDescription)
                     .setMaxNumberOfRounds(roundsNum)
                     .setRowNum(rowsNum)
                     .setColNum(colsNum)

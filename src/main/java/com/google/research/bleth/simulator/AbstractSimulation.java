@@ -146,6 +146,7 @@ public abstract class AbstractSimulation {
     public static abstract class Builder {
 
         protected String id;
+        protected String description;
         protected int maxNumberOfRounds;
         protected int rowNum;
         protected int colNum;
@@ -161,6 +162,11 @@ public abstract class AbstractSimulation {
         protected double transmissionThresholdRadius;
         protected int awakenessCycle;
         protected int awakenessDuration;
+
+        /** Return a string that describe the simulation. */
+        public String getDescription() {
+            return description;
+        }
 
         /** Return the maximal number of rounds of the simulation created by the builder. */
         public int getMaxNumberOfRounds() {
@@ -219,6 +225,16 @@ public abstract class AbstractSimulation {
 
         /** Return a string incidating the type of the simulation created by the builder. */
         public abstract String getSimulationType();
+
+        /**
+         * Set a description of the simulation.
+         * @param description is the description of the simulation.
+         * @return this, to provide chaining.
+         */
+        public Builder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
 
         /**
          * Set number of rows in simulation.
