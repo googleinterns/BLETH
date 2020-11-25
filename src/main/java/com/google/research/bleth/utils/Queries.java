@@ -111,7 +111,7 @@ public class Queries {
      * @throws ClassCastException if one of properties values cannot be casted to double (for some entity).
      */
     public static Map<String, Double> Average(List<Entity> entities, Set<String> properties) throws ClassCastException {
-        Map<String, Double> resultMap = new HashMap(); // Maintains the average for each property.
+        Map<String, Double> resultMap = new HashMap<>(); // Maintains the average for each property.
         Map<String, Integer> countersMap = new HashMap<>(); // Maintains the counter for each property.
         properties.forEach(property -> initializeMaps(resultMap, countersMap, property));
         entities.forEach(entity -> updateMaps(resultMap, countersMap, properties, entity));
