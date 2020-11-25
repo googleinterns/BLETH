@@ -1,12 +1,13 @@
 package com.google.research.bleth.utils;
 
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,7 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /** A utility class providing method for db related operations, such as join and group by. */
 public class Queries {
@@ -113,32 +113,7 @@ public class Queries {
      * @throws ClassCastException if one of properties values cannot be casted to double (for some entity).
      */
     public static Map<String, Double> Average(List<Entity> entities, Set<String> properties) throws ClassCastException {
-        // Maintains the average for each property.
-        Map<String, Double> resultMap =
-                properties.stream().collect(Collectors.toMap(Function.identity(), p -> Double.NaN));
-        // Maintains the counter for each property.
-        Map<String, Integer> countersMap =
-                properties.stream().collect(Collectors.toMap(Function.identity(), p -> 0));
-        entities.forEach(entity -> updateMaps(resultMap, countersMap, properties, entity));
-        return ImmutableMap.copyOf(resultMap);
-    }
-
-    private static void updateMaps(Map<String, Double> resultMap, Map<String, Integer> countersMap,
-                                   Set<String> properties, Entity entity) {
-        for (String property : entity.getProperties().keySet()) {
-            if (properties.contains(property)) {
-                int propertyCount = countersMap.get(property); // Property counter excluding current entity.
-                double propertyValue = (double) entity.getProperty(property);
-                if (propertyCount == 0) {
-                    countersMap.put(property, 1);
-                    resultMap.put(property, propertyValue);
-                } else {
-                    // Restore previous sum using old counter and current average, and recompute the average.
-                    double currentAverage = resultMap.get(property);
-                    countersMap.put(property, propertyCount + 1);
-                    resultMap.put(property, (currentAverage * propertyCount + propertyValue) / (propertyCount + 1));
-                }
-            }
-        }
+        return properties.stream()
+                .collect(toImmutableMap(Function.identity(), property -> Average(entities, property)));
     }
 }
