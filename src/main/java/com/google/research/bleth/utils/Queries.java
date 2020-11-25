@@ -91,8 +91,9 @@ public class Queries {
      * @param entities is a list of entities.
      * @param property is the property to average.
      * @return The average value (or Nan if entities is empty or no entity with value exists).
+     * @throws ClassCastException if property value cannot be casted to double (for some entity).
      */
-    public static double Average(List<Entity> entities, String property) {
+    public static double Average(List<Entity> entities, String property) throws ClassCastException {
         if (entities.isEmpty()) {
             return Double.NaN;
         }
@@ -110,8 +111,9 @@ public class Queries {
      * @param properties is a list of properties.
      * @return a map where keys indicating properties' names and values indicating the averages (for each entry, Nan
      * value indicating no entity with property exists within entities list).
+     * @throws ClassCastException if one of properties values cannot be casted to double (for some entity).
      */
-    public static Map<String, Double> Average(List<Entity> entities, Set<String> properties) {
+    public static Map<String, Double> Average(List<Entity> entities, Set<String> properties) throws ClassCastException {
         Map<String, Double> resultMap = new HashMap(); // Maintains the average for each property.
         Map<String, Integer> countersMap = new HashMap<>(); // Maintains the counter for each property.
         properties.forEach(property -> initializeMaps(resultMap, countersMap, property));

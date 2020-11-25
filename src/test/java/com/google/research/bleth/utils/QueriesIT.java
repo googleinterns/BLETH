@@ -1,6 +1,7 @@
 package com.google.research.bleth.utils;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -418,6 +419,14 @@ public class QueriesIT {
         assertThat(actualAverage).isEqualTo(expectedAverage);
     }
 
+    @Test
+    public void writeEntityWithNonDoubleCastableProperty_shouldThrowException() {
+        writeEntityWithStringProperty(ENTITY_KIND, EXISTING_PROPERTY, "notCastable");
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+
+        assertThrows(ClassCastException.class, () -> Queries.Average(entities, EXISTING_PROPERTY));
+    }
+
     // Multiple-properties Aggregation Test Cases.
 
     @Test
@@ -510,6 +519,13 @@ public class QueriesIT {
     private void writeEntityWithoutProperty(String entityKind) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity entity = new Entity(entityKind);
+        datastore.put(entity);
+    }
+
+    private void writeEntityWithStringProperty(String entityKind, String property, String value) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        entity.setProperty(property, value);
         datastore.put(entity);
     }
 
