@@ -94,9 +94,6 @@ public class Queries {
      * @throws ClassCastException if property value cannot be casted to double (for some entity).
      */
     public static double Average(List<Entity> entities, String property) throws ClassCastException {
-        if (entities.isEmpty()) {
-            return Double.NaN;
-        }
         return entities.stream()
                 .filter(entity -> entity.hasProperty(property))
                 .mapToDouble(entity -> (double) entity.getProperty(property))
@@ -117,10 +114,6 @@ public class Queries {
         Map<String, Double> resultMap = new HashMap(); // Maintains the average for each property.
         Map<String, Integer> countersMap = new HashMap<>(); // Maintains the counter for each property.
         properties.forEach(property -> initializeMaps(resultMap, countersMap, property));
-        if (entities.isEmpty()) {
-            return resultMap;
-        }
-
         entities.forEach(entity -> updateMaps(resultMap, countersMap, properties, entity));
         return resultMap;
     }
