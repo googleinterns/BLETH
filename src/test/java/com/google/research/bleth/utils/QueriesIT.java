@@ -459,9 +459,7 @@ public class QueriesIT {
 
         Map<String, Double> actualResult = Queries.Average(entities, properties);
 
-        for (String property : properties) {
-            assertThat(actualResult.get(property)).isEqualTo(expectedResult.get(property));
-        }
+        assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
     }
 
     @Test
@@ -490,9 +488,7 @@ public class QueriesIT {
 
         Map<String, Double> actualResult = Queries.Average(entities, properties);
 
-        for (String property : properties) {
-            assertThat(actualResult.get(property)).isEqualTo(expectedResult.get(property));
-        }
+        assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
     }
 
     @After
