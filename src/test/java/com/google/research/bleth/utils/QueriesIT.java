@@ -1,8 +1,13 @@
 package com.google.research.bleth.utils;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.dev.LocalDatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -18,8 +23,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueriesIT {
@@ -27,12 +37,25 @@ public class QueriesIT {
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
                     .setAutoIdAllocationPolicy(LocalDatastoreService.AutoIdAllocationPolicy.SCATTERED));
+    private static final String ENTITY_KIND = "entityKind";
     private static final String NON_EXISTING_PROPERTY = "nonExistingProperty";
+    private static final String EXISTING_PROPERTY = "existingProperty";
+    private static final String PROPERTY_A = "propertyA";
+    private static final String PROPERTY_B = "propertyB";
+    private static final String PROPERTY_C = "propertyC";
+
 
     @Before
     public void setUp() {
         helper.setUp();
     }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
+    }
+
+    // Join Test Cases.
 
     @Test
     public void createThreeSimulations_shouldRetrieveThreeStatsEntities() {
@@ -352,8 +375,160 @@ public class QueriesIT {
         assertThat(stats).isEmpty();
     }
 
-    @After
-    public void tearDown() {
-        helper.tearDown();
+    // Single-property Aggregation Test Cases.
+
+    @Test
+    public void writeThreeEntitiesWithProperty_shouldCalculateAverageOfThreeValues() {
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 1.5);
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 0.5);
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 4.0);
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = 2.0;
+
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
+    @Test
+    public void writeTwoEntitiesWithPropertyAndOneEntityWithoutProperty_shouldCalculateAverageOfTwoValues() {
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 1.5);
+        writeEntityWithProperty(ENTITY_KIND, EXISTING_PROPERTY, 0.5);
+        writeEntityWithoutProperty(ENTITY_KIND);
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = 1.0;
+
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
+    @Test
+    public void noEntitiesExists_shouldCalculateAverageAsNaN() {
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = Double.NaN;
+
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
+    @Test
+    public void writeSingleEntityWithoutProperty_shouldCalculateAverageAsNaN() {
+        writeEntityWithoutProperty(ENTITY_KIND);
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        double expectedAverage = Double.NaN;
+
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
+
+        assertThat(actualAverage).isEqualTo(expectedAverage);
+    }
+
+    @Test
+    public void writeEntityWithNonDoubleCastableProperty_shouldThrowException() {
+        writeEntityWithStringProperty(ENTITY_KIND, EXISTING_PROPERTY, "notCastable");
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+
+        assertThrows(ClassCastException.class, () -> Queries.average(entities, EXISTING_PROPERTY));
+    }
+
+    // Multiple-properties Aggregation Test Cases.
+
+    @Test
+    public void writeMultipleEntitiesWithMultipleProperties_shouldCalculateAverageAsExpected() {
+        // Write multiple entities with multiple properties/
+        Map<String, Double> firstEntityPropertiesValues = new HashMap<>();
+        firstEntityPropertiesValues.put(PROPERTY_A, 1.0);
+        firstEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        firstEntityPropertiesValues.put(PROPERTY_C, 2.0);
+        writeEntityWithProperties(ENTITY_KIND, firstEntityPropertiesValues);
+
+        Map<String, Double> secondEntityPropertiesValues = new HashMap<>();
+        secondEntityPropertiesValues.put(PROPERTY_A, 0.0);
+        secondEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        secondEntityPropertiesValues.put(PROPERTY_C, 0.0);
+        writeEntityWithProperties(ENTITY_KIND, secondEntityPropertiesValues);
+
+        Map<String, Double> thirdEntityPropertiesValues = new HashMap<>();
+        thirdEntityPropertiesValues.put(PROPERTY_A, 2.0);
+        thirdEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        thirdEntityPropertiesValues.put(PROPERTY_C, 4.0);
+        writeEntityWithProperties(ENTITY_KIND, thirdEntityPropertiesValues);
+
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        Set<String> properties = new HashSet<>(Arrays.asList(PROPERTY_A, PROPERTY_B, PROPERTY_C));
+        Map<String, Double> expectedResult = new HashMap<>();
+        expectedResult.put(PROPERTY_A, 1.0);
+        expectedResult.put(PROPERTY_B, 1.5);
+        expectedResult.put(PROPERTY_C, 2.0);
+
+        Map<String, Double> actualResult = Queries.average(entities, properties);
+
+        assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
+    }
+
+    @Test
+    public void writeMultipleEntitiesWithMissingProperties_shouldCalculateAverageAsExpected() {
+        // Write multiple entities with multiple properties/
+        Map<String, Double> firstEntityPropertiesValues = new HashMap<>();
+        firstEntityPropertiesValues.put(PROPERTY_A, 1.0);
+        writeEntityWithProperties(ENTITY_KIND, firstEntityPropertiesValues);
+
+        Map<String, Double> secondEntityPropertiesValues = new HashMap<>();
+        secondEntityPropertiesValues.put(PROPERTY_A, 0.0);
+        secondEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        writeEntityWithProperties(ENTITY_KIND, secondEntityPropertiesValues);
+
+        Map<String, Double> thirdEntityPropertiesValues = new HashMap<>();
+        thirdEntityPropertiesValues.put(PROPERTY_A, 2.0);
+        thirdEntityPropertiesValues.put(PROPERTY_B, 1.5);
+        writeEntityWithProperties(ENTITY_KIND, thirdEntityPropertiesValues);
+
+        List<Entity> entities = retrieveEntities(ENTITY_KIND);
+        Set<String> properties = new HashSet<>(Arrays.asList(PROPERTY_A, PROPERTY_B, PROPERTY_C));
+        Map<String, Double> expectedResult = new HashMap<>();
+        expectedResult.put(PROPERTY_A, 1.0);
+        expectedResult.put(PROPERTY_B, 1.5);
+        expectedResult.put(PROPERTY_C, Double.NaN);
+
+        Map<String, Double> actualResult = Queries.average(entities, properties);
+
+        assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
+    }
+
+    private void writeEntityWithProperty(String entityKind, String property, double value) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        entity.setProperty(property, value);
+        datastore.put(entity);
+    }
+
+    private void writeEntityWithProperties(String entityKind, Map<String, Double> propertiesValues) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        for (Map.Entry<String, Double> entry : propertiesValues.entrySet()) {
+            entity.setProperty(entry.getKey(), entry.getValue());
+        }
+        datastore.put(entity);
+    }
+
+    private void writeEntityWithoutProperty(String entityKind) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        datastore.put(entity);
+    }
+
+    private void writeEntityWithStringProperty(String entityKind, String property, String value) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity(entityKind);
+        entity.setProperty(property, value);
+        datastore.put(entity);
+    }
+
+    private List<Entity> retrieveEntities(String entityKind) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query entitiesQuery = new Query(entityKind);
+        PreparedQuery entitiesPreparedQuery = datastore.prepare(entitiesQuery);
+        return entitiesPreparedQuery.asList(FetchOptions.Builder.withDefaults());
     }
 }

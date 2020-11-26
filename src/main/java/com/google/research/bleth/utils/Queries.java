@@ -1,5 +1,7 @@
 package com.google.research.bleth.utils;
 
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -10,7 +12,10 @@ import com.google.appengine.api.datastore.Query;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 /** A utility class providing method for db related operations, such as join and group by. */
 public class Queries {
@@ -81,5 +86,34 @@ public class Queries {
         }
 
         return result;
+    }
+
+    /**
+     * Return the average of entities property value. Does not include entities which don't have property.
+     * @param entities is a list of entities.
+     * @param property is the property to average.
+     * @return The average value (or Nan if entities is empty or no entity with value exists).
+     * @throws ClassCastException if property value cannot be casted to double (for some entity).
+     */
+    public static double average(List<Entity> entities, String property) throws ClassCastException {
+        return entities.stream()
+                .filter(entity -> entity.hasProperty(property))
+                .mapToDouble(entity -> (double) entity.getProperty(property))
+                .average()
+                .orElse(Double.NaN);
+    }
+
+    /**
+     * Return the average of entities multiple properties values (an average for each property).
+     * For each property, include only entities which have the property.
+     * @param entities is a list of entities.
+     * @param properties is a list of properties.
+     * @return a map where keys indicating properties' names and values indicating the averages (for each entry, Nan
+     * value indicating no entity with property exists within entities list).
+     * @throws ClassCastException if one of properties values cannot be casted to double (for some entity).
+     */
+    public static Map<String, Double> average(List<Entity> entities, Set<String> properties) throws ClassCastException {
+        return properties.stream()
+                .collect(toImmutableMap(Function.identity(), property -> average(entities, property)));
     }
 }
