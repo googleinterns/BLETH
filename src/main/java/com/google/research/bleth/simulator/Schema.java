@@ -6,7 +6,6 @@ public class Schema {
     public static class SimulationMetadata {
         public static final String entityKind = "SimulationMetadata";
         public static final String description = "description";
-        public static final String type = "type";
         public static final String roundsNum = "roundsNum";
         public static final String beaconsNum = "beaconsNum";
         public static final String observersNum = "observersNum";

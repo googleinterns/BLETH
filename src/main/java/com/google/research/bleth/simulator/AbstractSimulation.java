@@ -223,9 +223,6 @@ public abstract class AbstractSimulation {
             return awakenessDuration;
         }
 
-        /** Return a string incidating the type of the simulation created by the builder. */
-        public abstract String getSimulationType();
-
         /**
          * Set a description of the simulation.
          * @param description is the description of the simulation.
