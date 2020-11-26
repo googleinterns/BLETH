@@ -50,6 +50,11 @@ public class QueriesIT {
         helper.setUp();
     }
 
+    @After
+    public void tearDown() {
+        helper.tearDown();
+    }
+
     // Join Test Cases.
 
     @Test
@@ -489,11 +494,6 @@ public class QueriesIT {
         Map<String, Double> actualResult = Queries.Average(entities, properties);
 
         assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
-    }
-
-    @After
-    public void tearDown() {
-        helper.tearDown();
     }
 
     private void writeEntityWithProperty(String entityKind, String property, double value) {
