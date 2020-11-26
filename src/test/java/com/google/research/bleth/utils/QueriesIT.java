@@ -385,7 +385,7 @@ public class QueriesIT {
         List<Entity> entities = retrieveEntities(ENTITY_KIND);
         double expectedAverage = 2.0;
 
-        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
 
         assertThat(actualAverage).isEqualTo(expectedAverage);
     }
@@ -398,7 +398,7 @@ public class QueriesIT {
         List<Entity> entities = retrieveEntities(ENTITY_KIND);
         double expectedAverage = 1.0;
 
-        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
 
         assertThat(actualAverage).isEqualTo(expectedAverage);
     }
@@ -408,7 +408,7 @@ public class QueriesIT {
         List<Entity> entities = retrieveEntities(ENTITY_KIND);
         double expectedAverage = Double.NaN;
 
-        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
 
         assertThat(actualAverage).isEqualTo(expectedAverage);
     }
@@ -419,7 +419,7 @@ public class QueriesIT {
         List<Entity> entities = retrieveEntities(ENTITY_KIND);
         double expectedAverage = Double.NaN;
 
-        double actualAverage = Queries.Average(entities, EXISTING_PROPERTY);
+        double actualAverage = Queries.average(entities, EXISTING_PROPERTY);
 
         assertThat(actualAverage).isEqualTo(expectedAverage);
     }
@@ -429,7 +429,7 @@ public class QueriesIT {
         writeEntityWithStringProperty(ENTITY_KIND, EXISTING_PROPERTY, "notCastable");
         List<Entity> entities = retrieveEntities(ENTITY_KIND);
 
-        assertThrows(ClassCastException.class, () -> Queries.Average(entities, EXISTING_PROPERTY));
+        assertThrows(ClassCastException.class, () -> Queries.average(entities, EXISTING_PROPERTY));
     }
 
     // Multiple-properties Aggregation Test Cases.
@@ -462,7 +462,7 @@ public class QueriesIT {
         expectedResult.put(PROPERTY_B, 1.5);
         expectedResult.put(PROPERTY_C, 2.0);
 
-        Map<String, Double> actualResult = Queries.Average(entities, properties);
+        Map<String, Double> actualResult = Queries.average(entities, properties);
 
         assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
     }
@@ -491,7 +491,7 @@ public class QueriesIT {
         expectedResult.put(PROPERTY_B, 1.5);
         expectedResult.put(PROPERTY_C, Double.NaN);
 
-        Map<String, Double> actualResult = Queries.Average(entities, properties);
+        Map<String, Double> actualResult = Queries.average(entities, properties);
 
         assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
     }

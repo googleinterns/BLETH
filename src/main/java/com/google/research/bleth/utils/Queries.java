@@ -95,7 +95,7 @@ public class Queries {
      * @return The average value (or Nan if entities is empty or no entity with value exists).
      * @throws ClassCastException if property value cannot be casted to double (for some entity).
      */
-    public static double Average(List<Entity> entities, String property) throws ClassCastException {
+    public static double average(List<Entity> entities, String property) throws ClassCastException {
         return entities.stream()
                 .filter(entity -> entity.hasProperty(property))
                 .mapToDouble(entity -> (double) entity.getProperty(property))
@@ -112,8 +112,8 @@ public class Queries {
      * value indicating no entity with property exists within entities list).
      * @throws ClassCastException if one of properties values cannot be casted to double (for some entity).
      */
-    public static Map<String, Double> Average(List<Entity> entities, Set<String> properties) throws ClassCastException {
+    public static Map<String, Double> average(List<Entity> entities, Set<String> properties) throws ClassCastException {
         return properties.stream()
-                .collect(toImmutableMap(Function.identity(), property -> Average(entities, property)));
+                .collect(toImmutableMap(Function.identity(), property -> average(entities, property)));
     }
 }
