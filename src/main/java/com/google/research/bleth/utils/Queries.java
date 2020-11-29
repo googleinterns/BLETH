@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 /** A utility class providing method for db related operations, such as join and group by. */
 public class Queries {
+    private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     /**
      * Given a primary entity kind, a secondary entity kind, a foreign key and a filter, return a list of all entities
@@ -40,7 +41,6 @@ public class Queries {
      */
     public static List<Entity> join(String primaryEntityKind, String secondaryEntityKind,
                                     String foreignKey, Optional<Query.Filter> primaryEntityFilter) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         List<Entity> result = new ArrayList<>();
 
         // Retrieve all primaryEntity keys ordered by their key, filtered by primaryEntityFilter (if provided).
@@ -123,7 +123,6 @@ public class Queries {
      * @param simulationId is the simulation id.
      */
     public static void delete(String simulationId) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         delete(Schema.StatisticsState.entityKindBeaconsObservedPercent, Schema.StatisticsState.simulationId, simulationId);
         delete(Schema.StatisticsState.entityKindDistance, Schema.StatisticsState.simulationId, simulationId);
         delete(Schema.BoardState.entityKindReal, Schema.BoardState.simulationId, simulationId);
@@ -132,7 +131,6 @@ public class Queries {
     }
 
     private static void delete(String entityKind, String foreignKeyProperty, String foreignKeyKeyValue) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query.Filter filter = new Query.FilterPredicate(foreignKeyProperty, Query.FilterOperator.EQUAL, foreignKeyKeyValue);
         Query entitiesToDelete = new Query(entityKind).setFilter(filter);
         Iterable<Entity> entitiesToDeleteIterable = datastore.prepare(entitiesToDelete).asIterable();
