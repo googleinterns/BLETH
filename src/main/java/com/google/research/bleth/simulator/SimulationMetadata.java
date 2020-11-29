@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableMap;
 
 /** A class for storing, reading and writing simulation metadata. */
 public class SimulationMetadata {
-    public final String type;
+    public final String description;
     public final int roundsNum;
     public final int beaconsNum;
     public final int observersNum;
@@ -31,7 +31,7 @@ public class SimulationMetadata {
      * @param builder is the simulation builder storing the simulation metadata.
      */
     public SimulationMetadata(AbstractSimulation.Builder builder) {
-        this.type = builder.getSimulationType();
+        this.description = builder.getDescription();
         this.roundsNum = builder.getMaxNumberOfRounds();
         this.beaconsNum = builder.getBeaconsNum();
         this.observersNum = builder.getObserversNum();
@@ -56,7 +56,7 @@ public class SimulationMetadata {
         Entity entity = new Entity(Schema.SimulationMetadata.entityKind);
 
         // Set properties.
-        entity.setProperty(Schema.SimulationMetadata.type, this.type);
+        entity.setProperty(Schema.SimulationMetadata.description, this.description);
         entity.setProperty(Schema.SimulationMetadata.roundsNum, this.roundsNum);
         entity.setProperty(Schema.SimulationMetadata.beaconsNum, this.beaconsNum);
         entity.setProperty(Schema.SimulationMetadata.observersNum, this.observersNum);
@@ -115,7 +115,7 @@ public class SimulationMetadata {
     }
 
     private SimulationMetadata(Entity entity) {
-        this.type = (String) entity.getProperty(Schema.SimulationMetadata.type);
+        this.description = (String) entity.getProperty(Schema.SimulationMetadata.description);
         this.roundsNum = ((Long) entity.getProperty(Schema.SimulationMetadata.roundsNum)).intValue();
         this.beaconsNum = ((Long) entity.getProperty(Schema.SimulationMetadata.beaconsNum)).intValue();
         this.observersNum = ((Long) entity.getProperty(Schema.SimulationMetadata.observersNum)).intValue();
