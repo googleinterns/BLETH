@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.research.bleth.simulator.Schema;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,7 +38,7 @@ public class Queries {
      * @param primaryEntityFilter is a simple or composed filter to apply on primaryEntityKind prior to the join operation (optional).
      * @return a list of secondary entities matching the primary entities retrieved.
      */
-    public static List<Entity> Join(String primaryEntityKind, String secondaryEntityKind,
+    public static List<Entity> join(String primaryEntityKind, String secondaryEntityKind,
                                     String foreignKey, Optional<Query.Filter> primaryEntityFilter) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         List<Entity> result = new ArrayList<>();
@@ -115,5 +116,28 @@ public class Queries {
     public static Map<String, Double> average(List<Entity> entities, Set<String> properties) throws ClassCastException {
         return properties.stream()
                 .collect(toImmutableMap(Function.identity(), property -> average(entities, property)));
+    }
+
+    /**
+     * Given a simulationId as a string, delete all data associated with that simulation id.
+     * @param simulationId is the simulation id.
+     */
+    public static void delete(String simulationId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        delete(Schema.StatisticsState.entityKindBeaconsObservedPercent, Schema.StatisticsState.simulationId, simulationId);
+        delete(Schema.StatisticsState.entityKindDistance, Schema.StatisticsState.simulationId, simulationId);
+        delete(Schema.BoardState.entityKindReal, Schema.BoardState.simulationId, simulationId);
+        delete(Schema.BoardState.entityKindEstimated, Schema.BoardState.simulationId, simulationId);
+        datastore.delete(KeyFactory.stringToKey(simulationId));
+    }
+
+    private static void delete(String entityKind, String forgeinKeyProperty, String forgeinKeyValue) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Query.Filter filter = new Query.FilterPredicate(forgeinKeyProperty, Query.FilterOperator.EQUAL, forgeinKeyValue);
+        Query entitiesToDelete = new Query(entityKind).setFilter(filter);
+        Iterable<Entity> entitiesToDeleteIterable = datastore.prepare(entitiesToDelete).asIterable();
+        for (Entity entity : entitiesToDeleteIterable) {
+            datastore.delete(entity.getKey());
+        }
     }
 }
