@@ -38,6 +38,7 @@ nav span, nav a {
 #simulations-table td {
     font-size: 90%;
     border: 2px solid rgb(166, 182, 189);
+    word-break: break-word;
 }
 
 #simulations-table tr:nth-child(1) {
