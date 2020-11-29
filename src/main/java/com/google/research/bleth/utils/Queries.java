@@ -131,9 +131,9 @@ public class Queries {
         datastore.delete(KeyFactory.stringToKey(simulationId));
     }
 
-    private static void delete(String entityKind, String forgeinKeyProperty, String forgeinKeyValue) {
+    private static void delete(String entityKind, String foreignKeyProperty, String foreignKeyKeyValue) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query.Filter filter = new Query.FilterPredicate(forgeinKeyProperty, Query.FilterOperator.EQUAL, forgeinKeyValue);
+        Query.Filter filter = new Query.FilterPredicate(foreignKeyProperty, Query.FilterOperator.EQUAL, foreignKeyKeyValue);
         Query entitiesToDelete = new Query(entityKind).setFilter(filter);
         Iterable<Entity> entitiesToDeleteIterable = datastore.prepare(entitiesToDelete).asIterable();
         for (Entity entity : entitiesToDeleteIterable) {
