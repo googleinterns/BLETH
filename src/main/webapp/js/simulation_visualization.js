@@ -152,9 +152,13 @@ function createStatsTable(kind, stats) {
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
     var dataRow = table.insertRow(1);
+
+    // For beacon observed stats add the prefix 'beacon' to each measure name.
+    var prefix = kind === 'BeaconsObservedPercentStats' ? 'beacon #' : '';
+
     var i = 0;
     Object.keys(stats).forEach(measure => {
-        headerRow.insertCell(i).innerText = measure;
+        headerRow.insertCell(i).innerText = prefix + measure;
         dataRow.insertCell(i).innerText = stats[measure];
         i++;
     });
