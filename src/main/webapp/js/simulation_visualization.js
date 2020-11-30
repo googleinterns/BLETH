@@ -135,16 +135,20 @@ function displayStats(params) {
     const queryString = toQueryString(params);
     fetch(`/read-stats?${queryString}`)
     .then(response => response.json())
-    .then(stats => Object.keys(stats).forEach(kind => createStatsTable(stats[kind])))
-    .then(() => document.getElementsByClassName('boards')[0].innerHTML = ''); // Remove boards.
+    .then(stats => Object.keys(stats).forEach(kind => createStatsTable(kind, stats[kind])))
+    .then(() => clearVisualizationElements()); 
 }
 
 /**
  * Create an HTML table element add fill it with statistical data.
+ * @param {String} kind is the statistical data kind (distance or beacon observed percent).
  * @param {Object} stats is an object storing the simulations' stats of a specific kind.
  */
-function createStatsTable(stats) {
+function createStatsTable(kind, stats) {
+    var title = document.createElement('h4');
+    title.innerText = kind;
     var table = document.createElement('table');
+    table.classList.add('stats-table');
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
     var dataRow = table.insertRow(1);
@@ -154,5 +158,13 @@ function createStatsTable(stats) {
         dataRow.insertCell(i).innerText = stats[measure];
         i++;
     });
+    document.body.appendChild(title);
     document.body.appendChild(table);
+}
+
+/** Clear all HTML element used for visualization. */
+function clearVisualizationElements() {
+    document.getElementsByClassName('boards')[0].innerHTML = '';
+    document.getElementsByClassName('choose-beacon')[0].innerHTML = '';
+    document.getElementsByClassName('speed-controller')[0].innerHTML = '';
 }
