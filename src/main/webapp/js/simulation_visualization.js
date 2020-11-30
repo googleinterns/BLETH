@@ -1,6 +1,7 @@
 import { toQueryString, getUrlVars, sleep } from './utils.js';
 
 window.visualize = visualize; // Add function to global scope.
+window.switchState = switchState; // Add function to global scope.
 
 /**
  * Get the simulation metadata encoded as a query string, iterate over all rounds and visualize
@@ -13,10 +14,14 @@ async function visualize() {
     var mainHeader = document.getElementById('simulation-visualization-header');
     var roundHeader = document.getElementById('current-round-header');
     var delay;
+    var pauseButton = document.getElementById('pause-button');
     mainHeader.innerText = 'Visualizing Simulation\n' + simulation.id;
     var params = {};
     params['simulationId'] = simulation.id;
     for (var round = 0; round < simulation.roundsNum; round++) {
+        while (pauseButton.innerHTML === "Play") {
+            await sleep(10);
+        }
         roundHeader.innerText = 'Current Round: ' + round;
         params['round'] = round;
 
@@ -124,4 +129,14 @@ function extractBeaconsIds(agents) {
     var beaconsIds = agents.filter(agent => agent.charAt(0) === 'B')
                     .map(agent => agent.slice(6));
     return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
+}
+
+/** Change the button's content from Pause to Play or vice versa. */
+function switchState() {
+    var pauseButton = document.getElementById('pause-button');
+    if (pauseButton.innerHTML === "Pause") {
+        pauseButton.innerHTML = "Play";
+    } else {
+        pauseButton.innerHTML = "Pause"
+    }
 }
