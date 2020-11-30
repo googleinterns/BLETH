@@ -32,6 +32,7 @@ async function visualize() {
         delay = 1/document.getElementById('speed-controller').value;
         await sleep(delay);
     }
+    displayStats(params);
 }
 
 /**
@@ -124,4 +125,15 @@ function extractBeaconsIds(agents) {
     var beaconsIds = agents.filter(agent => agent.charAt(0) === 'B')
                     .map(agent => agent.slice(6));
     return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
+}
+
+/**
+ * Display the statistical data of a simulation.
+ * @param {Object*} params is an object storing parameters for http request.
+ */
+function displayStats(params) {
+    const queryString = toQueryString(params);
+    fetch(`/read-stats?${queryString}`)
+    .then(response => response.json())
+    .then(stats => console.log(stats));
 }
