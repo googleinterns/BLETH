@@ -1,7 +1,8 @@
 import { toQueryString, getUrlVars, sleep } from './utils.js';
 
-window.visualize = visualize; // Add function to global scope.
-window.switchState = switchState; // Add function to global scope.
+// Add functions to global scope.
+window.visualize = visualize;
+window.switchState = switchState; 
 
 /**
  * Get the simulation metadata encoded as a query string, iterate over all rounds and visualize
