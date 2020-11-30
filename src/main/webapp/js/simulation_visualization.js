@@ -140,7 +140,7 @@ function displayStats(params) {
 }
 
 /**
- * Create an HTML table element add fill it with statistical data.
+ * Create an HTML table element and fill it with statistical data.
  * @param {String} kind is the statistical data kind (distance or beacon observed percent).
  * @param {Object} stats is an object storing the simulations' stats of a specific kind.
  */
