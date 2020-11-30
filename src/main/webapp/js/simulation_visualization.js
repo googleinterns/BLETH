@@ -135,5 +135,24 @@ function displayStats(params) {
     const queryString = toQueryString(params);
     fetch(`/read-stats?${queryString}`)
     .then(response => response.json())
-    .then(stats => console.log(stats));
+    .then(stats => Object.keys(stats).forEach(kind => createStatsTable(stats[kind])))
+    .then(() => document.getElementsByClassName('boards')[0].innerHTML = ''); // Remove boards.
+}
+
+/**
+ * Create an HTML table element add fill it with statistical data.
+ * @param {Object} stats is an object storing the simulations' stats of a specific kind.
+ */
+function createStatsTable(stats) {
+    var table = document.createElement('table');
+    var header = table.createTHead();
+    var headerRow = header.insertRow(0);
+    var dataRow = table.insertRow(1);
+    var i = 0;
+    Object.keys(stats).forEach(measure => {
+        headerRow.insertCell(i).innerText = measure;
+        dataRow.insertCell(i).innerText = stats[measure];
+        i++;
+    });
+    document.body.appendChild(table);
 }
