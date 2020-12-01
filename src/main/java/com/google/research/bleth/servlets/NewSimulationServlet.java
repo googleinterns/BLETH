@@ -63,7 +63,7 @@ public class NewSimulationServlet extends HttpServlet {
         }
 
         // Write to response.
-        response.setContentType("text/html;");
+        response.setContentType("text/plain;");
         response.getWriter().println(responseText);
     }
 }
