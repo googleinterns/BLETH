@@ -21,7 +21,7 @@ public class DeleteSimulationServlet extends HttpServlet {
         } catch (Exception e) {
             responseText = "Something went wrong: " + e.getMessage();
         }
-        response.setContentType("text/html;");
+        response.setContentType("text/plain;");
         response.getWriter().println(responseText);
     }
 }
