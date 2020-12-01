@@ -22,6 +22,10 @@
         <servlet-name>ListSimulationsServlet</servlet-name>
         <servlet-class>com.google.research.bleth.servlets.ListSimulationsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EnqueueSimulationServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.EnqueueSimulationServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>ReadBoardStateServlet</servlet-name>
@@ -38,6 +42,10 @@
     <servlet-mapping>
         <servlet-name>ListSimulationsServlet</servlet-name>
         <url-pattern>/list-simulations</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EnqueueSimulationServlet</servlet-name>
+        <url-pattern>/enqueue-simulation</url-pattern>
     </servlet-mapping>
 
 </web-app>
