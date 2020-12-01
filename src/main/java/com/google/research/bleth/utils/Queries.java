@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.Iterables;
 import com.google.research.bleth.simulator.Schema;
 
 import java.util.ArrayList;
@@ -134,8 +135,6 @@ public class Queries {
         Query.Filter filter = new Query.FilterPredicate(foreignKeyProperty, Query.FilterOperator.EQUAL, foreignKeyKeyValue);
         Query entitiesToDelete = new Query(entityKind).setFilter(filter);
         Iterable<Entity> entitiesToDeleteIterable = datastore.prepare(entitiesToDelete).asIterable();
-        for (Entity entity : entitiesToDeleteIterable) {
-            datastore.delete(entity.getKey());
-        }
+        datastore.delete(Iterables.transform(entitiesToDeleteIterable, Entity::getKey));
     }
 }
