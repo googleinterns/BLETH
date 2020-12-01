@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-/** A utility class providing method for db related operations, such as join and group by. */
+/** A utility class providing method for db related operations. */
 public class Queries {
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
