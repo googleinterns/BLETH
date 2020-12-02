@@ -8,6 +8,10 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.common.collect.Iterables;
+import com.google.research.bleth.simulator.Schema;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,8 +21,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-/** A utility class providing method for db related operations, such as join and group by. */
+/** A utility class providing method for db related operations. */
 public class Queries {
+    private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     /**
      * Given a primary entity kind, a secondary entity kind, a foreign key and a filter, return a list of all entities
@@ -37,9 +42,8 @@ public class Queries {
      * @param primaryEntityFilter is a simple or composed filter to apply on primaryEntityKind prior to the join operation (optional).
      * @return a list of secondary entities matching the primary entities retrieved.
      */
-    public static List<Entity> Join(String primaryEntityKind, String secondaryEntityKind,
+    public static List<Entity> join(String primaryEntityKind, String secondaryEntityKind,
                                     String foreignKey, Optional<Query.Filter> primaryEntityFilter) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         List<Entity> result = new ArrayList<>();
 
         // Retrieve all primaryEntity keys ordered by their key, filtered by primaryEntityFilter (if provided).
@@ -115,5 +119,34 @@ public class Queries {
     public static Map<String, Double> average(List<Entity> entities, Set<String> properties) throws ClassCastException {
         return properties.stream()
                 .collect(toImmutableMap(Function.identity(), property -> average(entities, property)));
+    }
+
+    /**
+     * Given a simulationId as a string, delete all data associated with that simulation id.
+     * @param simulationId is the simulation id.
+     */
+    public static void delete(String simulationId) {
+        // Specify cross-group transaction.
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction deleteTransaction = datastore.beginTransaction(options);
+        try {
+            delete(Schema.StatisticsState.entityKindBeaconsObservedPercent, Schema.StatisticsState.simulationId, simulationId);
+            delete(Schema.StatisticsState.entityKindDistance, Schema.StatisticsState.simulationId, simulationId);
+            delete(Schema.BoardState.entityKindReal, Schema.BoardState.simulationId, simulationId);
+            delete(Schema.BoardState.entityKindEstimated, Schema.BoardState.simulationId, simulationId);
+            datastore.delete(KeyFactory.stringToKey(simulationId));
+            deleteTransaction.commit();
+        } finally {
+            if (deleteTransaction.isActive()) {
+                deleteTransaction.rollback();
+            }
+        }
+    }
+
+    private static void delete(String entityKind, String foreignKeyProperty, String foreignKeyKeyValue) {
+        Query.Filter filter = new Query.FilterPredicate(foreignKeyProperty, Query.FilterOperator.EQUAL, foreignKeyKeyValue);
+        Query entitiesToDelete = new Query(entityKind).setFilter(filter);
+        Iterable<Entity> entitiesToDeleteIterable = datastore.prepare(entitiesToDelete).asIterable();
+        datastore.delete(Iterables.transform(entitiesToDeleteIterable, Entity::getKey));
     }
 }

@@ -23,6 +23,10 @@
         <servlet-class>com.google.research.bleth.servlets.ListSimulationsServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>DeleteSimulationServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.DeleteSimulationServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ReadStatisticsServlet</servlet-name>
         <servlet-class>com.google.research.bleth.servlets.ReadStatisticsServlet</servlet-class>
     </servlet>
@@ -42,6 +46,10 @@
     <servlet-mapping>
         <servlet-name>ListSimulationsServlet</servlet-name>
         <url-pattern>/list-simulations</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteSimulationServlet</servlet-name>
+        <url-pattern>/delete-simulation</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ReadStatisticsServlet</servlet-name>

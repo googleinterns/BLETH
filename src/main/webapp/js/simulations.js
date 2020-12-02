@@ -55,26 +55,53 @@ function addSimulationRows(table, simulations) {
     for (const id in simulations) {
         const simulation = simulations[id];
         var row = table.insertRow(-1);
-        
-        var visualizeSimulationButton = document.createElement('button');
-        visualizeSimulationButton.innerText = 'Visualize Simulation';
-        /**
-         * For each simulation add a button redirecting to simulation_visualization.html
-         * Simulation metadata is encoded as a query string.
-         */
-        visualizeSimulationButton.addEventListener('click', () => {
-            // Create a deep copy of simulation JSON, and the simulation id as a new key.
-            var simulationWithId = JSON.parse(JSON.stringify(simulation));
-            simulationWithId['id'] = id;
-            
-            // Redirect.
-            window.location.replace('simulation_visualization.html?' + toQueryString(simulationWithId));
-        });
-
-        row.insertCell(0).appendChild(visualizeSimulationButton);
+        const visualizeSimulationButton = createVisualizationButton(simulation, id);
+        const deleteSimulationButton = createDeletionButton(id);
+        const cell = row.insertCell(0);
+        cell.appendChild(visualizeSimulationButton);
+        cell.appendChild(deleteSimulationButton);
         var i = 1; // cell index (cell 0 is a button).
         for (const property in simulation) {
             row.insertCell(i++).innerHTML = simulation[property];
         }
     }
+}
+
+/**
+ * Create a button for simulation visualization.
+ * @param {Object} simulation is the simulation object.
+ * @param {String} id is the simulation id. 
+ */
+function createVisualizationButton(simulation, id) {
+    var visualizeSimulationButton = document.createElement('button');
+    visualizeSimulationButton.innerText = 'Visualize Simulation';
+    visualizeSimulationButton.addEventListener('click', () => {
+        var simulationWithId = JSON.parse(JSON.stringify(simulation)); // Deep copy.
+        simulationWithId['id'] = id;
+        window.location.replace('simulation_visualization.html?' + toQueryString(simulationWithId));
+    });
+
+    return visualizeSimulationButton;
+}
+
+/**
+ * Create a button for simulation deletion.
+ * @param {String} id is the simulation id. 
+ */
+function createDeletionButton(id) {
+    var deleteSimulationButton = document.createElement('button');
+    deleteSimulationButton.innerText = 'Delete Simulation';
+    deleteSimulationButton.addEventListener('click', () => {
+        var confirmed = confirm('Do you want to delete this simulation?');
+        if (confirmed) {
+            var params = new URLSearchParams();
+            params.append('simulationId', id);
+            fetch('/delete-simulation', {method: 'POST', body: params})
+            .then(response => response.text())
+            .then(message => window.alert(message))
+            .then(() => location.reload())
+        }
+    });
+
+    return deleteSimulationButton;
 }
