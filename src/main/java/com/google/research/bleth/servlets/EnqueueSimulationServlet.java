@@ -14,6 +14,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * A servlet used for enqueuing a task targeted at endpoint '/new-simulation',
+ * in order to create and run a new simulation.
+ */
 @WebServlet("/enqueue-simulation")
 public class EnqueueSimulationServlet extends HttpServlet {
 
