@@ -15,12 +15,11 @@ async function visualize() {
     var mainHeader = document.getElementById('simulation-visualization-header');
     var roundHeader = document.getElementById('current-round-header');
     var delay;
-    var pauseButton = document.getElementById('pause-button');
     mainHeader.innerText = 'Visualizing Simulation\n' + simulation.id;
     var params = {};
     params['simulationId'] = simulation.id;
     for (var round = 0; round < simulation.roundsNum; round++) {
-        while (pauseButton.innerHTML === "Play") {
+        while (isPaused()) {
             await sleep(10);
         }
         roundHeader.innerText = 'Current Round: ' + round;
@@ -130,6 +129,12 @@ function extractBeaconsIds(agents) {
     var beaconsIds = agents.filter(agent => agent.charAt(0) === 'B')
                     .map(agent => agent.slice(6));
     return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
+}
+
+/** Return true if the pause-button's content is Play, false otherwise. */
+function isPaused() {
+    var pauseButton = document.getElementById('pause-button');
+    return pauseButton.innerHTML === "Play";
 }
 
 /** Change the button's content from Pause to Play or vice versa. */
