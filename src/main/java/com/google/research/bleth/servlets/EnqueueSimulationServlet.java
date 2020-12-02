@@ -21,16 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/enqueue-simulation")
 public class EnqueueSimulationServlet extends HttpServlet {
 
-    static final String projectId = "bleth-2020";
-    static final String locationId = "europe-west1";
-    static final String queueId = "simulations-queue";
+    static final String PROJECT_ID = "bleth-2020";
+    static final String LOCATION_ID = "europe-west1";
+    static final String QUEUE_ID = "simulations-queue";
+    static final String QUEUE_NAME = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         try (CloudTasksClient client = CloudTasksClient.create()) {
-            // Construct the fully qualified queue name.
-            String queueName = QueueName.of(projectId, locationId, queueId).toString();
-
             // Construct the HTTP request (for the task).
             AppEngineHttpRequest httpRequest = AppEngineHttpRequest.newBuilder()
                     .setRelativeUri("/new-simulation?" + toQueryString(request))
@@ -43,7 +41,7 @@ public class EnqueueSimulationServlet extends HttpServlet {
                     .build();
 
             // Add the task to the queue.
-            client.createTask(queueName, task);
+            client.createTask(QUEUE_NAME, task);
         }
 
         response.setContentType("text/plain;");
