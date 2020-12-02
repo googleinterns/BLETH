@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("enqueue-simulation")
+@WebServlet("/enqueue-simulation")
 public class EnqueueSimulationServlet extends HttpServlet {
 
     static final String projectId = "bleth-2020";
