@@ -46,7 +46,7 @@ public class EnqueueSimulationServlet extends HttpServlet {
             client.createTask(queueName, task);
         }
 
-        response.setContentType("text/html;");
+        response.setContentType("text/plain;");
         response.getWriter().println("Task has been added to queue.");
     }
 
