@@ -7,6 +7,8 @@ import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Task;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,14 +41,15 @@ public class EnqueueSimulationServlet extends HttpServlet {
             client.createTask(queueName, task);
         }
 
-        response.sendRedirect("/");
+        response.setContentType("text/html;");
+        response.getWriter().println("Task has been added to queue.");
     }
 
     private String toQueryString(HttpServletRequest request) {
-        StringBuilder queryString = new StringBuilder();
+        List<String> keyValuePairs = new ArrayList<>();
         for (String param : request.getParameterMap().keySet()) {
-            queryString.append(param).append("=").append(request.getParameter(param));
+            keyValuePairs.add(param + "=" + request.getParameter(param));
         }
-        return queryString.toString();
+        return String.join("&", keyValuePairs);
     }
 }
