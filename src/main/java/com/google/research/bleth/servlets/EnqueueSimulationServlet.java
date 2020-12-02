@@ -27,15 +27,16 @@ public class EnqueueSimulationServlet extends HttpServlet {
             // Construct the fully qualified queue name.
             String queueName = QueueName.of(projectId, locationId, queueId).toString();
 
+            // Construct the HTTP request (for the task).
+            AppEngineHttpRequest httpRequest = AppEngineHttpRequest.newBuilder()
+                    .setRelativeUri("/new-simulation?" + toQueryString(request))
+                    .setHttpMethod(HttpMethod.POST)
+                    .build();
+
             // Construct the task body.
-            Task task =
-                    Task.newBuilder()
-                            .setAppEngineHttpRequest(
-                                    AppEngineHttpRequest.newBuilder()
-                                            .setRelativeUri("/new-simulation?" + toQueryString(request))
-                                            .setHttpMethod(HttpMethod.POST)
-                                            .build())
-                            .build();
+            Task task = Task.newBuilder()
+                    .setAppEngineHttpRequest(httpRequest)
+                    .build();
 
             // Add the task to the queue.
             client.createTask(queueName, task);
