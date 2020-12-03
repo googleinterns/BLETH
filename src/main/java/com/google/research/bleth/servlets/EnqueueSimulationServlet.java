@@ -49,8 +49,8 @@ public class EnqueueSimulationServlet extends HttpServlet {
                         .build();
 
                 // Add the task to the queue.
-                String QUEUE_NAME = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
-                client.createTask(QUEUE_NAME, task);
+                String queueName = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
+                client.createTask(queueName, task);
             }
 
             response.setContentType("text/plain;");
