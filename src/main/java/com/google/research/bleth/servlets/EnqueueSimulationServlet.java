@@ -5,10 +5,11 @@ import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.HttpMethod;
 import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Task;
+import com.google.protobuf.ByteString;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,13 +27,22 @@ public class EnqueueSimulationServlet extends HttpServlet {
     static final String QUEUE_ID = "simulations-queue";
     static final String QUEUE_NAME = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        // If servlet runs on localhost, forward request without creating and enqueuing a task.
+        if (request.getServerName().equals("localhost") && request.getServerPort() == 8080) {
+            RequestDispatcher dispatcher = getServletContext()
+                    .getRequestDispatcher("/new-simulation");
+            dispatcher.forward(request, response);
+        }
 
         try (CloudTasksClient client = CloudTasksClient.create()) {
             // Construct the HTTP request (for the task).
             AppEngineHttpRequest httpRequest = AppEngineHttpRequest.newBuilder()
-                    .setRelativeUri("/new-simulation?" + toQueryString(request))
+                    .setRelativeUri("/new-simulation")
                     .setHttpMethod(HttpMethod.POST)
+                    .putHeaders("Content-Type", request.getContentType())
+                    .setBody(ByteString.readFrom(request.getInputStream()))
                     .build();
 
             // Construct the task body.
@@ -46,13 +56,5 @@ public class EnqueueSimulationServlet extends HttpServlet {
 
         response.setContentType("text/plain;");
         response.getWriter().println("Task has been added to queue.");
-    }
-
-    private String toQueryString(HttpServletRequest request) {
-        List<String> keyValuePairs = new ArrayList<>();
-        for (String param : request.getParameterMap().keySet()) {
-            keyValuePairs.add(param + "=" + request.getParameter(param));
-        }
-        return String.join("&", keyValuePairs);
     }
 }
