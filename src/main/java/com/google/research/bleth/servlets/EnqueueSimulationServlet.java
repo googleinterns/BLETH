@@ -25,7 +25,6 @@ public class EnqueueSimulationServlet extends HttpServlet {
     static final String PROJECT_ID = "bleth-2020";
     static final String LOCATION_ID = "europe-west1";
     static final String QUEUE_ID = "simulations-queue";
-    //static final String QUEUE_NAME = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
