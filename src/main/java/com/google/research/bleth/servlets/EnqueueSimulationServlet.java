@@ -25,7 +25,7 @@ public class EnqueueSimulationServlet extends HttpServlet {
     static final String PROJECT_ID = "bleth-2020";
     static final String LOCATION_ID = "europe-west1";
     static final String QUEUE_ID = "simulations-queue";
-    static final String QUEUE_NAME = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
+    //static final String QUEUE_NAME = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
@@ -34,27 +34,28 @@ public class EnqueueSimulationServlet extends HttpServlet {
             RequestDispatcher dispatcher = getServletContext()
                     .getRequestDispatcher("/new-simulation");
             dispatcher.forward(request, response);
+        } else {
+            try (CloudTasksClient client = CloudTasksClient.create()) {
+                // Construct the HTTP request (for the task).
+                AppEngineHttpRequest httpRequest = AppEngineHttpRequest.newBuilder()
+                        .setRelativeUri("/new-simulation")
+                        .setHttpMethod(HttpMethod.POST)
+                        .putHeaders("Content-Type", request.getContentType())
+                        .setBody(ByteString.readFrom(request.getInputStream()))
+                        .build();
+
+                // Construct the task body.
+                Task task = Task.newBuilder()
+                        .setAppEngineHttpRequest(httpRequest)
+                        .build();
+
+                // Add the task to the queue.
+                String QUEUE_NAME = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
+                client.createTask(QUEUE_NAME, task);
+            }
+
+            response.setContentType("text/plain;");
+            response.getWriter().println("Task has been added to queue.");
         }
-
-        try (CloudTasksClient client = CloudTasksClient.create()) {
-            // Construct the HTTP request (for the task).
-            AppEngineHttpRequest httpRequest = AppEngineHttpRequest.newBuilder()
-                    .setRelativeUri("/new-simulation")
-                    .setHttpMethod(HttpMethod.POST)
-                    .putHeaders("Content-Type", request.getContentType())
-                    .setBody(ByteString.readFrom(request.getInputStream()))
-                    .build();
-
-            // Construct the task body.
-            Task task = Task.newBuilder()
-                    .setAppEngineHttpRequest(httpRequest)
-                    .build();
-
-            // Add the task to the queue.
-            client.createTask(QUEUE_NAME, task);
-        }
-
-        response.setContentType("text/plain;");
-        response.getWriter().println("Task has been added to queue.");
     }
 }
