@@ -23,6 +23,16 @@ async function startVisualization() {
     simulation = getUrlVars();
     var mainHeader = document.getElementById('simulation-visualization-header');
     mainHeader.innerText = 'Visualizing Simulation\n' + simulation.id;
+
+    // Define the pause-button behavior.
+    var pauseButton = document.getElementById('pause-button');
+    pauseButton.onclick = function() {
+        if (pauseButton.innerHTML === "Pause") {
+            pause();
+        } else {
+            resume();
+        }
+    }
     nextRound();
 }
 
@@ -63,6 +73,25 @@ function updateState() {
     if (state.currentRound >= simulation.roundsNum) {
         state.isFinished = true;
     }
+}
+
+/** Continue the visualization. */
+function resume() {
+    var pauseButton = document.getElementById('pause-button');
+    pauseButton.innerHTML = "Pause";
+
+    state.isPaused = false;
+    var delay = 1/document.getElementById('speed-controller').value;
+    simulationTimeout = setTimeout(nextRound, delay);
+}
+
+/** Stop the visualization. */
+function pause() {
+    var pauseButton = document.getElementById('pause-button');
+    pauseButton.innerHTML = "Play";
+    
+    state.isPaused = true;
+    clearTimeout(simulationTimeout);
 }
 
 /**
