@@ -1,38 +1,68 @@
 import { toQueryString, getUrlVars, sleep } from './utils.js';
 
-window.visualize = visualize; // Add function to global scope.
+window.visualize = startVisualization; // Add function to global scope.
+
+// The timeout variable
+var simulationTimeout;
+
+// Holds the simulation's metadata
+var simulation;
+
+// Holds the simulation's visualization state
+var state = {
+    currentRound: 0,
+    isPaused: false,
+    isFinished: false,
+}
 
 /**
- * Get the simulation metadata encoded as a query string, iterate over all rounds and visualize
- * the real and estimated board state at each round (with a 1000 ms delay between two consecutive rounds).
- */
-async function visualize() {
-    const realBoardElementId = 'real-board-table';
-    const estimatedBoardElementId = 'estimated-board-table';
-    var simulation = getUrlVars();
+ * Update simulation to holds simulation's metadata, 
+ * initialize the visualization of the first round.
+*/
+async function startVisualization() {
+    simulation = getUrlVars();
     var mainHeader = document.getElementById('simulation-visualization-header');
-    var roundHeader = document.getElementById('current-round-header');
-    var delay;
     mainHeader.innerText = 'Visualizing Simulation\n' + simulation.id;
-    var params = {};
-    params['simulationId'] = simulation.id;
-    for (var round = 0; round < simulation.roundsNum; round++) {
-        roundHeader.innerText = 'Current Round: ' + round;
-        params['round'] = round;
+    nextRound();
+}
 
-        // Request real board state.
-        params['isReal'] = true;
-        await fetchReadBoardState(params, realBoardElementId);
+/** Visualize the next round of the simulation. */
+async function nextRound() {
+    var roundHeader = document.getElementById('current-round-header');
+    roundHeader.innerText = 'Current Round: ' + state.currentRound;
 
-        // Request estimated board state.
-        params['isReal'] = false;
-        await fetchReadBoardState(params, estimatedBoardElementId);
+    var params = {
+        simulationId: simulation.id,
+        round: state.currentRound,
+    };
 
-        // Delay.
-        delay = 1/document.getElementById('speed-controller').value;
-        await sleep(delay);
+    // Request real board state.
+    params['isReal'] = true;
+    await fetchReadBoardState(params, 'real-board-table');
+
+    // Request estimated board state.
+    params['isReal'] = false;
+    await fetchReadBoardState(params, 'estimated-board-table');
+    
+    // Update the simulation's state and the timeout.
+    updateState();
+    if (!state.isPaused && !state.isFinished) {
+        var delay = 1/document.getElementById('speed-controller').value;
+        simulationTimeout = setTimeout(nextRound, delay);
     }
-    displayStats(params);
+
+    // Visualize the statistics if the simulation is over.
+    if (state.isFinished) {
+        simulationTimeout = setTimeout(displayStats, delay);
+    }
+}
+
+/** Update the current round. */
+function updateState() {
+    state.currentRound += 1;
+    if (state.currentRound >= simulation.roundsNum) {
+        state.isFinished = true;
+    }
 }
 
 /**
@@ -129,10 +159,11 @@ function extractBeaconsIds(agents) {
 
 /**
  * Display the statistical data of a simulation.
- * @param {Object*} params is an object storing parameters for http request.
  */
-function displayStats(params) {
+function displayStats() {
+    var params = {simulationId: simulation.id};
     const queryString = toQueryString(params);
+
     fetch(`/read-stats?${queryString}`)
     .then(response => response.json())
     .then(stats => Object.keys(stats).forEach(kind => createStatsTable(kind, stats[kind])))
