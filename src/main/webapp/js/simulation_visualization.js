@@ -2,13 +2,13 @@ import { toQueryString, getUrlVars, sleep } from './utils.js';
 
 window.visualize = startVisualization; // Add function to global scope.
 
-// The timeout variable
+// The timeout variable.
 var simulationTimeout;
 
-// Holds the simulation's metadata
+// Holds the simulation's metadata.
 var simulation;
 
-// Holds the simulation's visualization state
+// Holds the simulation's visualization state.
 var state = {
     currentRound: 0,
     isPaused: false,
@@ -16,8 +16,8 @@ var state = {
 }
 
 /**
- * Update simulation to holds simulation's metadata, 
- * initialize the visualization of the first round.
+ * Update simulation to holds simulation's metadata. 
+ * Initialize the visualization of the first round.
 */
 async function startVisualization() {
     simulation = getUrlVars();
@@ -231,4 +231,7 @@ function clearVisualizationElements() {
     document.getElementsByClassName('boards')[0].innerHTML = '';
     document.getElementsByClassName('choose-beacon')[0].innerHTML = '';
     document.getElementsByClassName('speed-controller')[0].innerHTML = '';
+    document.getElementsByClassName('pause-button')[0].innerHTML = '';
+    document.getElementsByClassName('legend')[0].innerHTML = '';
+    document.getElementById('current-round-header').innerHTML = '';
 }
