@@ -220,7 +220,7 @@ function createStatsTable(kind, stats) {
     var i = 0;
     Object.keys(stats).forEach(measure => {
         headerRow.insertCell(i).innerText = prefix + measure;
-        dataRow.insertCell(i).innerText = stats[measure];
+        dataRow.insertCell(i).innerText = stats[measure].toFixed(3);
         i++;
     });
     document.body.appendChild(title);
