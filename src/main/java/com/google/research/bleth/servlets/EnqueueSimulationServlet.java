@@ -33,28 +33,29 @@ public class EnqueueSimulationServlet extends HttpServlet {
             RequestDispatcher dispatcher = getServletContext()
                     .getRequestDispatcher("/new-simulation");
             dispatcher.forward(request, response);
-        } else {
-            try (CloudTasksClient client = CloudTasksClient.create()) {
-                // Construct the HTTP request (for the task).
-                AppEngineHttpRequest httpRequest = AppEngineHttpRequest.newBuilder()
-                        .setRelativeUri("/new-simulation")
-                        .setHttpMethod(HttpMethod.POST)
-                        .putHeaders("Content-Type", request.getContentType())
-                        .setBody(ByteString.readFrom(request.getInputStream()))
-                        .build();
-
-                // Construct the task body.
-                Task task = Task.newBuilder()
-                        .setAppEngineHttpRequest(httpRequest)
-                        .build();
-
-                // Add the task to the queue.
-                String queueName = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
-                client.createTask(queueName, task);
-            }
-
-            response.setContentType("text/plain;");
-            response.getWriter().println("Task has been added to queue.");
+            return;
         }
+
+        try (CloudTasksClient client = CloudTasksClient.create()) {
+            // Construct the HTTP request (for the task).
+            AppEngineHttpRequest httpRequest = AppEngineHttpRequest.newBuilder()
+                    .setRelativeUri("/new-simulation")
+                    .setHttpMethod(HttpMethod.POST)
+                    .putHeaders("Content-Type", request.getContentType())
+                    .setBody(ByteString.readFrom(request.getInputStream()))
+                    .build();
+
+            // Construct the task body.
+            Task task = Task.newBuilder()
+                    .setAppEngineHttpRequest(httpRequest)
+                    .build();
+
+            // Add the task to the queue.
+            String queueName = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
+            client.createTask(queueName, task);
+        }
+
+        response.setContentType("text/plain;");
+        response.getWriter().println("Task has been added to queue.");
     }
 }
