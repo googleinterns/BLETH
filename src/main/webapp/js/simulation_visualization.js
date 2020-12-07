@@ -32,6 +32,7 @@ async function visualize() {
         delay = 1/document.getElementById('speed-controller').value;
         await sleep(delay);
     }
+    displayStats(params);
 }
 
 /**
@@ -124,4 +125,50 @@ function extractBeaconsIds(agents) {
     var beaconsIds = agents.filter(agent => agent.charAt(0) === 'B')
                     .map(agent => agent.slice(6));
     return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
+}
+
+/**
+ * Display the statistical data of a simulation.
+ * @param {Object*} params is an object storing parameters for http request.
+ */
+function displayStats(params) {
+    const queryString = toQueryString(params);
+    fetch(`/read-stats?${queryString}`)
+    .then(response => response.json())
+    .then(stats => Object.keys(stats).forEach(kind => createStatsTable(kind, stats[kind])))
+    .then(() => clearVisualizationElements()); 
+}
+
+/**
+ * Create an HTML table element and fill it with statistical data.
+ * @param {String} kind is the statistical data kind (distance or beacon observed percent).
+ * @param {Object} stats is an object storing the simulations' stats of a specific kind.
+ */
+function createStatsTable(kind, stats) {
+    var title = document.createElement('h4');
+    title.innerText = kind;
+    var table = document.createElement('table');
+    table.classList.add('stats-table');
+    var header = table.createTHead();
+    var headerRow = header.insertRow(0);
+    var dataRow = table.insertRow(1);
+
+    // For beacon observed stats add the prefix 'beacon' to each measure name.
+    var prefix = kind === 'BeaconsObservedPercentStats' ? 'beacon #' : '';
+
+    var i = 0;
+    Object.keys(stats).forEach(measure => {
+        headerRow.insertCell(i).innerText = prefix + measure;
+        dataRow.insertCell(i).innerText = stats[measure];
+        i++;
+    });
+    document.body.appendChild(title);
+    document.body.appendChild(table);
+}
+
+/** Clear all HTML element used for visualization. */
+function clearVisualizationElements() {
+    document.getElementsByClassName('boards')[0].innerHTML = '';
+    document.getElementsByClassName('choose-beacon')[0].innerHTML = '';
+    document.getElementsByClassName('speed-controller')[0].innerHTML = '';
 }

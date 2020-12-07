@@ -37,18 +37,32 @@
     right: 0;
 }
 
-.board-td-empty {
+.board-td-empty, ul.legend li span#empty {
     background-color: white;
 }
 
-.board-td-observers-only {
+.board-td-observers-only, ul.legend li span#observers-only {
     background-color: orange;
 }
 
-.board-td-contains-beacon {
+.board-td-contains-beacon, ul.legend li span#contains-beacon {
     background-color: blue;
 }
 
-.board-td-contains-wanted-beacon {
+.board-td-contains-wanted-beacon, ul.legend li span#contains-wanted-beacon {
     background-color: blueviolet;
+}
+
+ul.legend {
+    list-style-type: none;
+    padding-inline-start: 0px;
+}
+
+ul.legend li span {
+    display: block;
+    float: left;
+    height: 16px;
+    width: 30px;
+    margin-right: 5px;
+    border: 1px solid black;
 }

@@ -89,7 +89,7 @@ public class QueriesIT {
         }
 
         // Retrieve stats of all simulations.
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                 Schema.StatisticsState.simulationId, Optional.empty());
 
         assertThat(stats.size()).isEqualTo(simulationsNum);
@@ -131,7 +131,7 @@ public class QueriesIT {
         }
 
         // Retrieve stats of all simulations matching the filter's condition.
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                 Schema.StatisticsState.simulationId, Optional.of(filterByRowsNum));
 
         assertThat(stats.size()).isEqualTo(simulationsNum);
@@ -178,7 +178,7 @@ public class QueriesIT {
         }
 
         // Retrieve stats of all simulations matching the filter's condition.
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                                           Schema.StatisticsState.simulationId, Optional.of(composedQueryFilter));
 
         assertThat(stats.size()).isEqualTo(simulationsNum);
@@ -242,7 +242,7 @@ public class QueriesIT {
         simulation.run();
 
         // Retrieve stats of all simulations matching the filter's condition.
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                 Schema.StatisticsState.simulationId, Optional.of(composedQueryFilter));
 
         assertThat(stats.size()).isEqualTo(simulationsNum);
@@ -289,7 +289,7 @@ public class QueriesIT {
         }
 
         // Retrieve stats of all simulations matching the filter's condition.
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                 Schema.StatisticsState.simulationId, Optional.of(composedQueryFilter));
 
         assertThat(stats).isEmpty();
@@ -297,7 +297,7 @@ public class QueriesIT {
 
     @Test
     public void noSimulationsExists_shouldRetrieveEmptyList() {
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                 Schema.StatisticsState.simulationId, Optional.empty());
 
         assertThat(stats).isEmpty();
@@ -335,7 +335,7 @@ public class QueriesIT {
                 new Query.FilterPredicate(NON_EXISTING_PROPERTY, Query.FilterOperator.EQUAL, 0);
 
         // Retrieve stats of all simulations matching the filter's condition.
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                 Schema.StatisticsState.simulationId, Optional.of(nonExistingPropertyFilter));
 
         assertThat(stats).isEmpty();
@@ -369,7 +369,7 @@ public class QueriesIT {
         simulation.run();
 
         // Retrieve stats of all simulations matching the filter's condition.
-        List<Entity> stats = Queries.Join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
                 NON_EXISTING_PROPERTY, Optional.empty());
 
         assertThat(stats).isEmpty();
@@ -494,6 +494,43 @@ public class QueriesIT {
         Map<String, Double> actualResult = Queries.average(entities, properties);
 
         assertThat(actualResult).containsExactlyEntriesIn(expectedResult);
+    }
+
+    // Simulation Deletion.
+
+    @Test
+    public void writeSingleSimulationAndDelete_shouldDeleteAllRelatedData() {
+        int roundsNum = 5;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 1;
+        int observersNum = 1;
+        int awakenessCycle = 2;
+        int awakenessDuration = 1;
+        double transmissionRadius = 2.0;
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum)
+                .setRowNum(rowsNum + 1)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MovementStrategyFactory.Type.RANDOM)
+                .setObserverMovementStrategyType(MovementStrategyFactory.Type.RANDOM)
+                .setAwakenessCycle(awakenessCycle)
+                .setAwakenessDuration(awakenessDuration)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build(); // Write simulation metadata
+
+        simulation.run(); // Write board states and stats
+        Queries.delete(simulation.getId());
+
+        assertThat(retrieveEntities(Schema.StatisticsState.entityKindBeaconsObservedPercent)).isEmpty();
+        assertThat(retrieveEntities(Schema.StatisticsState.entityKindDistance)).isEmpty();
+        assertThat(retrieveEntities(Schema.BoardState.entityKindReal)).isEmpty();
+        assertThat(retrieveEntities(Schema.BoardState.entityKindEstimated)).isEmpty();
+        assertThat(retrieveEntities(Schema.SimulationMetadata.entityKind)).isEmpty();
     }
 
     private void writeEntityWithProperty(String entityKind, String property, double value) {
