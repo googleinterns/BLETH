@@ -66,3 +66,17 @@ ul.legend li span {
     margin-right: 5px;
     border: 1px solid black;
 }
+
+.stats-table {
+    border: 1px solid black;
+    table-layout: fixed;
+    margin-bottom: auto;
+}
+
+.stats-table tr:first-child {
+    font-weight: bold;
+}
+
+.stats-table td:nth-child(even) {
+    background-color:  rgb(217, 227, 231);
+}
