@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** A servlet used for creating and running a new simulation. */
 @WebServlet("/new-simulation")
 public class NewSimulationServlet extends HttpServlet {
 

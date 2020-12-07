@@ -123,7 +123,7 @@ function createNewSimulation() {
     // If confirmed, fetch url to create and run a new simulation.
     var confirmed = confirm("Create and run a new simulation?")
     if (confirmed) {
-        fetch('/new-simulation', {method: 'POST', body: params})
+        fetch('/enqueue-simulation', {method: 'POST', body: params})
         .then(response => response.text())
         .then(message => window.alert(message));
     }
