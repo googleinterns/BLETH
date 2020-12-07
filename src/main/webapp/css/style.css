@@ -34,6 +34,21 @@ nav span, nav a {
     width: 40%;
 }
 
+/* pause */
+.pause-button {
+    margin-left: 45%;
+}
+
+#pause-button {
+    background-color: rgba(213, 218, 217, 0.87);
+    border-radius: 15%;
+    font-size: 17px;
+}
+
+#pause-button:hover {
+    background-color: rgba(190, 194, 193, 9.87);
+}
+
 /* simulations' table */
 #simulations-table td {
     font-size: 90%;
