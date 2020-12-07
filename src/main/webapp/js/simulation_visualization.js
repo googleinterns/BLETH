@@ -1,6 +1,7 @@
 import { toQueryString, getUrlVars, sleep } from './utils.js';
 
-window.visualize = startVisualization; // Add function to global scope.
+// Add function to global scope.
+window.visualize = startVisualization;
 
 // The timeout variable.
 var simulationTimeout;
