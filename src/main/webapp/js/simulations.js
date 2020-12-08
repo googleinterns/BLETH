@@ -147,6 +147,7 @@ function createDeletionButton(id) {
 function createSortButton(sortProperty) {
     var sortButton = document.createElement('button');
     sortButton.innerText = sortProperty;
+    sortButton.classList.add('sort-button');
     sortButton.addEventListener('click', () => {
         if (currentSortProperty === sortProperty) {
             currentSortDirection = currentSortDirection === ASC ? DESC : ASC;
