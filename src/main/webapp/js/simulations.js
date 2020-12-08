@@ -28,6 +28,15 @@ function retrieveSimulations() {
     });
 }
 
+function retrieveSortedSimulations(sortProperty) {
+    const queryString = toQueryString({ sortProperty : sortProperty });
+    fetch(`/list-simulations?${queryString}`)
+    .then(response => response.json())
+    .then(simulations => { 
+        displaySimulationAsTable(simulations); 
+    });
+}
+
 /**
  * Given a json object storing simulations' metadata, write all data to an html table.
  * @param {Object} simulations is an object storing simulations' unique id and metadata.
@@ -41,6 +50,7 @@ function displaySimulationAsTable(simulations) {
     const simulationProperties = Object.keys(firstSimulation);
 
     var table = document.getElementById("simulations-table");
+    table.innerHTML = '';
     addSimulationHeader(table, simulationProperties);
     addSimulationRows(table, simulations);
 }
@@ -56,7 +66,7 @@ function addSimulationHeader(table, properties) {
     // cell 0 contains the simulation button, therefore header starts at cell 1.
     row.insertCell(0).innerHTML = '';
     for (var i = 0; i < properties.length; i++) {
-        row.insertCell(i + 1).innerHTML = properties[i];
+        row.insertCell(i + 1).appendChild(createSortButton(properties[i]));
     }
 }
 
@@ -118,4 +128,14 @@ function createDeletionButton(id) {
     });
 
     return deleteSimulationButton;
+}
+
+function createSortButton(sortProperty) {
+    var sortButton = document.createElement('button');
+    sortButton.innerText = sortProperty;
+    sortButton.addEventListener('click', () => {
+        retrieveSortedSimulations(sortProperty);
+    });
+
+    return sortButton;
 }
