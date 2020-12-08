@@ -14,13 +14,13 @@
 
 package com.google.research.bleth.servlets;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.research.bleth.simulator.SimulationMetadata;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +35,14 @@ public class ListSimulationsServlet extends HttpServlet {
         Gson gson = new Gson(); // Used for json serialization.
 
         // Read SimulationMetadata as a HashMap.
-        ImmutableMap<String, SimulationMetadata> simulations = SimulationMetadata.listSimulations();
+        Optional<String> sortProperty = Optional.empty();
+        if (request.getParameter("sortProperty") != null) {
+            sortProperty = Optional.of(request.getParameter("sortProperty"));
+        }
+        LinkedHashMap<String, SimulationMetadata> simulations = SimulationMetadata.listSimulations(sortProperty);
 
         // Serialize SimulationMetadata objects to JSON strings.
-        HashMap<String, JsonElement> simulationsAsJson = new HashMap<>();
+        LinkedHashMap<String, JsonElement> simulationsAsJson = new LinkedHashMap<>();
         simulations.forEach((id, metadata) -> simulationsAsJson.put(id, gson.toJsonTree(metadata)));
 
         // Write hash map to response.
