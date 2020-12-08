@@ -28,6 +28,11 @@ function retrieveSimulations() {
     });
 }
 
+/**
+ * Fetch url and retrieve a JSON object storing sorted simulations' metadata,
+ * and display as an html table.
+ * @param {String} sortProperty is the name of the property to sort by.
+ */
 function retrieveSortedSimulations(sortProperty) {
     const queryString = toQueryString({ sortProperty : sortProperty });
     fetch(`/list-simulations?${queryString}`)
@@ -130,6 +135,10 @@ function createDeletionButton(id) {
     return deleteSimulationButton;
 }
 
+/**
+ * Create a button for simulations sort.
+ * @param {String} sortProperty is the name of the property to sort by.
+ */
 function createSortButton(sortProperty) {
     var sortButton = document.createElement('button');
     sortButton.innerText = sortProperty;
