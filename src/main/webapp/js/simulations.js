@@ -15,6 +15,10 @@
 import { toQueryString } from './utils.js';
 
 window.retrieveSimulations = retrieveSimulations; // Add function to global scope.
+const ASC = 0; // Query.SortDirection.ASCENDING = 0 (according to Datastore API documentation).
+const DESC = 1; // Query.SortDirection.DESCENDING = 1 (according to Datastore API documentation).
+var currentSortProperty = null;
+var currentSortDirection = null;
 
 /**
  * Fetch url and retrieve a JSON object storing simulations' metadata,
@@ -32,9 +36,10 @@ function retrieveSimulations() {
  * Fetch url and retrieve a JSON object storing sorted simulations' metadata,
  * and display as an html table.
  * @param {String} sortProperty is the name of the property to sort by.
+ * @param {String} sortDirection is the sort direction (0 for ascending, 1 for descending).
  */
-function retrieveSortedSimulations(sortProperty) {
-    const queryString = toQueryString({ sortProperty : sortProperty });
+function retrieveSortedSimulations(sortProperty, sortDirection) {
+    const queryString = toQueryString({ sortProperty : sortProperty, sortDirection : sortDirection });
     fetch(`/list-simulations?${queryString}`)
     .then(response => response.json())
     .then(simulations => { 
@@ -143,7 +148,13 @@ function createSortButton(sortProperty) {
     var sortButton = document.createElement('button');
     sortButton.innerText = sortProperty;
     sortButton.addEventListener('click', () => {
-        retrieveSortedSimulations(sortProperty);
+        if (currentSortProperty === sortProperty) {
+            currentSortDirection = currentSortDirection === ASC ? DESC : ASC;
+        } else {
+            currentSortProperty = sortProperty;
+            currentSortDirection = ASC;
+        }
+        retrieveSortedSimulations(currentSortProperty, currentSortDirection);
     });
 
     return sortButton;

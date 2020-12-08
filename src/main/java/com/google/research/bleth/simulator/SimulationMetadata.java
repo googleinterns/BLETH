@@ -111,13 +111,21 @@ public class SimulationMetadata {
     /**
      * Read all existing SimulationMetadata entites from the db, and return them as a hashmap.
      * @param sortProperty is the name of the property to sort the results by (optional).
+     * @param sortDirection is the direction of the sort (optional).
      * @return a hashmap mapping a simulationId to the corresponding SimulationMetadata object.
      */
-    public static LinkedHashMap<String, SimulationMetadata> listSimulations(Optional<String> sortProperty) {
+    public static LinkedHashMap<String, SimulationMetadata> listSimulations(Optional<String> sortProperty,
+                                                                            Optional<Query.SortDirection> sortDirection) {
         LinkedHashMap<String, SimulationMetadata> simulations = new LinkedHashMap<>();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query simulationMetadataQuery = new Query(Schema.SimulationMetadata.entityKind);
-        sortProperty.ifPresent(simulationMetadataQuery::addSort);
+        if (sortProperty.isPresent()) {
+            if (sortDirection.isPresent()) {
+                simulationMetadataQuery.addSort(sortProperty.get(), sortDirection.get());
+            } else {
+                simulationMetadataQuery.addSort(sortProperty.get());
+            }
+        }
         PreparedQuery simulationMetadataPreparedQuery = datastore.prepare(simulationMetadataQuery);
         for (Entity entity : simulationMetadataPreparedQuery.asIterable()) {
             simulations.put(KeyFactory.keyToString(entity.getKey()), new SimulationMetadata(entity));
