@@ -35,7 +35,7 @@ public class ListSimulationsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Gson gson = new Gson(); // Used for json serialization.
 
-        // Read SimulationMetadata as a HashMap.
+        // Read SimulationMetadata as a sorted LinkedHashMap.
         Optional<String> sortProperty = Optional.empty();
         Optional<Query.SortDirection> sortDirection = Optional.empty();
         if (request.getParameter("sortProperty") != null) {
