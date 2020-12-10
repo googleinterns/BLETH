@@ -16,13 +16,13 @@ package com.google.research.bleth.servlets;
 
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.repackaged.com.google.common.base.Ascii;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.research.bleth.simulator.SimulationMetadata;
 import com.google.research.bleth.utils.Queries;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,11 +45,11 @@ public class ListSimulationsServlet extends HttpServlet {
             sortingParameters = Optional.of(new Queries.SortingParameters(sortProperty, sortDirection));
         }
 
-        LinkedHashMap<String, JsonElement> simulationsAsJson = new LinkedHashMap<>();
+        ImmutableMap.Builder<String, JsonElement> simulationsAsJson = new ImmutableMap.Builder<>();
         SimulationMetadata.listSimulations(sortingParameters)
                 .forEach((id, metadata) -> simulationsAsJson.put(id, gson.toJsonTree(metadata)));
 
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(simulationsAsJson));
+        response.getWriter().println(gson.toJson(simulationsAsJson.build()));
     }
 }
