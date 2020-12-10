@@ -19,6 +19,7 @@ import com.google.appengine.repackaged.com.google.common.base.Ascii;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.research.bleth.simulator.SimulationMetadata;
+import com.google.research.bleth.utils.Queries;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -36,18 +37,16 @@ public class ListSimulationsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Gson gson = new Gson(); // Used for json serialization.
 
-        Optional<String> sortProperty = Optional.empty();
-        Optional<Query.SortDirection> sortDirection = Optional.empty();
-        if (request.getParameter("sortProperty") != null) {
-            sortProperty = Optional.of(request.getParameter("sortProperty"));
-        }
-        if (request.getParameter("sortDirection") != null) {
-            String sortDirectionString = Ascii.toUpperCase(request.getParameter("sortDirection"));
-            sortDirection = Optional.of(Query.SortDirection.valueOf(sortDirectionString));
+        Optional<Queries.SortingParameters> sortingParameters = Optional.empty();
+        if (request.getParameter("sortProperty") != null && request.getParameter("sortDirection") != null) {
+            String sortProperty = request.getParameter("sortProperty");
+            Query.SortDirection sortDirection = Query.SortDirection
+                    .valueOf(Ascii.toUpperCase(request.getParameter("sortDirection")));
+            sortingParameters = Optional.of(new Queries.SortingParameters(sortProperty, sortDirection));
         }
 
         LinkedHashMap<String, JsonElement> simulationsAsJson = new LinkedHashMap<>();
-        SimulationMetadata.listSimulations(sortProperty, sortDirection)
+        SimulationMetadata.listSimulations(sortingParameters)
                 .forEach((id, metadata) -> simulationsAsJson.put(id, gson.toJsonTree(metadata)));
 
         response.setContentType("application/json;");

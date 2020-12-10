@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.research.bleth.utils.Queries;
 
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -110,22 +111,15 @@ public class SimulationMetadata {
 
     /**
      * Read all existing SimulationMetadata entites from the db, and return them as a hashmap.
-     * @param sortProperty is the name of the property to sort the results by (optional).
-     * @param sortDirection is the direction of the sort (optional).
+     * @param sortingParameters is an object storing the name of the property to sort the results by,
+     * as well as the sort direction (optional).
      * @return a hashmap mapping a simulationId to the corresponding SimulationMetadata object.
      */
-    public static LinkedHashMap<String, SimulationMetadata> listSimulations(Optional<String> sortProperty,
-                                                                            Optional<Query.SortDirection> sortDirection) {
+    public static LinkedHashMap<String, SimulationMetadata> listSimulations(Optional<Queries.SortingParameters> sortingParameters) {
         LinkedHashMap<String, SimulationMetadata> simulations = new LinkedHashMap<>();
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query simulationMetadataQuery = new Query(Schema.SimulationMetadata.entityKind);
-        if (sortProperty.isPresent()) {
-            if (sortDirection.isPresent()) {
-                simulationMetadataQuery.addSort(sortProperty.get(), sortDirection.get());
-            } else {
-                simulationMetadataQuery.addSort(sortProperty.get());
-            }
-        }
+        sortingParameters.ifPresent(parameters -> simulationMetadataQuery.addSort(parameters.property, parameters.direction));
         PreparedQuery simulationMetadataPreparedQuery = datastore.prepare(simulationMetadataQuery);
         for (Entity entity : simulationMetadataPreparedQuery.asIterable()) {
             simulations.put(KeyFactory.keyToString(entity.getKey()), new SimulationMetadata(entity));

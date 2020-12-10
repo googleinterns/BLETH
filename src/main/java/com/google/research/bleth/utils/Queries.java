@@ -157,6 +157,17 @@ public class Queries {
         }
     }
 
+    /** A helper class for storing sorting parameters. */
+    public static class SortingParameters {
+        public final String property;
+        public final Query.SortDirection direction;
+
+        public SortingParameters(String property, Query.SortDirection direction) {
+            this.property = property;
+            this.direction = direction;
+        }
+    }
+
     private static void delete(String entityKind, String foreignKeyProperty, String foreignKeyKeyValue) {
         Query.Filter filter = new Query.FilterPredicate(foreignKeyProperty, Query.FilterOperator.EQUAL, foreignKeyKeyValue);
         Query entitiesToDelete = new Query(entityKind).setFilter(filter);
