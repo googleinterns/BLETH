@@ -15,6 +15,7 @@
 package com.google.research.bleth.servlets;
 
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.repackaged.com.google.common.base.Ascii;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.research.bleth.simulator.SimulationMetadata;
@@ -41,8 +42,8 @@ public class ListSimulationsServlet extends HttpServlet {
             sortProperty = Optional.of(request.getParameter("sortProperty"));
         }
         if (request.getParameter("sortDirection") != null) {
-            int sortDirectionIndex = Integer.parseInt(request.getParameter("sortDirection"));
-            sortDirection = Optional.ofNullable(Query.SortDirection.values()[sortDirectionIndex]);
+            String sortDirectionString = Ascii.toUpperCase(request.getParameter("sortDirection"));
+            sortDirection = Optional.of(Query.SortDirection.valueOf(sortDirectionString));
         }
 
         LinkedHashMap<String, JsonElement> simulationsAsJson = new LinkedHashMap<>();

@@ -15,8 +15,8 @@
 import { toQueryString } from './utils.js';
 
 window.retrieveSimulations = retrieveSimulations; // Add function to global scope.
-const ASC = 0; // Query.SortDirection.ASCENDING = 0 (according to Datastore API documentation).
-const DESC = 1; // Query.SortDirection.DESCENDING = 1 (according to Datastore API documentation).
+const ASC = 'ASCENDING';
+const DESC = 'DESCENDING';
 var currentSortProperty = null;
 var currentSortDirection = null;
 
