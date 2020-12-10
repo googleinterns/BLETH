@@ -19,6 +19,7 @@ import com.google.appengine.repackaged.com.google.common.base.Ascii;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.research.bleth.exceptions.MissingSortingParameterException;
 import com.google.research.bleth.simulator.SimulationMetadata;
 import com.google.research.bleth.utils.Queries;
 
@@ -43,6 +44,10 @@ public class ListSimulationsServlet extends HttpServlet {
             Query.SortDirection sortDirection = Query.SortDirection
                     .valueOf(Ascii.toUpperCase(request.getParameter("sortDirection")));
             sortingParameters = Optional.of(new Queries.SortingParameters(sortProperty, sortDirection));
+        } else if (request.getParameter("sortProperty") == null ^ request.getParameter("sortDirection") == null) {
+            String provided = request.getParameter("sortProperty") == null ? "sortDirection" : "sortProperty";
+            String notProvided = provided.equals("sortProperty") ? "sortDirection" : "sortProperty";
+            throw new MissingSortingParameterException(provided + "was provided, but " + notProvided + " wasn't.");
         }
 
         ImmutableMap.Builder<String, JsonElement> simulationsAsJson = new ImmutableMap.Builder<>();
