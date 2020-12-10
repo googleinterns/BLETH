@@ -35,7 +35,6 @@ public class ListSimulationsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Gson gson = new Gson(); // Used for json serialization.
 
-        // Read SimulationMetadata as a sorted LinkedHashMap.
         Optional<String> sortProperty = Optional.empty();
         Optional<Query.SortDirection> sortDirection = Optional.empty();
         if (request.getParameter("sortProperty") != null) {
@@ -45,13 +44,11 @@ public class ListSimulationsServlet extends HttpServlet {
             int sortDirectionIndex = Integer.parseInt(request.getParameter("sortDirection"));
             sortDirection = Optional.ofNullable(Query.SortDirection.values()[sortDirectionIndex]);
         }
-        LinkedHashMap<String, SimulationMetadata> simulations = SimulationMetadata.listSimulations(sortProperty, sortDirection);
 
-        // Serialize SimulationMetadata objects to JSON strings.
         LinkedHashMap<String, JsonElement> simulationsAsJson = new LinkedHashMap<>();
-        simulations.forEach((id, metadata) -> simulationsAsJson.put(id, gson.toJsonTree(metadata)));
+        SimulationMetadata.listSimulations(sortProperty, sortDirection)
+                .forEach((id, metadata) -> simulationsAsJson.put(id, gson.toJsonTree(metadata)));
 
-        // Write hash map to response.
         response.setContentType("application/json;");
         response.getWriter().println(gson.toJson(simulationsAsJson));
     }
