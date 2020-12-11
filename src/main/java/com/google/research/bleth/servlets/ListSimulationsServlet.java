@@ -47,7 +47,7 @@ public class ListSimulationsServlet extends HttpServlet {
         } else if (request.getParameter("sortProperty") == null ^ request.getParameter("sortDirection") == null) {
             String provided = request.getParameter("sortProperty") == null ? "sortDirection" : "sortProperty";
             String notProvided = provided.equals("sortProperty") ? "sortDirection" : "sortProperty";
-            throw new MissingSortingParameterException(provided + "was provided, but " + notProvided + " wasn't.");
+            throw new MissingSortingParameterException(provided + " was provided, but " + notProvided + " wasn't.");
         }
 
         ImmutableMap.Builder<String, JsonElement> simulationsAsJson = new ImmutableMap.Builder<>();
