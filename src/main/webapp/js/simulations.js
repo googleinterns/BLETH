@@ -15,6 +15,10 @@
 import { toQueryString } from './utils.js';
 
 window.retrieveSimulations = retrieveSimulations; // Add function to global scope.
+const ASC = 'ASCENDING';
+const DESC = 'DESCENDING';
+var currentSortProperty = null;
+var currentSortDirection = null;
 
 /**
  * Fetch url and retrieve a JSON object storing simulations' metadata,
@@ -22,6 +26,21 @@ window.retrieveSimulations = retrieveSimulations; // Add function to global scop
  */
 function retrieveSimulations() {
     fetch('/list-simulations')
+    .then(response => response.json())
+    .then(simulations => { 
+        displaySimulationAsTable(simulations); 
+    });
+}
+
+/**
+ * Fetch url and retrieve a JSON object storing sorted simulations' metadata,
+ * and display as an html table.
+ * @param {String} sortProperty is the name of the property to sort by.
+ * @param {String} sortDirection is the sort direction (0 for ascending, 1 for descending).
+ */
+function retrieveSortedSimulations(sortProperty, sortDirection) {
+    const queryString = toQueryString({ sortProperty : sortProperty, sortDirection : sortDirection });
+    fetch(`/list-simulations?${queryString}`)
     .then(response => response.json())
     .then(simulations => { 
         displaySimulationAsTable(simulations); 
@@ -41,6 +60,7 @@ function displaySimulationAsTable(simulations) {
     const simulationProperties = Object.keys(firstSimulation);
 
     var table = document.getElementById("simulations-table");
+    table.innerHTML = '';
     addSimulationHeader(table, simulationProperties);
     addSimulationRows(table, simulations);
 }
@@ -56,7 +76,7 @@ function addSimulationHeader(table, properties) {
     // cell 0 contains the simulation button, therefore header starts at cell 1.
     row.insertCell(0).innerHTML = '';
     for (var i = 0; i < properties.length; i++) {
-        row.insertCell(i + 1).innerHTML = properties[i];
+        row.insertCell(i + 1).appendChild(createSortButton(properties[i]));
     }
 }
 
@@ -118,4 +138,25 @@ function createDeletionButton(id) {
     });
 
     return deleteSimulationButton;
+}
+
+/**
+ * Create a button for simulations sort.
+ * @param {String} sortProperty is the name of the property to sort by.
+ */
+function createSortButton(sortProperty) {
+    var sortButton = document.createElement('button');
+    sortButton.innerText = sortProperty;
+    sortButton.classList.add('sort-button');
+    sortButton.addEventListener('click', () => {
+        if (currentSortProperty === sortProperty) {
+            currentSortDirection = currentSortDirection === ASC ? DESC : ASC;
+        } else {
+            currentSortProperty = sortProperty;
+            currentSortDirection = ASC;
+        }
+        retrieveSortedSimulations(currentSortProperty, currentSortDirection);
+    });
+
+    return sortButton;
 }

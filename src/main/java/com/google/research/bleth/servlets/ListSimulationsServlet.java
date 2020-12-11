@@ -14,13 +14,17 @@
 
 package com.google.research.bleth.servlets;
 
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.repackaged.com.google.common.base.Ascii;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.research.bleth.exceptions.MissingSortingParameterException;
 import com.google.research.bleth.simulator.SimulationMetadata;
+import com.google.research.bleth.utils.Queries;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,15 +38,23 @@ public class ListSimulationsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Gson gson = new Gson(); // Used for json serialization.
 
-        // Read SimulationMetadata as a HashMap.
-        ImmutableMap<String, SimulationMetadata> simulations = SimulationMetadata.listSimulations();
+        Optional<Queries.SortingParameters> sortingParameters = Optional.empty();
+        if (request.getParameter("sortProperty") != null && request.getParameter("sortDirection") != null) {
+            String sortProperty = request.getParameter("sortProperty");
+            Query.SortDirection sortDirection = Query.SortDirection
+                    .valueOf(Ascii.toUpperCase(request.getParameter("sortDirection")));
+            sortingParameters = Optional.of(new Queries.SortingParameters(sortProperty, sortDirection));
+        } else if (request.getParameter("sortProperty") == null ^ request.getParameter("sortDirection") == null) {
+            String provided = request.getParameter("sortProperty") == null ? "sortDirection" : "sortProperty";
+            String notProvided = provided.equals("sortProperty") ? "sortDirection" : "sortProperty";
+            throw new MissingSortingParameterException(provided + " was provided, but " + notProvided + " wasn't.");
+        }
 
-        // Serialize SimulationMetadata objects to JSON strings.
-        HashMap<String, JsonElement> simulationsAsJson = new HashMap<>();
-        simulations.forEach((id, metadata) -> simulationsAsJson.put(id, gson.toJsonTree(metadata)));
+        ImmutableMap.Builder<String, JsonElement> simulationsAsJson = new ImmutableMap.Builder<>();
+        SimulationMetadata.listSimulations(sortingParameters)
+                .forEach((id, metadata) -> simulationsAsJson.put(id, gson.toJsonTree(metadata)));
 
-        // Write hash map to response.
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(simulationsAsJson));
+        response.getWriter().println(gson.toJson(simulationsAsJson.build()));
     }
 }

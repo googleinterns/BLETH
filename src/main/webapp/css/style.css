@@ -68,3 +68,9 @@ nav span, nav a {
 table.stats-table td {
     border: 2px solid black;
 }
+
+/* sort button */
+.sort-button {
+    background-color: white;
+    border-color: white;
+}
