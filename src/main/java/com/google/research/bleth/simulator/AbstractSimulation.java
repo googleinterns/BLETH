@@ -18,6 +18,8 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,9 +147,27 @@ public abstract class AbstractSimulation {
 
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() {
-        Map<String, Double> beaconsObservedPercent = beaconsObservedIntervals.entrySet().stream()
+        Map<String, List<Integer>> observedIntervals = beaconsObservedIntervals.entrySet().stream()
                 .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
-                e -> e.getValue().stream().filter(i -> i.observed()).mapToDouble(observedInterval::duration).sum() / (currentRound - 1)));
+                e -> e.getValue().stream().filter(i -> i.observed()).map(observedInterval::duration).collect(toImmutableList())));
+
+        Map<String, List<Integer>> unobservedIntervals = beaconsObservedIntervals.entrySet().stream()
+                .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
+                        e -> e.getValue().stream().filter(i -> !i.observed()).map(observedInterval::duration).collect(toImmutableList())));
+
+        ImmutableTable.Builder<String, String, Double> observedStats = new ImmutableTable.Builder<>();
+
+        Map<String, Double> beaconsObservedPercent = observedIntervals.entrySet().stream() // delete after deletion from StatsState
+                .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).sum() / (currentRound - 1))); // delete after deletion from StatsState
+
+        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, "observed percent", v));
+        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "minimum-length observed interval", v));
+        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "minimum-length unobserved interval", v));
+        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "maximum-length observed interval", v));
+        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "maximum-length unobserved interval", v));
+        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "average-length observed interval", v));
+        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "average-length unobserved interval", v));
 
         StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
         statsState.writeDistancesStats();
@@ -427,5 +447,25 @@ public abstract class AbstractSimulation {
 
     private static double distance(Location firstLocation, Location secondLocation) {
         return Math.abs(firstLocation.row() - secondLocation.row()) + Math.abs(firstLocation.col() - secondLocation.col());
+    }
+
+    private Map<String, Double> mapIdsToPercentOfSimulation(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).sum() / (currentRound - 1)));
+    }
+
+    private Map<String, Double> mapIdsToMinValue(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).min().orElse(-1)));
+    }
+
+    private Map<String, Double> mapIdsToMaxValue(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).max().orElse(-1)));
+    }
+
+    private Map<String, Double> mapIdsToAvgValue(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).average().orElse(-1)));
     }
 }
