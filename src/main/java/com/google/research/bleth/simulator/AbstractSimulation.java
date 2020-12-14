@@ -37,6 +37,8 @@ public abstract class AbstractSimulation {
 
     private final HashMap<String, Double> distancesStats = new HashMap<>();
     private final HashMap<String, Double> beaconsObservedSum = new HashMap<>();
+    private final HashMap<Beacon, observedInterval.Builder> beaconsObservedOpenInterval = new HashMap<>();
+    private final HashMap<Beacon, List<observedInterval>> beaconsObservedIntervals = new HashMap<>();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -64,6 +66,7 @@ public abstract class AbstractSimulation {
             updateSimulationStats();
             currentRound++;
         }
+        closeBeaconsOpenObservedIntervals();
         writeSimulationStats();
     }
 
@@ -100,6 +103,7 @@ public abstract class AbstractSimulation {
                     }
                 }
             }
+            updateBeaconObservedInterval(beacon, observed);
             if (observed) {
                 beaconsObservedSum.merge(String.valueOf(beacon.getId()), 1.0D, Double::sum);
             }
@@ -402,6 +406,29 @@ public abstract class AbstractSimulation {
         this.transmissionThresholdRadius = builder.transmissionThresholdRadius;
         this.beacons = ImmutableList.copyOf(builder.beacons);
         this.observers = ImmutableList.copyOf(builder.observers);
+    }
+
+    private void updateBeaconObservedInterval(Beacon beacon, boolean observed) {
+        observedInterval.Builder currentInterval = beaconsObservedOpenInterval.get(beacon);
+        if (currentInterval != null && currentInterval.observed() != observed) {
+            beaconsObservedIntervals.computeIfAbsent(beacon, b -> new ArrayList<>()).add(currentInterval.build());
+            beaconsObservedOpenInterval.remove(beacon);
+        }
+
+        if (!beaconsObservedOpenInterval.containsKey(beacon)) {
+            beaconsObservedOpenInterval.put(beacon, new AutoValue_observedInterval.Builder()
+                                                                                  .setStart(currentRound)
+                                                                                  .setObserved(observed));
+        }
+        beaconsObservedOpenInterval.get(beacon).setEnd(currentRound);
+    }
+
+    private void closeBeaconsOpenObservedIntervals() {
+        for (Beacon beacon : beaconsObservedOpenInterval.keySet()) {
+            observedInterval.Builder currentInterval = beaconsObservedOpenInterval.get(beacon);
+            beaconsObservedIntervals.computeIfAbsent(beacon, b -> new ArrayList<>()).add(currentInterval.build());
+        }
+        beaconsObservedOpenInterval.clear();
     }
 
     private static double distance(Location firstLocation, Location secondLocation) {
