@@ -49,6 +49,17 @@ nav span, nav a {
     background-color: rgba(190, 194, 193, 9.87);
 }
 
+/* flow control buttons */
+#flow-buttons {
+    margin-left: 45%;
+    margin-top: 2em;
+}
+
+#flow-buttons button {
+    margin-right: 1em;
+    font-size: 15px;
+}
+
 /* simulations' table */
 #simulations-table td {
     font-size: 90%;

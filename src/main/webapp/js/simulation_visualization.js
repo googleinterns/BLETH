@@ -78,8 +78,22 @@ async function nextRound() {
 
     // Visualize the statistics if the simulation is over.
     if (state.isFinished) {
-        simulationTimeout = setTimeout(displayStats, delay);
+        resetOrDisplayStats();
     }
+}
+
+/** Allow the user to decide whether they want to display the statistics or visualize the simulation again. */
+function resetOrDisplayStats() {
+    var flowButtons = document.getElementById('flow-buttons');
+    var resetButton = document.createElement("button");
+    resetButton.innerHTML = "reset";
+    resetButton.addEventListener("click", reset);
+    flowButtons.appendChild(resetButton);
+
+    var displayStatsButton = document.createElement("button");
+    displayStatsButton.innerHTML = "display statistics";
+    displayStatsButton.addEventListener("click", displayStats);
+    flowButtons.appendChild(displayStatsButton);
 }
 
 /** Update the current round. */
@@ -205,6 +219,7 @@ function extractBeaconsIds(agents) {
  * Display the statistical data of a simulation.
  */
 function displayStats() {
+    clearFlowButtons();
     var params = {simulationId: simulation.id};
     const queryString = toQueryString(params);
 
@@ -249,4 +264,18 @@ function clearVisualizationElements() {
     document.getElementsByClassName('pause-button')[0].innerHTML = '';
     document.getElementsByClassName('legend')[0].innerHTML = '';
     document.getElementById('current-round-header').innerHTML = '';
+}
+
+/** Start the simulation from the first round. */
+function reset() {
+    clearFlowButtons();
+    state.isFinished = false;
+    state.currentRound = 0;
+    nextRound();
+}
+
+/** Clear the buttons that allow the user to decide whether they want to display the statistics or visualize the simulation again. */
+function clearFlowButtons() {
+    var flowButtons = document.getElementById('flow-buttons');
+    flowButtons.innerHTML = '';
 }
