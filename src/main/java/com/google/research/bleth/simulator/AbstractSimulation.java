@@ -36,7 +36,6 @@ public abstract class AbstractSimulation {
     private final double transmissionThresholdRadius;
 
     private final HashMap<String, Double> distancesStats = new HashMap<>();
-    private final HashMap<String, Double> beaconsObservedSum = new HashMap<>();
     private final HashMap<Beacon, observedInterval.Builder> beaconsObservedOpenInterval = new HashMap<>();
     private final HashMap<Beacon, List<observedInterval>> beaconsObservedIntervals = new HashMap<>();
 
@@ -104,9 +103,6 @@ public abstract class AbstractSimulation {
                 }
             }
             updateBeaconObservedInterval(beacon, observed);
-            if (observed) {
-                beaconsObservedSum.merge(String.valueOf(beacon.getId()), 1.0D, Double::sum);
-            }
         }
     }
 
@@ -149,11 +145,9 @@ public abstract class AbstractSimulation {
 
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() {
-        for (Beacon beacon : beacons) {
-            beaconsObservedSum.putIfAbsent(String.valueOf(beacon.getId()), 0D);
-        }
-        Map<String, Double> beaconsObservedPercent = beaconsObservedSum.entrySet().stream()
-                .collect(toImmutableMap(e -> e.getKey(), e -> e.getValue() / (currentRound - 1)));
+        Map<String, Double> beaconsObservedPercent = beaconsObservedIntervals.entrySet().stream()
+                .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
+                e -> e.getValue().stream().filter(i -> i.observed()).mapToDouble(observedInterval::duration).sum() / (currentRound - 1)));
 
         StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
         statsState.writeDistancesStats();
