@@ -98,7 +98,18 @@ public class Queries {
             }
         }
 
-        // Add last entity to result (if matching).
+        // Add remaining secondary entities to result (if matching).
+        while (secondaryEntityIterator.hasNext()) {
+            if (primaryKey.compareTo(secondaryKey) > 0) {
+                secondaryEntity = secondaryEntityIterator.next();
+                secondaryKey = (String) secondaryEntity.getProperty(foreignKey);
+            } else if (primaryKey.compareTo(secondaryKey) == 0) {
+                result.add(secondaryEntity);
+                secondaryEntity = secondaryEntityIterator.next();
+                secondaryKey = (String) secondaryEntity.getProperty(foreignKey);
+                break;
+            }
+        }
         if (primaryKey.compareTo(secondaryKey) == 0) {
             result.add(secondaryEntity);
         }
