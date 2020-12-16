@@ -99,16 +99,12 @@ public class Queries {
         }
 
         // Add remaining secondary entities to result (if matching).
-        while (secondaryEntityIterator.hasNext()) {
-            if (primaryKey.compareTo(secondaryKey) > 0) {
-                secondaryEntity = secondaryEntityIterator.next();
-                secondaryKey = (String) secondaryEntity.getProperty(foreignKey);
-            } else if (primaryKey.compareTo(secondaryKey) == 0) {
+        while (secondaryEntityIterator.hasNext() && (primaryKey.compareTo(secondaryKey) >= 0)) {
+            if (primaryKey.compareTo(secondaryKey) == 0) {
                 result.add(secondaryEntity);
-                secondaryEntity = secondaryEntityIterator.next();
-                secondaryKey = (String) secondaryEntity.getProperty(foreignKey);
-                break;
             }
+            secondaryEntity = secondaryEntityIterator.next();
+            secondaryKey = (String) secondaryEntity.getProperty(foreignKey);
         }
         if (primaryKey.compareTo(secondaryKey) == 0) {
             result.add(secondaryEntity);
