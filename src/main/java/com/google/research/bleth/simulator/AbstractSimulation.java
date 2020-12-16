@@ -150,21 +150,22 @@ public abstract class AbstractSimulation {
     void writeSimulationStats() {
         Map<String, List<Integer>> observedIntervals = beaconsObservedIntervals.keySet().stream()
                 .collect(toImmutableMap(beacon -> String.valueOf(beacon.getId()),
-                beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
+                        beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> i.observed())
+                                .map(ObservedInterval::duration).collect(toImmutableList())));
 
         Map<String, List<Integer>> unobservedIntervals = beaconsObservedIntervals.keySet().stream()
                 .collect(toImmutableMap(beacon -> String.valueOf(beacon.getId()),
-                beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> !i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
+                        beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> !i.observed())
+                                .map(ObservedInterval::duration).collect(toImmutableList())));
 
-        Map<String, Double> beaconsObservedPercent = observedIntervals.entrySet().stream() // delete after deletion from StatsState
-                .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
-                e -> e.getValue().stream().mapToDouble(Double::valueOf).sum() / (currentRound - 1))); // delete after deletion from StatsState
+        // TODO: delete this computation after the statistics in observedStats are displayed to the user
+        Map<String, Double> beaconsObservedPercent = mapIdsToPercentOfSimulation(observedIntervals);
 
         Table<String, String, Double> observedStats = calculateObservedStats(observedIntervals, unobservedIntervals);
 
         StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats);
         statsState.writeDistancesStats();
-        statsState.writeBeaconsObservedPercentStats(); // delete after deletion from StatsState
+        statsState.writeBeaconsObservedPercentStats();
         statsState.writeBeaconsObservedStats();
     }
 

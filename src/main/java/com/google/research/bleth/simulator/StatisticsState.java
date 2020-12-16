@@ -103,12 +103,11 @@ public class StatisticsState {
             throw new StatisticsAlreadyExistException(simulationId);
         }
 
-        Map<String, Map<String, Double>> idToObservedStats = beaconsObservedStats.rowMap();
-        for (String beaconId : idToObservedStats.keySet()) {
+        for (String beaconId : beaconsObservedStats.rowKeySet()) {
             Entity entity = new Entity(Schema.StatisticsState.entityKindBeaconsObserved);
             entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
             entity.setProperty(Schema.StatisticsState.beaconId, beaconId);
-            idToObservedStats.get(beaconId).forEach(entity::setProperty);
+            beaconsObservedStats.row(beaconId).forEach(entity::setProperty);
             datastore.put(entity);
         }
     }
