@@ -456,16 +456,16 @@ public abstract class AbstractSimulation {
 
     private Map<String, Double> mapIdsToMinValue(Map<String, List<Integer>> idsToIntervals) {
         return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
-                e -> e.getValue().stream().mapToDouble(Double::valueOf).min().orElse(-1)));
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).min().orElse(Double.NaN)));
     }
 
     private Map<String, Double> mapIdsToMaxValue(Map<String, List<Integer>> idsToIntervals) {
         return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
-                e -> e.getValue().stream().mapToDouble(Double::valueOf).max().orElse(-1)));
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).max().orElse(Double.NaN)));
     }
 
     private Map<String, Double> mapIdsToAvgValue(Map<String, List<Integer>> idsToIntervals) {
         return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
-                e -> e.getValue().stream().mapToDouble(Double::valueOf).average().orElse(-1)));
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).average().orElse(Double.NaN)));
     }
 }
