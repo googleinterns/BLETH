@@ -428,13 +428,13 @@ public class TracingSimulationIT {
 
         for (String beacon : observedStats.keySet()) {
             Map<String, Double> stats = observedStats.get(beacon);
-            assertThat(stats.get("observedPercent")).isEqualTo(observerAwakenessRatio);
-            assertThat(stats.get("minimumLengthObservedInterval")).isEqualTo(observerAwakenessInterval);
-            assertThat(stats.get("minimumLengthUnobservedInterval")).isEqualTo(observerSleepingInterval);
-            assertThat(stats.get("maximumLengthObservedInterval")).isEqualTo(observerAwakenessInterval);
-            assertThat(stats.get("maximumLengthUnobservedInterval")).isEqualTo(observerSleepingInterval);
-            assertThat(stats.get("averageLengthObservedInterval")).isEqualTo(observerAwakenessInterval);
-            assertThat(stats.get("averageLengthUnobservedInterval")).isEqualTo(observerSleepingInterval);
+            assertThat(stats.get(Schema.StatisticsState.observedPercent)).isEqualTo(observerAwakenessRatio);
+            assertThat(stats.get(Schema.StatisticsState.minimumLengthObservedInterval)).isEqualTo(observerAwakenessInterval);
+            assertThat(stats.get(Schema.StatisticsState.minimumLengthUnobservedInterval)).isEqualTo(observerSleepingInterval);
+            assertThat(stats.get(Schema.StatisticsState.maximumLengthObservedInterval)).isEqualTo(observerAwakenessInterval);
+            assertThat(stats.get(Schema.StatisticsState.maximumLengthUnobservedInterval)).isEqualTo(observerSleepingInterval);
+            assertThat(stats.get(Schema.StatisticsState.averageLengthObservedInterval)).isEqualTo(observerAwakenessInterval);
+            assertThat(stats.get(Schema.StatisticsState.averageLengthUnobservedInterval)).isEqualTo(observerSleepingInterval);
         }
     }
 
@@ -470,13 +470,13 @@ public class TracingSimulationIT {
 
         for (String beacon : observedStats.keySet()) {
             Map<String, Double> stats = observedStats.get(beacon);
-            assertThat(stats.get("observedPercent")).isEqualTo(observersAwakenessRatio);
-            assertThat(stats.get("minimumLengthObservedInterval")).isEqualTo(roundsNum);
-            assertThat(stats.get("minimumLengthUnobservedInterval")).isEqualTo(Double.NaN);
-            assertThat(stats.get("maximumLengthObservedInterval")).isEqualTo(roundsNum);
-            assertThat(stats.get("maximumLengthUnobservedInterval")).isEqualTo(Double.NaN);
-            assertThat(stats.get("averageLengthObservedInterval")).isEqualTo(roundsNum);
-            assertThat(stats.get("averageLengthUnobservedInterval")).isEqualTo(Double.NaN);
+            assertThat(stats.get(Schema.StatisticsState.observedPercent)).isEqualTo(observersAwakenessRatio);
+            assertThat(stats.get(Schema.StatisticsState.minimumLengthObservedInterval)).isEqualTo(roundsNum);
+            assertThat(stats.get(Schema.StatisticsState.minimumLengthUnobservedInterval)).isEqualTo(Double.NaN);
+            assertThat(stats.get(Schema.StatisticsState.maximumLengthObservedInterval)).isEqualTo(roundsNum);
+            assertThat(stats.get(Schema.StatisticsState.maximumLengthUnobservedInterval)).isEqualTo(Double.NaN);
+            assertThat(stats.get(Schema.StatisticsState.averageLengthObservedInterval)).isEqualTo(roundsNum);
+            assertThat(stats.get(Schema.StatisticsState.averageLengthUnobservedInterval)).isEqualTo(Double.NaN);
         }
     }
 
@@ -484,7 +484,7 @@ public class TracingSimulationIT {
     public void writeObservedStatisticsOfSameSimulationTwiceThrowsException() {
         Map<String, Double> fakeStats = new HashMap<>();
         Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
-        fakeObservedStats.put("0", "observedPercent", 0D);
+        fakeObservedStats.put("0", Schema.StatisticsState.observedPercent, 0D);
         StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats, fakeObservedStats);
 
         statistics.writeBeaconsObservedStats();

@@ -52,6 +52,13 @@ public class Schema {
         public static final String entityKindDistance = "DistanceStats";
         public static final String entityKindBeaconsObserved = "BeaconsObservedStats";
         public static final String beaconId = "beaconId";
+        public static final String observedPercent = "observedPercent";
+        public static final String minimumLengthObservedInterval = "minimumLengthObservedInterval";
+        public static final String minimumLengthUnobservedInterval = "minimumLengthUnobservedInterval";
+        public static final String maximumLengthObservedInterval = "maximumLengthObservedInterval";
+        public static final String maximumLengthUnobservedInterval = "maximumLengthUnobservedInterval";
+        public static final String averageLengthObservedInterval = "averageLengthObservedInterval";
+        public static final String averageLengthUnobservedInterval = "averageLengthUnobservedInterval";
         public static final String entityKindBeaconsObservedPercent = "BeaconsObservedPercentStats";
     }
 }

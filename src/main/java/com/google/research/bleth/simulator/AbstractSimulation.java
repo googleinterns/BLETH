@@ -160,13 +160,13 @@ public abstract class AbstractSimulation {
                 .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
                 e -> e.getValue().stream().mapToDouble(Double::valueOf).sum() / (currentRound - 1))); // delete after deletion from StatsState
 
-        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, "observedPercent", v));
-        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "minimumLengthObservedInterval", v));
-        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "minimumLengthUnobservedInterval", v));
-        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "maximumLengthObservedInterval", v));
-        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "maximumLengthUnobservedInterval", v));
-        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "averageLengthObservedInterval", v));
-        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "averageLengthUnobservedInterval", v));
+        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.observedPercent, v));
+        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthObservedInterval, v));
+        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthUnobservedInterval, v));
+        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthObservedInterval, v));
+        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthUnobservedInterval, v));
+        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthObservedInterval, v));
+        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthUnobservedInterval, v));
 
         StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats.build());
         statsState.writeDistancesStats();
