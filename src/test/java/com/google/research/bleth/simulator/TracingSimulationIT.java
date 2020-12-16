@@ -394,6 +394,113 @@ public class TracingSimulationIT {
         assertThat(observedPercentage).isEmpty();
     }
 
+    @Test
+    public void runSimulationWithOneObserverAwakeEveryOtherRoundVerifyObservedStats() {
+        int roundsNum = 10;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 10;
+        int observersNum = 1;
+        double transmissionRadius = 2.0; // Includes the whole board
+
+        double observerAwakenessRatio = (double) AWAKENESS_DURATION_EQUALS_ONE / AWAKENESS_CYCLE_EQUALS_TWO;
+        double observerAwakenessInterval = 1;
+        double observerSleepingInterval = 1;
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+        String simulationId = simulation.getId();
+
+        Map<String, Map<String, Double>> observedStats = StatisticsState.readBeaconsObservedStats(simulationId).rowMap();
+
+        for (String beacon : observedStats.keySet()) {
+            Map<String, Double> stats = observedStats.get(beacon);
+            assertThat(stats.get("observedPercent")).isEqualTo(observerAwakenessRatio);
+            assertThat(stats.get("minimumLengthObservedInterval")).isEqualTo(observerAwakenessInterval);
+            assertThat(stats.get("minimumLengthUnobservedInterval")).isEqualTo(observerSleepingInterval);
+            assertThat(stats.get("maximumLengthObservedInterval")).isEqualTo(observerAwakenessInterval);
+            assertThat(stats.get("maximumLengthUnobservedInterval")).isEqualTo(observerSleepingInterval);
+            assertThat(stats.get("averageLengthObservedInterval")).isEqualTo(observerAwakenessInterval);
+            assertThat(stats.get("averageLengthUnobservedInterval")).isEqualTo(observerSleepingInterval);
+        }
+    }
+
+    @Test
+    public void runSimulationWithHundredObserversSoAllBeaconsHaveBeenObservedAllTheTimeVerifyObservedStats() {
+        int roundsNum = 2;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 10;
+        int observersNum = 100;
+        double transmissionRadius = 2.0; // Includes the whole board
+
+        double observersAwakenessRatio = 1; // At least one observer is awake each round
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(STATIONARY)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+        String simulationId = simulation.getId();
+
+        Map<String, Map<String, Double>> observedStats = StatisticsState.readBeaconsObservedStats(simulationId).rowMap();
+
+        for (String beacon : observedStats.keySet()) {
+            Map<String, Double> stats = observedStats.get(beacon);
+            assertThat(stats.get("observedPercent")).isEqualTo(observersAwakenessRatio);
+            assertThat(stats.get("minimumLengthObservedInterval")).isEqualTo(roundsNum);
+            assertThat(stats.get("minimumLengthUnobservedInterval")).isEqualTo(Double.NaN);
+            assertThat(stats.get("maximumLengthObservedInterval")).isEqualTo(roundsNum);
+            assertThat(stats.get("maximumLengthUnobservedInterval")).isEqualTo(Double.NaN);
+            assertThat(stats.get("averageLengthObservedInterval")).isEqualTo(roundsNum);
+            assertThat(stats.get("averageLengthUnobservedInterval")).isEqualTo(Double.NaN);
+        }
+    }
+
+    @Test
+    public void writeObservedStatisticsOfSameSimulationTwiceThrowsException() {
+        Map<String, Double> fakeStats = new HashMap<>();
+        Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
+        fakeObservedStats.put("0", "observedPercent", 0D);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats, fakeObservedStats);
+
+        statistics.writeBeaconsObservedStats();
+
+        assertThrows(StatisticsAlreadyExistException.class, () -> {
+            statistics.writeBeaconsObservedStats();
+        });
+    }
+
+    @Test
+    public void readNonExistingSimulationObservedStatisticsReturnsEmptyMap() {
+        Table<String, String, Double> observedStats = StatisticsState.readBeaconsObservedStats("fake");
+
+        assertThat(observedStats).isEmpty();
+    }
+
     @After
     public void tearDown() {
         helper.tearDown();
