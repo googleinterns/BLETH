@@ -19,6 +19,8 @@ import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +65,7 @@ public abstract class AbstractSimulation {
             observersToResolver();
             resolverEstimate();
             writeRoundState();
-            updateSimulationStats();
+            updateDistanceSimulationStats();
             currentRound++;
         }
         closeBeaconsOpenObservedIntervals();
@@ -125,8 +127,8 @@ public abstract class AbstractSimulation {
         estimatedBoardState.write();
     }
 
-    /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
-    void updateSimulationStats() {
+    /** Gather statistical data of the current round and update the aggregated distance statistics based on all rounds. */
+    void updateDistanceSimulationStats() {
         Map<Beacon, Location> beaconsToEstimatedLocations = resolver.getBeaconsToEstimatedLocations();
         List<Double> distances = beaconsToEstimatedLocations.keySet().stream() // ignore beacons that have never been observed
                 .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toImmutableList());
@@ -154,21 +156,13 @@ public abstract class AbstractSimulation {
                 .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
                         e -> e.getValue().stream().filter(i -> !i.observed()).map(observedInterval::duration).collect(toImmutableList())));
 
-        ImmutableTable.Builder<String, String, Double> observedStats = new ImmutableTable.Builder<>();
-
         Map<String, Double> beaconsObservedPercent = observedIntervals.entrySet().stream() // delete after deletion from StatsState
                 .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
                 e -> e.getValue().stream().mapToDouble(Double::valueOf).sum() / (currentRound - 1))); // delete after deletion from StatsState
 
-        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.observedPercent, v));
-        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthObservedInterval, v));
-        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthUnobservedInterval, v));
-        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthObservedInterval, v));
-        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthUnobservedInterval, v));
-        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthObservedInterval, v));
-        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthUnobservedInterval, v));
+        Table<String, String, Double> observedStats = calculateObservedStats(observedIntervals, unobservedIntervals);
 
-        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats.build());
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats);
         statsState.writeDistancesStats();
         statsState.writeBeaconsObservedPercentStats(); // delete after deletion from StatsState
         statsState.writeBeaconsObservedStats();
@@ -447,6 +441,19 @@ public abstract class AbstractSimulation {
 
     private static double distance(Location firstLocation, Location secondLocation) {
         return Math.abs(firstLocation.row() - secondLocation.row()) + Math.abs(firstLocation.col() - secondLocation.col());
+    }
+
+    private Table<String, String, Double> calculateObservedStats(Map<String, List<Integer>> observedIntervals,
+                                                                 Map<String, List<Integer>> unobservedIntervals) {
+        ImmutableTable.Builder<String, String, Double> observedStats = new ImmutableTable.Builder<>();
+        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.observedPercent, v));
+        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthObservedInterval, v));
+        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthUnobservedInterval, v));
+        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthObservedInterval, v));
+        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthUnobservedInterval, v));
+        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthObservedInterval, v));
+        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthUnobservedInterval, v));
+        return observedStats.build();
     }
 
     private Map<String, Double> mapIdsToPercentOfSimulation(Map<String, List<Integer>> idsToIntervals) {
