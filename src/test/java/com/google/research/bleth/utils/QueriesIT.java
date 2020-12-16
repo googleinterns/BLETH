@@ -249,6 +249,71 @@ public class QueriesIT {
     }
 
     @Test
+    public void createThreeSimulationsNotMatchingConditionAndOneSimulationMatching_shouldRetrieveThreeStatsEntities() {
+        int matchingSimulationsNum = 1;
+        int totalSimulationsNum = 4;
+        int roundsNum = 5;
+        int rowsNum = 2;
+        int colsNum = 2;
+        int beaconsNum = 1;
+        int observersNum = 1;
+        int awakenessCycle = 2;
+        int awakenessDuration = 1;
+        double transmissionRadius = 2.0;
+
+        // Set simple predicates.
+        Query.FilterPredicate filterByRowsNum =
+                new Query.FilterPredicate(Schema.SimulationMetadata.rowsNum, Query.FilterOperator.EQUAL, rowsNum);
+        Query.FilterPredicate filterByColsNum =
+                new Query.FilterPredicate(Schema.SimulationMetadata.colsNum, Query.FilterOperator.EQUAL, colsNum);
+
+        // Compose simple predicates to create a filter.
+        Query.CompositeFilter composedQueryFilter = Query.CompositeFilterOperator.and(filterByRowsNum, filterByColsNum);
+
+        // Create simulations not matching the filter's condition.
+        for (int i = 0; i < totalSimulationsNum - matchingSimulationsNum; i++) {
+            AbstractSimulation simulation = new TracingSimulation.Builder()
+                    .setMaxNumberOfRounds(roundsNum)
+                    .setRowNum(rowsNum + 1)
+                    .setColNum(colsNum)
+                    .setBeaconsNum(beaconsNum)
+                    .setObserversNum(observersNum)
+                    .setTransmissionThresholdRadius(transmissionRadius)
+                    .setBeaconMovementStrategyType(MovementStrategyFactory.Type.RANDOM)
+                    .setObserverMovementStrategyType(MovementStrategyFactory.Type.RANDOM)
+                    .setAwakenessCycle(awakenessCycle)
+                    .setAwakenessDuration(awakenessDuration)
+                    .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                    .build();
+
+            simulation.run();
+        }
+
+        // Create another simulation matching the condition.
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum)
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(transmissionRadius)
+                .setBeaconMovementStrategyType(MovementStrategyFactory.Type.RANDOM)
+                .setObserverMovementStrategyType(MovementStrategyFactory.Type.RANDOM)
+                .setAwakenessCycle(awakenessCycle)
+                .setAwakenessDuration(awakenessDuration)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+
+        // Retrieve stats of all simulations matching the filter's condition.
+        List<Entity> stats = Queries.join(Schema.SimulationMetadata.entityKind, Schema.StatisticsState.entityKindDistance,
+                Schema.StatisticsState.simulationId, Optional.of(composedQueryFilter));
+
+        assertThat(stats.size()).isEqualTo(matchingSimulationsNum);
+    }
+
+    @Test
     public void noSimulationsMatchingCondition_shouldRetrieveEmptyList() {
         int simulationsNum = 3; // Number of simulations to create.
         int roundsNum = 5;
