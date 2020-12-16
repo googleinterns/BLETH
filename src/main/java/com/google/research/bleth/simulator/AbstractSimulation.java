@@ -160,13 +160,13 @@ public abstract class AbstractSimulation {
                 .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
                 e -> e.getValue().stream().mapToDouble(Double::valueOf).sum() / (currentRound - 1))); // delete after deletion from StatsState
 
-        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, "observed percent", v));
-        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "minimum-length observed interval", v));
-        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "minimum-length unobserved interval", v));
-        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "maximum-length observed interval", v));
-        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "maximum-length unobserved interval", v));
-        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "average-length observed interval", v));
-        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "average-length unobserved interval", v));
+        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, "observedPercent", v));
+        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "minimumLengthObservedInterval", v));
+        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "minimumLengthUnobservedInterval", v));
+        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "maximumLengthObservedInterval", v));
+        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "maximumLengthUnobservedInterval", v));
+        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "averageLengthObservedInterval", v));
+        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "averageLengthUnobservedInterval", v));
 
         StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats.build());
         statsState.writeDistancesStats();
