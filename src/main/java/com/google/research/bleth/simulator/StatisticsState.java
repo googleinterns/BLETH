@@ -48,7 +48,8 @@ public class StatisticsState {
         checkNotNull(distanceStats);
         checkNotNull(beaconsObservedPercent);
         checkNotNull(beaconsObservedStats);
-        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats), beaconsObservedPercent, beaconsObservedStats);
+        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats),
+                                   ImmutableMap.copyOf(beaconsObservedPercent), beaconsObservedStats);
     }
 
     /**
@@ -90,7 +91,7 @@ public class StatisticsState {
     }
 
     /**
-     * Create and write multiple datastore entities, represents the information about the intervals of time each beacon
+     * Create and write multiple datastore entities, represent statistics about the intervals of time each beacon
      * has been observed by at least one observer, i.e. has been detected by the resolver.
      * @throws StatisticsAlreadyExistException if the simulation's observed statistics are already exists in the database.
      */
@@ -157,7 +158,7 @@ public class StatisticsState {
     }
 
     /**
-     * Read from the db statical data about the intervals of time each beacon has been observed.
+     * Read from the database statical data about the intervals of time each beacon has been observed.
      * @param simulationId is the simulation id associated with the statistical data.
      * @return a table that maps a beacon's id to its observation statistics during the simulation.
      */
@@ -172,8 +173,10 @@ public class StatisticsState {
         ImmutableTable.Builder<String, String, Double> observedStatistics = new ImmutableTable.Builder<>();
         for (Entity entity : observedStatisticsEntities.asIterable()) {
             entity.getProperties().entrySet().stream()
-            .filter(entry -> !(entry.getKey().equals(Schema.StatisticsState.simulationId) || (entry.getKey().equals(Schema.StatisticsState.beaconId))))
-            .forEach(entry -> observedStatistics.put((String) entity.getProperty(Schema.StatisticsState.beaconId), entry.getKey(), (Double) entry.getValue()));
+            .filter(entry -> !(entry.getKey().equals(Schema.StatisticsState.simulationId)
+                               || (entry.getKey().equals(Schema.StatisticsState.beaconId))))
+            .forEach(entry -> observedStatistics.put((String) entity.getProperty(Schema.StatisticsState.beaconId),
+                                                     entry.getKey(), (Double) entry.getValue()));
         }
         return observedStatistics.build();
     }

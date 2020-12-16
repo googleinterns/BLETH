@@ -20,7 +20,6 @@ import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -154,7 +153,7 @@ public abstract class AbstractSimulation {
 
         Map<String, List<Integer>> unobservedIntervals = beaconsObservedIntervals.entrySet().stream()
                 .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
-                        e -> e.getValue().stream().filter(i -> !i.observed()).map(observedInterval::duration).collect(toImmutableList())));
+                e -> e.getValue().stream().filter(i -> !i.observed()).map(observedInterval::duration).collect(toImmutableList())));
 
         Map<String, Double> beaconsObservedPercent = observedIntervals.entrySet().stream() // delete after deletion from StatsState
                 .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
