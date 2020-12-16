@@ -19,6 +19,7 @@ import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public abstract class AbstractSimulation {
 
     private final HashMap<String, Double> distancesStats = new HashMap<>();
     private final HashMap<Beacon, ObservedInterval.Builder> beaconsObservedCurrentInterval = new HashMap<>();
-    private final HashMap<Beacon, List<ObservedInterval>> beaconsObservedIntervals = new HashMap<>();
+    private final LinkedListMultimap<Beacon, ObservedInterval> beaconsObservedIntervals = LinkedListMultimap.create();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -147,13 +148,13 @@ public abstract class AbstractSimulation {
 
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() {
-        Map<String, List<Integer>> observedIntervals = beaconsObservedIntervals.entrySet().stream()
-                .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
-                e -> e.getValue().stream().filter(i -> i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
+        Map<String, List<Integer>> observedIntervals = beaconsObservedIntervals.keySet().stream()
+                .collect(toImmutableMap(beacon -> String.valueOf(beacon.getId()),
+                beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
 
-        Map<String, List<Integer>> unobservedIntervals = beaconsObservedIntervals.entrySet().stream()
-                .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
-                e -> e.getValue().stream().filter(i -> !i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
+        Map<String, List<Integer>> unobservedIntervals = beaconsObservedIntervals.keySet().stream()
+                .collect(toImmutableMap(beacon -> String.valueOf(beacon.getId()),
+                beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> !i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
 
         Map<String, Double> beaconsObservedPercent = observedIntervals.entrySet().stream() // delete after deletion from StatsState
                 .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
@@ -418,7 +419,7 @@ public abstract class AbstractSimulation {
     private void updateBeaconObservedInterval(Beacon beacon, boolean observed) {
         ObservedInterval.Builder currentInterval = beaconsObservedCurrentInterval.get(beacon);
         if (currentInterval != null && currentInterval.observed() != observed) {
-            beaconsObservedIntervals.computeIfAbsent(beacon, b -> new ArrayList<>()).add(currentInterval.build());
+            beaconsObservedIntervals.put(beacon, currentInterval.build());
             beaconsObservedCurrentInterval.remove(beacon);
         }
 
@@ -433,7 +434,7 @@ public abstract class AbstractSimulation {
     private void closeBeaconsOpenObservedIntervals() {
         for (Beacon beacon : beaconsObservedCurrentInterval.keySet()) {
             ObservedInterval.Builder currentInterval = beaconsObservedCurrentInterval.get(beacon);
-            beaconsObservedIntervals.computeIfAbsent(beacon, b -> new ArrayList<>()).add(currentInterval.build());
+            beaconsObservedIntervals.put(beacon, currentInterval.build());
         }
         beaconsObservedCurrentInterval.clear();
     }
