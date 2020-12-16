@@ -38,8 +38,8 @@ public abstract class AbstractSimulation {
     private final double transmissionThresholdRadius;
 
     private final HashMap<String, Double> distancesStats = new HashMap<>();
-    private final HashMap<Beacon, observedInterval.Builder> beaconsObservedOpenInterval = new HashMap<>();
-    private final HashMap<Beacon, List<observedInterval>> beaconsObservedIntervals = new HashMap<>();
+    private final HashMap<Beacon, ObservedInterval.Builder> beaconsObservedCurrentInterval = new HashMap<>();
+    private final HashMap<Beacon, List<ObservedInterval>> beaconsObservedIntervals = new HashMap<>();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -149,11 +149,11 @@ public abstract class AbstractSimulation {
     void writeSimulationStats() {
         Map<String, List<Integer>> observedIntervals = beaconsObservedIntervals.entrySet().stream()
                 .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
-                e -> e.getValue().stream().filter(i -> i.observed()).map(observedInterval::duration).collect(toImmutableList())));
+                e -> e.getValue().stream().filter(i -> i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
 
         Map<String, List<Integer>> unobservedIntervals = beaconsObservedIntervals.entrySet().stream()
                 .collect(toImmutableMap(e -> String.valueOf(e.getKey().getId()),
-                e -> e.getValue().stream().filter(i -> !i.observed()).map(observedInterval::duration).collect(toImmutableList())));
+                e -> e.getValue().stream().filter(i -> !i.observed()).map(ObservedInterval::duration).collect(toImmutableList())));
 
         Map<String, Double> beaconsObservedPercent = observedIntervals.entrySet().stream() // delete after deletion from StatsState
                 .collect(toImmutableMap(e -> e.getKey(), // delete after deletion from StatsState
@@ -416,26 +416,26 @@ public abstract class AbstractSimulation {
     }
 
     private void updateBeaconObservedInterval(Beacon beacon, boolean observed) {
-        observedInterval.Builder currentInterval = beaconsObservedOpenInterval.get(beacon);
+        ObservedInterval.Builder currentInterval = beaconsObservedCurrentInterval.get(beacon);
         if (currentInterval != null && currentInterval.observed() != observed) {
             beaconsObservedIntervals.computeIfAbsent(beacon, b -> new ArrayList<>()).add(currentInterval.build());
-            beaconsObservedOpenInterval.remove(beacon);
+            beaconsObservedCurrentInterval.remove(beacon);
         }
 
-        if (!beaconsObservedOpenInterval.containsKey(beacon)) {
-            beaconsObservedOpenInterval.put(beacon, new AutoValue_observedInterval.Builder()
+        if (!beaconsObservedCurrentInterval.containsKey(beacon)) {
+            beaconsObservedCurrentInterval.put(beacon, new AutoValue_ObservedInterval.Builder()
                                                                                   .setStart(currentRound)
                                                                                   .setObserved(observed));
         }
-        beaconsObservedOpenInterval.get(beacon).setEnd(currentRound);
+        beaconsObservedCurrentInterval.get(beacon).setEnd(currentRound);
     }
 
     private void closeBeaconsOpenObservedIntervals() {
-        for (Beacon beacon : beaconsObservedOpenInterval.keySet()) {
-            observedInterval.Builder currentInterval = beaconsObservedOpenInterval.get(beacon);
+        for (Beacon beacon : beaconsObservedCurrentInterval.keySet()) {
+            ObservedInterval.Builder currentInterval = beaconsObservedCurrentInterval.get(beacon);
             beaconsObservedIntervals.computeIfAbsent(beacon, b -> new ArrayList<>()).add(currentInterval.build());
         }
-        beaconsObservedOpenInterval.clear();
+        beaconsObservedCurrentInterval.clear();
     }
 
     private static double distance(Location firstLocation, Location secondLocation) {
@@ -445,13 +445,20 @@ public abstract class AbstractSimulation {
     private Table<String, String, Double> calculateObservedStats(Map<String, List<Integer>> observedIntervals,
                                                                  Map<String, List<Integer>> unobservedIntervals) {
         ImmutableTable.Builder<String, String, Double> observedStats = new ImmutableTable.Builder<>();
-        mapIdsToPercentOfSimulation(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.observedPercent, v));
-        mapIdsToMinValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthObservedInterval, v));
-        mapIdsToMinValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.minimumLengthUnobservedInterval, v));
-        mapIdsToMaxValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthObservedInterval, v));
-        mapIdsToMaxValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.maximumLengthUnobservedInterval, v));
-        mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthObservedInterval, v));
-        mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, Schema.StatisticsState.averageLengthUnobservedInterval, v));
+        mapIdsToPercentOfSimulation(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.observedPercent, value));
+        mapIdsToMinValue(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.minimumLengthObservedInterval, value));
+        mapIdsToMinValue(unobservedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.minimumLengthUnobservedInterval, value));
+        mapIdsToMaxValue(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.maximumLengthObservedInterval, value));
+        mapIdsToMaxValue(unobservedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.maximumLengthUnobservedInterval, value));
+        mapIdsToAvgValue(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.averageLengthObservedInterval, value));
+        mapIdsToAvgValue(unobservedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.averageLengthUnobservedInterval, value));
         return observedStats.build();
     }
 

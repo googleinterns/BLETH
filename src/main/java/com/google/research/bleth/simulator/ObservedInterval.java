@@ -18,7 +18,7 @@ import com.google.auto.value.AutoValue;
 
 /** An interval of time which a beacon has or hasn't been observed. */
 @AutoValue
-public abstract class observedInterval {
+public abstract class ObservedInterval {
     public abstract int start();
     public abstract int end();
     public abstract boolean observed();
@@ -33,6 +33,6 @@ public abstract class observedInterval {
         public abstract Builder setEnd(int end);
         public abstract Builder setObserved(boolean observed);
         public abstract boolean observed();
-        public abstract observedInterval build();
+        public abstract ObservedInterval build();
     }
 }
