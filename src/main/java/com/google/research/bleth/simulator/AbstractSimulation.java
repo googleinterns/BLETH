@@ -19,7 +19,6 @@ import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -169,9 +168,10 @@ public abstract class AbstractSimulation {
         mapIdsToAvgValue(observedIntervals).forEach((k, v) -> observedStats.put(k, "average-length observed interval", v));
         mapIdsToAvgValue(unobservedIntervals).forEach((k, v) -> observedStats.put(k, "average-length unobserved interval", v));
 
-        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats.build());
         statsState.writeDistancesStats();
-        statsState.writeBeaconsObservedPercentStats();
+        statsState.writeBeaconsObservedPercentStats(); // delete after deletion from StatsState
+        statsState.writeBeaconsObservedStats();
     }
 
     /** An abstract builder class designed to separate the construction of a simulation from its representation. */

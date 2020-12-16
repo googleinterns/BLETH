@@ -50,6 +50,8 @@ public class Schema {
     public static class StatisticsState {
         public static final String simulationId = "simulationId";
         public static final String entityKindDistance = "DistanceStats";
+        public static final String entityKindBeaconsObserved = "BeaconsObservedStats";
+        public static final String beaconId = "beaconId";
         public static final String entityKindBeaconsObservedPercent = "BeaconsObservedPercentStats";
     }
 }

@@ -7,7 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.appengine.api.datastore.dev.LocalDatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Table;
 import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -353,8 +355,9 @@ public class TracingSimulationIT {
     @Test
     public void writeDistancesStatisticsOfSameSimulationTwiceThrowsException() {
         Map<String, Double> fakeStats = new HashMap<>();
+        Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
         fakeStats.put("max", 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats, fakeObservedStats);
 
         statistics.writeDistancesStats();
 
@@ -366,8 +369,9 @@ public class TracingSimulationIT {
     @Test
     public void writeObservedPercentageStatisticsOfSameSimulationTwiceThrowsException() {
         Map<String, Double> fakeStats = new HashMap<>();
+        Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
         fakeStats.put("max", 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats, fakeObservedStats);
 
         statistics.writeBeaconsObservedPercentStats();
 
