@@ -18,6 +18,9 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Table;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +39,8 @@ public abstract class AbstractSimulation {
     private final double transmissionThresholdRadius;
 
     private final HashMap<String, Double> distancesStats = new HashMap<>();
-    private final HashMap<String, Double> beaconsObservedSum = new HashMap<>();
+    private final HashMap<Beacon, ObservedInterval.Builder> beaconsObservedCurrentInterval = new HashMap<>();
+    private final LinkedListMultimap<Beacon, ObservedInterval> beaconsObservedIntervals = LinkedListMultimap.create();
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -61,9 +65,10 @@ public abstract class AbstractSimulation {
             observersToResolver();
             resolverEstimate();
             writeRoundState();
-            updateSimulationStats();
+            updateDistanceSimulationStats();
             currentRound++;
         }
+        closeBeaconsOpenObservedIntervals();
         writeSimulationStats();
     }
 
@@ -100,9 +105,7 @@ public abstract class AbstractSimulation {
                     }
                 }
             }
-            if (observed) {
-                beaconsObservedSum.merge(String.valueOf(beacon.getId()), 1.0D, Double::sum);
-            }
+            updateBeaconObservedInterval(beacon, observed);
         }
     }
 
@@ -124,8 +127,8 @@ public abstract class AbstractSimulation {
         estimatedBoardState.write();
     }
 
-    /** Gather statistical data of the current round and update the aggregated simulation statistics based on all rounds. */
-    void updateSimulationStats() {
+    /** Gather statistical data of the current round and update the aggregated distance statistics based on all rounds. */
+    void updateDistanceSimulationStats() {
         Map<Beacon, Location> beaconsToEstimatedLocations = resolver.getBeaconsToEstimatedLocations();
         List<Double> distances = beaconsToEstimatedLocations.keySet().stream() // ignore beacons that have never been observed
                 .map(beacon -> distance(beaconsToEstimatedLocations.get(beacon), beacon.getLocation())).collect(toImmutableList());
@@ -145,15 +148,25 @@ public abstract class AbstractSimulation {
 
     /** Write final simulation statistical data to db. */
     void writeSimulationStats() {
-        for (Beacon beacon : beacons) {
-            beaconsObservedSum.putIfAbsent(String.valueOf(beacon.getId()), 0D);
-        }
-        Map<String, Double> beaconsObservedPercent = beaconsObservedSum.entrySet().stream()
-                .collect(toImmutableMap(e -> e.getKey(), e -> e.getValue() / (currentRound - 1)));
+        Map<String, List<Integer>> observedIntervals = beaconsObservedIntervals.keySet().stream()
+                .collect(toImmutableMap(beacon -> String.valueOf(beacon.getId()),
+                        beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> i.observed())
+                                .map(ObservedInterval::duration).collect(toImmutableList())));
 
-        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent);
+        Map<String, List<Integer>> unobservedIntervals = beaconsObservedIntervals.keySet().stream()
+                .collect(toImmutableMap(beacon -> String.valueOf(beacon.getId()),
+                        beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> !i.observed())
+                                .map(ObservedInterval::duration).collect(toImmutableList())));
+
+        // TODO: delete this computation after the statistics in observedStats are displayed to the user
+        Map<String, Double> beaconsObservedPercent = mapIdsToPercentOfSimulation(observedIntervals);
+
+        Table<String, String, Double> observedStats = calculateObservedStats(observedIntervals, unobservedIntervals);
+
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats);
         statsState.writeDistancesStats();
         statsState.writeBeaconsObservedPercentStats();
+        statsState.writeBeaconsObservedStats();
     }
 
     /** An abstract builder class designed to separate the construction of a simulation from its representation. */
@@ -404,7 +417,70 @@ public abstract class AbstractSimulation {
         this.observers = ImmutableList.copyOf(builder.observers);
     }
 
+    private void updateBeaconObservedInterval(Beacon beacon, boolean observed) {
+        ObservedInterval.Builder currentInterval = beaconsObservedCurrentInterval.get(beacon);
+        if (currentInterval != null && currentInterval.observed() != observed) {
+            beaconsObservedIntervals.put(beacon, currentInterval.build());
+            beaconsObservedCurrentInterval.remove(beacon);
+        }
+
+        if (!beaconsObservedCurrentInterval.containsKey(beacon)) {
+            beaconsObservedCurrentInterval.put(beacon, new AutoValue_ObservedInterval.Builder()
+                                                                                  .setStart(currentRound)
+                                                                                  .setObserved(observed));
+        }
+        beaconsObservedCurrentInterval.get(beacon).setEnd(currentRound);
+    }
+
+    private void closeBeaconsOpenObservedIntervals() {
+        for (Beacon beacon : beaconsObservedCurrentInterval.keySet()) {
+            ObservedInterval.Builder currentInterval = beaconsObservedCurrentInterval.get(beacon);
+            beaconsObservedIntervals.put(beacon, currentInterval.build());
+        }
+        beaconsObservedCurrentInterval.clear();
+    }
+
     private static double distance(Location firstLocation, Location secondLocation) {
         return Math.abs(firstLocation.row() - secondLocation.row()) + Math.abs(firstLocation.col() - secondLocation.col());
+    }
+
+    private Table<String, String, Double> calculateObservedStats(Map<String, List<Integer>> observedIntervals,
+                                                                 Map<String, List<Integer>> unobservedIntervals) {
+        ImmutableTable.Builder<String, String, Double> observedStats = new ImmutableTable.Builder<>();
+        mapIdsToPercentOfSimulation(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.observedPercent, value));
+        mapIdsToMinValue(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.minimumLengthObservedInterval, value));
+        mapIdsToMinValue(unobservedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.minimumLengthUnobservedInterval, value));
+        mapIdsToMaxValue(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.maximumLengthObservedInterval, value));
+        mapIdsToMaxValue(unobservedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.maximumLengthUnobservedInterval, value));
+        mapIdsToAvgValue(observedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.averageLengthObservedInterval, value));
+        mapIdsToAvgValue(unobservedIntervals).forEach((beaconId, value) ->
+                observedStats.put(beaconId, Schema.StatisticsState.averageLengthUnobservedInterval, value));
+        return observedStats.build();
+    }
+
+    private Map<String, Double> mapIdsToPercentOfSimulation(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).sum() / (currentRound - 1)));
+    }
+
+    private Map<String, Double> mapIdsToMinValue(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).min().orElse(Double.NaN)));
+    }
+
+    private Map<String, Double> mapIdsToMaxValue(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).max().orElse(Double.NaN)));
+    }
+
+    private Map<String, Double> mapIdsToAvgValue(Map<String, List<Integer>> idsToIntervals) {
+        return idsToIntervals.entrySet().stream().collect(toImmutableMap(e -> e.getKey(),
+                e -> e.getValue().stream().mapToDouble(Double::valueOf).average().orElse(Double.NaN)));
     }
 }

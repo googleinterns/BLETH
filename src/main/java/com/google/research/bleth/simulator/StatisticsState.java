@@ -23,6 +23,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
 import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ public class StatisticsState {
     private final String simulationId;
     private final Map<String, Double> distanceStats;
     private final Map<String, Double> beaconsObservedPercent;
+    private final Table<String, String, Double> beaconsObservedStats;
 
     /**
      * Create a new StatisticsState.
@@ -39,10 +42,14 @@ public class StatisticsState {
      * @param beaconsObservedPercent maps each beacon to the percentage of rounds in which it has been observed.
      * @return a new instance of StatisticsState
      */
-    public static StatisticsState create(String simulationId, Map<String, Double> distanceStats, Map<String, Double> beaconsObservedPercent) {
+    public static StatisticsState create(String simulationId, Map<String, Double> distanceStats,
+                                         Map<String, Double> beaconsObservedPercent,
+                                         Table<String, String, Double> beaconsObservedStats) {
         checkNotNull(distanceStats);
         checkNotNull(beaconsObservedPercent);
-        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats), ImmutableMap.copyOf(beaconsObservedPercent));
+        checkNotNull(beaconsObservedStats);
+        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats),
+                                   ImmutableMap.copyOf(beaconsObservedPercent), beaconsObservedStats);
     }
 
     /**
@@ -67,7 +74,7 @@ public class StatisticsState {
     /**
      * Create and write a datastore entity, represents the percentage of rounds a beacon
      * has been observed by at least one observer, i.e. has been detected by the resolver.
-     * @throws StatisticsAlreadyExistException if the simulation's distance statistics are already exists in the database.
+     * @throws StatisticsAlreadyExistException if the simulation's observed statistics are already exists in the database.
      */
     public void writeBeaconsObservedPercentStats() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -81,6 +88,28 @@ public class StatisticsState {
         entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
         beaconsObservedPercent.forEach((key, value) -> entity.setProperty(key, value));
         datastore.put(entity);
+    }
+
+    /**
+     * Create and write multiple datastore entities, represent statistics about the intervals of time each beacon
+     * has been observed by at least one observer, i.e. has been detected by the resolver.
+     * @throws StatisticsAlreadyExistException if the simulation's observed statistics are already exists in the database.
+     */
+    public void writeBeaconsObservedStats() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        Table<String, String, Double> beaconsIdToObservedStats = readBeaconsObservedStats(simulationId);
+        if (!beaconsIdToObservedStats.isEmpty()) {
+            throw new StatisticsAlreadyExistException(simulationId);
+        }
+
+        for (String beaconId : beaconsObservedStats.rowKeySet()) {
+            Entity entity = new Entity(Schema.StatisticsState.entityKindBeaconsObserved);
+            entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
+            entity.setProperty(Schema.StatisticsState.beaconId, beaconId);
+            beaconsObservedStats.row(beaconId).forEach(entity::setProperty);
+            datastore.put(entity);
+        }
     }
 
     /**
@@ -127,9 +156,35 @@ public class StatisticsState {
                 .collect(toImmutableMap(e -> e.getKey(), e -> (Double) e.getValue()));
     }
 
-    private StatisticsState(String simulationId, Map<String, Double> distanceStats, Map<String, Double> beaconsObserved) {
+    /**
+     * Read from the database statical data about the intervals of time each beacon has been observed.
+     * @param simulationId is the simulation id associated with the statistical data.
+     * @return a table that maps a beacon's id to its observation statistics during the simulation.
+     */
+    public static Table<String, String, Double> readBeaconsObservedStats(String simulationId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        Query.FilterPredicate filterBySimulationId =
+                new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
+        Query observedStats = new Query(Schema.StatisticsState.entityKindBeaconsObserved).setFilter(filterBySimulationId);
+        PreparedQuery observedStatisticsEntities = datastore.prepare(observedStats);
+
+        ImmutableTable.Builder<String, String, Double> observedStatistics = new ImmutableTable.Builder<>();
+        for (Entity entity : observedStatisticsEntities.asIterable()) {
+            entity.getProperties().entrySet().stream()
+            .filter(entry -> !(entry.getKey().equals(Schema.StatisticsState.simulationId)
+                               || (entry.getKey().equals(Schema.StatisticsState.beaconId))))
+            .forEach(entry -> observedStatistics.put((String) entity.getProperty(Schema.StatisticsState.beaconId),
+                                                     entry.getKey(), (Double) entry.getValue()));
+        }
+        return observedStatistics.build();
+    }
+
+    private StatisticsState(String simulationId, Map<String, Double> distanceStats, Map<String, Double> beaconsObserved,
+                            Table<String, String, Double> beaconsObservedStats) {
         this.simulationId = simulationId;
         this.distanceStats = distanceStats;
         this.beaconsObservedPercent = beaconsObserved;
+        this.beaconsObservedStats = beaconsObservedStats;
     }
 }
