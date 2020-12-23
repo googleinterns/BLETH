@@ -29,11 +29,10 @@ function createNewExperiment() {
     }
 
     // If confirmed, fetch url to create and run a new experiment.
-    var confirmed = confirm("Create and run a new simulation?")
+    var confirmed = confirm("Create and run a new experiment?")
     if (confirmed) {
-        // fetch('/enqueue-experiment', {method: 'POST', body: params})
-        // .then(response => response.text())
-        // .then(message => window.alert(message));
-        console.log(params.toString());
+        fetch('/enqueue-experiment', {method: 'POST', body: params})
+        .then(response => response.json())
+        .then(message => console.log(message));
     }
 }
