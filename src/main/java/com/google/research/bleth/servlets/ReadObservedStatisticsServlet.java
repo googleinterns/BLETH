@@ -17,14 +17,8 @@ package com.google.research.bleth.servlets;
 import com.google.common.collect.Table;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import com.google.gson.JsonElement;
-import com.google.research.bleth.simulator.Schema;
 import com.google.research.bleth.simulator.StatisticsState;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.stream.Collectors;
-import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

@@ -215,9 +215,7 @@ function extractBeaconsIds(agents) {
     return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
 }
 
-/**
- * Display the statistical data of a simulation.
- */
+/** Display the statistical data of a simulation. */
 function displayStats() {
     clearFlowButtons();
     clearVisualizationElements();
@@ -280,9 +278,9 @@ function createObservedStatsTable(stats) {
 }
 
 /**
- * Given a table and an array of strings, add a header based on the array's items.
+ * Given a table and an object that contains the header properties, add a header based on the object's items.
  * @param {HTMLElement} table is the html table to be updated.
- * @param {String[]} properties is an array of header properties.
+ * @param {Object} properties is an object that contains the header properties.
  */
 function addHeader(table, properties) {
     var header = table.createTHead();
@@ -295,9 +293,9 @@ function addHeader(table, properties) {
 }
 
 /**
- * Given a table and an object storing simulations' metadata, add a row for each simulation.
+ * Given a table and an object storing beacons' stats, add a row for each beacon.
  * @param {HTMLElement} table is the table to be updated.
- * @param {Object} stats is an object storing simulations' id and metadata.
+ * @param {Object} stats is an object storing beacons' id and stats.
  */
 function addStatisticsRows(table, stats) {
     var prefix = 'beacon #';
