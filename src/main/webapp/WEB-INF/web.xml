@@ -34,6 +34,10 @@
         <servlet-name>EnqueueSimulationServlet</servlet-name>
         <servlet-class>com.google.research.bleth.servlets.EnqueueSimulationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EnqueueExperimentServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.EnqueueExperimentServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>ReadBoardStateServlet</servlet-name>
@@ -62,6 +66,10 @@
     <servlet-mapping>
         <servlet-name>EnqueueSimulationServlet</servlet-name>
         <url-pattern>/enqueue-simulation</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EnqueueExperimentServlet</servlet-name>
+        <url-pattern>/enqueue-experiment</url-pattern>
     </servlet-mapping>
 
 </web-app>
