@@ -24,6 +24,4 @@
 
 ## Ongoing Work
 
-* Improving boards' visualization.
-* Providing statistical data per simulation.
-* Providing aggregated statistical data over multiple simulation matching a set of conditions.
+Providing an 'Experiment' feature - running multiple simulations with different parameters, and exporting statistical raw data as csv files. 
