@@ -61,4 +61,18 @@ public class Schema {
         public static final String averageLengthUnobservedInterval = "averageLengthUnobservedInterval";
         public static final String entityKindBeaconsObservedPercent = "BeaconsObservedPercentStats";
     }
+
+    /** A class providing a single access point for the Experiment entity schema. */
+    public static class Experiment {
+        public static final String entityKind = "Experiment";
+        public static final String experimentTitle = "experimentTitle";
+        public static final String legalSimulationsNum = "legalSimulationsLeftNum";
+    }
+
+    /** A class providing a single access point for the ExperimentsToSimulations entity schema. */
+    public static class ExperimentsToSimulations {
+        public static final String entityKind = "ExperimentsToSimulations";
+        public static final String experimentId = "experimentId";
+        public static final String simulationId = "simulationId";
+    }
 }
