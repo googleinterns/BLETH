@@ -32,7 +32,7 @@ function createNewExperiment() {
     var confirmed = confirm("Create and run a new experiment?")
     if (confirmed) {
         fetch('/enqueue-experiment', {method: 'POST', body: params})
-        .then(response => response.json())
-        .then(message => console.log(message));
+        .then(response => response.text())
+        .then(message => window.alert(message));
     }
 }
