@@ -215,18 +215,21 @@ function extractBeaconsIds(agents) {
     return beaconsIds.sort((a, b) => parseInt(a) - parseInt(b));
 }
 
-/**
- * Display the statistical data of a simulation.
- */
+/** Display the statistical data of a simulation. */
 function displayStats() {
     clearFlowButtons();
+    clearVisualizationElements();
     var params = {simulationId: simulation.id};
     const queryString = toQueryString(params);
 
     fetch(`/read-stats?${queryString}`)
     .then(response => response.json())
-    .then(stats => Object.keys(stats).forEach(kind => createStatsTable(kind, stats[kind])))
-    .then(() => clearVisualizationElements()); 
+    .then(stats => Object.keys(stats).forEach(kind => createStatsTable(kind, stats[kind])));
+
+    fetch(`/read-observed-stats?${queryString}`)
+    .then(response => response.text())
+    .then(response => JSON.parse(response.replace(/\bNaN\b/g, "null")))
+    .then(stats => createObservedStatsTable(stats.rowMap));
 }
 
 /**
@@ -254,6 +257,59 @@ function createStatsTable(kind, stats) {
     });
     document.body.appendChild(title);
     document.body.appendChild(table);
+}
+
+/**
+ * Create an HTML table element and fill it with statistics of observed intervals.
+ * @param {Object} stats is an object storing the observed statistics.
+ */
+function createObservedStatsTable(stats) {
+    var title = document.createElement('h4');
+    title.innerText = "Observed Statistics";
+
+    var table = document.createElement('table');
+    table.classList.add('stats-table');
+    var measures = Object.keys(stats[Object.keys(stats)[0]]);
+    addHeader(table, measures);
+    addStatisticsRows(table, stats);
+
+    document.body.appendChild(title);
+    document.body.appendChild(table);
+}
+
+/**
+ * Given a table and an object that contains the header properties, add a header based on the object's items.
+ * @param {HTMLElement} table is the html table to be updated.
+ * @param {Object} properties is an object that contains the header properties.
+ */
+function addHeader(table, properties) {
+    var header = table.createTHead();
+    var row = header.insertRow(0);
+
+    row.insertCell(0).innerHTML = "beacon's Id";
+    for (var i = 0; i < properties.length; i++) {
+        row.insertCell(i + 1).innerHTML = properties[i];
+    }
+}
+
+/**
+ * Given a table and an object storing beacons' stats, add a row for each beacon.
+ * @param {HTMLElement} table is the table to be updated.
+ * @param {Object} stats is an object storing beacons' id and stats.
+ */
+function addStatisticsRows(table, stats) {
+    var prefix = 'beacon #';
+    var hasNoValue = "-";
+
+    for (const id in stats) {
+        var row = table.insertRow(-1);
+        row.insertCell(0).innerHTML = prefix + id;
+        var i = 1; // cell index (cell 0 is a button).
+        for (const property in stats[id]) {
+            var value = stats[id][property]
+            row.insertCell(i++).innerHTML = (value !== null) ? value : hasNoValue;
+        }
+    }
 }
 
 /** Clear all HTML element used for visualization. */
