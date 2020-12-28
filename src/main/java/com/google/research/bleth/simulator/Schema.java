@@ -59,6 +59,5 @@ public class Schema {
         public static final String maximumLengthUnobservedInterval = "maximumLengthUnobservedInterval";
         public static final String averageLengthObservedInterval = "averageLengthObservedInterval";
         public static final String averageLengthUnobservedInterval = "averageLengthUnobservedInterval";
-        public static final String entityKindBeaconsObservedPercent = "BeaconsObservedPercentStats";
     }
 }
