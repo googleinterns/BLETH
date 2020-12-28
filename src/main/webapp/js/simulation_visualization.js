@@ -307,7 +307,7 @@ function addStatisticsRows(table, stats) {
         var i = 1; // cell index (cell 0 is a button).
         for (const property in stats[id]) {
             var value = stats[id][property]
-            row.insertCell(i++).innerHTML = (value !== null) ? value : hasNoValue;
+            row.insertCell(i++).innerHTML = (value !== null) ? value.toFixed(3) : hasNoValue;
         }
     }
 }
