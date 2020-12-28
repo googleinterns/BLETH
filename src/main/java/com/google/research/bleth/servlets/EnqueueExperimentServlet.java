@@ -86,7 +86,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
         }
 
         response.setContentType("text/plain;");
-        response.getWriter().println("All tasks have been added to queue.");
+        response.getWriter().println(legalConfigurationsCount + " tasks have been added to queue.");
     }
 
     @AutoValue
