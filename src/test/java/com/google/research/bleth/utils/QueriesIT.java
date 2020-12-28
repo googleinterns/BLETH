@@ -591,7 +591,7 @@ public class QueriesIT {
         simulation.run(); // Write board states and stats
         Queries.delete(simulation.getId());
 
-        assertThat(retrieveEntities(Schema.StatisticsState.entityKindBeaconsObservedPercent)).isEmpty();
+        assertThat(retrieveEntities(Schema.StatisticsState.entityKindBeaconsObserved)).isEmpty();
         assertThat(retrieveEntities(Schema.StatisticsState.entityKindDistance)).isEmpty();
         assertThat(retrieveEntities(Schema.BoardState.entityKindReal)).isEmpty();
         assertThat(retrieveEntities(Schema.BoardState.entityKindEstimated)).isEmpty();
