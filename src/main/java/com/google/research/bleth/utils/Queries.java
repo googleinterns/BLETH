@@ -151,7 +151,7 @@ public class Queries {
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction deleteTransaction = datastore.beginTransaction(options);
         try {
-            delete(Schema.StatisticsState.entityKindBeaconsObservedPercent, Schema.StatisticsState.simulationId, simulationId);
+            delete(Schema.StatisticsState.entityKindBeaconsObserved, Schema.StatisticsState.simulationId, simulationId);
             delete(Schema.StatisticsState.entityKindDistance, Schema.StatisticsState.simulationId, simulationId);
             delete(Schema.BoardState.entityKindReal, Schema.BoardState.simulationId, simulationId);
             delete(Schema.BoardState.entityKindEstimated, Schema.BoardState.simulationId, simulationId);

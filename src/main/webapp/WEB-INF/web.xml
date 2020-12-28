@@ -27,8 +27,8 @@
         <servlet-class>com.google.research.bleth.servlets.DeleteSimulationServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ReadStatisticsServlet</servlet-name>
-        <servlet-class>com.google.research.bleth.servlets.ReadStatisticsServlet</servlet-class>
+        <servlet-name>ReadDistanceStatisticsServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.ReadDistanceStatisticsServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ReadObservedStatisticsServlet</servlet-name>
@@ -60,8 +60,8 @@
         <url-pattern>/delete-simulation</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ReadStatisticsServlet</servlet-name>
-        <url-pattern>/read-stats</url-pattern>
+        <servlet-name>ReadDistanceStatisticsServlet</servlet-name>
+        <url-pattern>/read-distance-stats</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ReadObservedStatisticsServlet</servlet-name>

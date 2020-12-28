@@ -32,24 +32,19 @@ import java.util.Map;
 public class StatisticsState {
     private final String simulationId;
     private final Map<String, Double> distanceStats;
-    private final Map<String, Double> beaconsObservedPercent;
     private final Table<String, String, Double> beaconsObservedStats;
 
     /**
      * Create a new StatisticsState.
      * @param simulationId is the simulation id associated with the statistical data.
      * @param distanceStats is statistics about the difference between the beacons' real locations and their estimated locations.
-     * @param beaconsObservedPercent maps each beacon to the percentage of rounds in which it has been observed.
      * @return a new instance of StatisticsState
      */
     public static StatisticsState create(String simulationId, Map<String, Double> distanceStats,
-                                         Map<String, Double> beaconsObservedPercent,
                                          Table<String, String, Double> beaconsObservedStats) {
         checkNotNull(distanceStats);
-        checkNotNull(beaconsObservedPercent);
         checkNotNull(beaconsObservedStats);
-        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats),
-                                   ImmutableMap.copyOf(beaconsObservedPercent), beaconsObservedStats);
+        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats), beaconsObservedStats);
     }
 
     /**
@@ -68,25 +63,6 @@ public class StatisticsState {
         Entity entity = new Entity(Schema.StatisticsState.entityKindDistance);
         entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
         distanceStats.forEach((key, value) -> entity.setProperty(key, value));
-        datastore.put(entity);
-    }
-
-    /**
-     * Create and write a datastore entity, represents the percentage of rounds a beacon
-     * has been observed by at least one observer, i.e. has been detected by the resolver.
-     * @throws StatisticsAlreadyExistException if the simulation's observed statistics are already exists in the database.
-     */
-    public void writeBeaconsObservedPercentStats() {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-        Map<String, Double> beaconsIdToObservedPercent = readBeaconsObservedPercentStats(simulationId);
-        if (!beaconsIdToObservedPercent.isEmpty()) {
-            throw new StatisticsAlreadyExistException(simulationId);
-        }
-
-        Entity entity = new Entity(Schema.StatisticsState.entityKindBeaconsObservedPercent);
-        entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
-        beaconsObservedPercent.forEach((key, value) -> entity.setProperty(key, value));
         datastore.put(entity);
     }
 
@@ -135,28 +111,6 @@ public class StatisticsState {
     }
 
     /**
-     * Read from the db statical data about the percentage of rounds each beacon has been observed.
-     * @param simulationId is the simulation id associated with the statistical data.
-     * @return a map that maps a beacon's id to the percentage of rounds a beacon has been observed by at least one observer.
-     */
-    public static Map<String, Double> readBeaconsObservedPercentStats(String simulationId) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-        Query.FilterPredicate filterBySimulationId =
-                new Query.FilterPredicate(Schema.StatisticsState.simulationId, Query.FilterOperator.EQUAL, simulationId);
-        Query percents = new Query(Schema.StatisticsState.entityKindBeaconsObservedPercent).setFilter(filterBySimulationId);
-        Entity percentsStatistics = datastore.prepare(percents).asSingleEntity();
-
-        if (percentsStatistics == null) {
-            return ImmutableMap.of();
-        }
-
-        return percentsStatistics.getProperties().entrySet().stream()
-                .filter(entry -> !(entry.getKey().equals(Schema.StatisticsState.simulationId)))
-                .collect(toImmutableMap(e -> e.getKey(), e -> (Double) e.getValue()));
-    }
-
-    /**
      * Read from the database statical data about the intervals of time each beacon has been observed.
      * @param simulationId is the simulation id associated with the statistical data.
      * @return a table that maps a beacon's id to its observation statistics during the simulation.
@@ -180,11 +134,10 @@ public class StatisticsState {
         return observedStatistics.build();
     }
 
-    private StatisticsState(String simulationId, Map<String, Double> distanceStats, Map<String, Double> beaconsObserved,
+    private StatisticsState(String simulationId, Map<String, Double> distanceStats,
                             Table<String, String, Double> beaconsObservedStats) {
         this.simulationId = simulationId;
         this.distanceStats = distanceStats;
-        this.beaconsObservedPercent = beaconsObserved;
         this.beaconsObservedStats = beaconsObservedStats;
     }
 }
