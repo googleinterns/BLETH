@@ -39,9 +39,7 @@ public class ReadStatisticsServlet extends HttpServlet {
         HashMap<String, JsonElement> statistics = new HashMap<>();
 
         // Read both kinds of statistics and store it in a serialized hash map.
-        Map<String, Double> beaconsObservedPercentStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
         Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
-        statistics.put(Schema.StatisticsState.entityKindBeaconsObservedPercent, gson.toJsonTree(beaconsObservedPercentStats));
         statistics.put(Schema.StatisticsState.entityKindDistance, gson.toJsonTree(distancesStats));
 
         // Write to response.
