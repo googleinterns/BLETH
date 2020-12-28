@@ -222,7 +222,7 @@ function displayStats() {
     var params = {simulationId: simulation.id};
     const queryString = toQueryString(params);
 
-    fetch(`/read-stats?${queryString}`)
+    fetch(`/read-distance-stats?${queryString}`)
     .then(response => response.json())
     .then(stats => createStatsTable(stats));
 

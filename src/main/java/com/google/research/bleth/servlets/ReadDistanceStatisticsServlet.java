@@ -27,16 +27,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** A servlet used for reading simulations' statistical data. */
-@WebServlet("/read-stats")
-public class ReadStatisticsServlet extends HttpServlet {
+/** A servlet used for reading simulations' statistical data of distances between real and estimated locations. */
+@WebServlet("/read-distance-stats")
+public class ReadDistanceStatisticsServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Gson gson = new Gson(); // Used for json serialization.
 
         String simulationId = request.getParameter("simulationId");
-
         Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
 
         // Write to response.
