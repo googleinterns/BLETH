@@ -158,14 +158,10 @@ public abstract class AbstractSimulation {
                         beacon -> beaconsObservedIntervals.get(beacon).stream().filter(i -> !i.observed())
                                 .map(ObservedInterval::duration).collect(toImmutableList())));
 
-        // TODO: delete this computation after the statistics in observedStats are displayed to the user
-        Map<String, Double> beaconsObservedPercent = mapIdsToPercentOfSimulation(observedIntervals);
-
         Table<String, String, Double> observedStats = calculateObservedStats(observedIntervals, unobservedIntervals);
 
-        StatisticsState statsState = StatisticsState.create(id, distancesStats, beaconsObservedPercent, observedStats);
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, observedStats);
         statsState.writeDistancesStats();
-        statsState.writeBeaconsObservedPercentStats();
         statsState.writeBeaconsObservedStats();
     }
 
