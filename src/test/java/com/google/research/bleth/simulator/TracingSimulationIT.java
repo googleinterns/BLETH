@@ -181,111 +181,6 @@ public class TracingSimulationIT {
     // tests for gathering statistics
 
     @Test
-    public void runTwoRoundsSimulationWithOneObserverVerifyAllBeaconsHaveBeenObservedOnce() {
-        int roundsNum = 2;
-        int rowsNum = 2;
-        int colsNum = 2;
-        int beaconsNum = 10;
-        int observersNum = 1;
-        double transmissionRadius = 2.0; // Includes the whole board
-
-        double observerAwakenessRatio = (double) AWAKENESS_DURATION_EQUALS_ONE / AWAKENESS_CYCLE_EQUALS_TWO;
-
-        AbstractSimulation simulation = new TracingSimulation.Builder()
-                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
-                .setRowNum(rowsNum)
-                .setColNum(colsNum)
-                .setBeaconsNum(beaconsNum)
-                .setObserversNum(observersNum)
-                .setTransmissionThresholdRadius(transmissionRadius)
-                .setBeaconMovementStrategyType(MOVE_UP)
-                .setObserverMovementStrategyType(STATIONARY)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
-                .build();
-
-        simulation.run();
-        String simulationId = simulation.getId();
-
-        Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
-
-        for (String beacon : observersStats.keySet()) {
-            assertThat(observersStats.get(beacon)).isEqualTo(observerAwakenessRatio);
-        }
-    }
-
-    @Test
-    public void runTwoRoundsSimulationWithHundredObserversVerifyAllBeaconsHaveBeenObservedAllTheTime() {
-        int roundsNum = 2;
-        int rowsNum = 2;
-        int colsNum = 2;
-        int beaconsNum = 10;
-        int observersNum = 100;
-        double transmissionRadius = 2.0; // Includes the whole board
-
-        double observersAwakenessRatio = 1; // At least one observer is awake each round
-
-        AbstractSimulation simulation = new TracingSimulation.Builder()
-                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
-                .setRowNum(rowsNum)
-                .setColNum(colsNum)
-                .setBeaconsNum(beaconsNum)
-                .setObserversNum(observersNum)
-                .setTransmissionThresholdRadius(transmissionRadius)
-                .setBeaconMovementStrategyType(MOVE_UP)
-                .setObserverMovementStrategyType(STATIONARY)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
-                .build();
-
-        simulation.run();
-        String simulationId = simulation.getId();
-
-        Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
-
-        for (String beacon : observersStats.keySet()) {
-            assertThat(observersStats.get(beacon)).isEqualTo(observersAwakenessRatio);
-        }
-    }
-
-    @Test
-    public void runFourRoundsSimulationWithOneObserverVerifyAllBeaconsHaveBeenObservedTwice() {
-        int roundsNum = 4;
-        int rowsNum = 2;
-        int colsNum = 2;
-        int beaconsNum = 10;
-        int observersNum = 1;
-        double transmissionRadius = 2.0; // Includes the whole board
-
-        double observerAwakenessRatio = (double) AWAKENESS_DURATION_EQUALS_ONE / AWAKENESS_CYCLE_EQUALS_TWO;
-
-        AbstractSimulation simulation = new TracingSimulation.Builder()
-                .setMaxNumberOfRounds(roundsNum + 1) // The first round is the initialization
-                .setRowNum(rowsNum)
-                .setColNum(colsNum)
-                .setBeaconsNum(beaconsNum)
-                .setObserversNum(observersNum)
-                .setTransmissionThresholdRadius(transmissionRadius)
-                .setBeaconMovementStrategyType(MOVE_UP)
-                .setObserverMovementStrategyType(STATIONARY)
-                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
-                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
-                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
-                .build();
-
-        simulation.run();
-        String simulationId = simulation.getId();
-
-        Map<String, Double> observersStats = StatisticsState.readBeaconsObservedPercentStats(simulationId);
-
-        for (String beacon : observersStats.keySet()) {
-            assertThat(observersStats.get(beacon)).isEqualTo(observerAwakenessRatio);
-        }
-    }
-
-    @Test
     public void runTwoRoundsSimulationWithOnOneOnOneBoardDistancesEstimatedIsZero() {
         int roundsNum = 2;
         int rowsNum = 1;
@@ -357,7 +252,7 @@ public class TracingSimulationIT {
         Map<String, Double> fakeStats = new HashMap<>();
         Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
         fakeStats.put("max", 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats, fakeObservedStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats);
 
         statistics.writeDistancesStats();
 
@@ -367,31 +262,10 @@ public class TracingSimulationIT {
     }
 
     @Test
-    public void writeObservedPercentageStatisticsOfSameSimulationTwiceThrowsException() {
-        Map<String, Double> fakeStats = new HashMap<>();
-        Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
-        fakeStats.put("max", 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats, fakeObservedStats);
-
-        statistics.writeBeaconsObservedPercentStats();
-
-        assertThrows(StatisticsAlreadyExistException.class, () -> {
-            statistics.writeBeaconsObservedPercentStats();
-        });
-    }
-
-    @Test
     public void readNonExistingSimulationDistancesStatisticsReturnsEmptyMap() {
         Map<String, Double> distancesStatistics = StatisticsState.readDistancesStats("fake");
 
         assertThat(distancesStatistics).isEmpty();
-    }
-
-    @Test
-    public void readNonExistingSimulationObservedPercentageStatisticsReturnsEmptyMap() {
-        Map<String, Double> observedPercentage = StatisticsState.readBeaconsObservedPercentStats("fake");
-
-        assertThat(observedPercentage).isEmpty();
     }
 
     @Test
@@ -485,7 +359,7 @@ public class TracingSimulationIT {
         Map<String, Double> fakeStats = new HashMap<>();
         Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
         fakeObservedStats.put("0", Schema.StatisticsState.observedPercent, 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeStats, fakeObservedStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats);
 
         statistics.writeBeaconsObservedStats();
 
