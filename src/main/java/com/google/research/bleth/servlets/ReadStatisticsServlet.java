@@ -36,14 +36,11 @@ public class ReadStatisticsServlet extends HttpServlet {
         Gson gson = new Gson(); // Used for json serialization.
 
         String simulationId = request.getParameter("simulationId");
-        HashMap<String, JsonElement> statistics = new HashMap<>();
 
-        // Read both kinds of statistics and store it in a serialized hash map.
         Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
-        statistics.put(Schema.StatisticsState.entityKindDistance, gson.toJsonTree(distancesStats));
 
         // Write to response.
         response.setContentType("application/json;");
-        response.getWriter().println(gson.toJson(statistics));
+        response.getWriter().println(gson.toJsonTree(distancesStats));
     }
 }

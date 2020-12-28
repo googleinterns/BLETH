@@ -224,7 +224,7 @@ function displayStats() {
 
     fetch(`/read-stats?${queryString}`)
     .then(response => response.json())
-    .then(stats => Object.keys(stats).forEach(kind => createStatsTable(kind, stats[kind])));
+    .then(stats => createStatsTable(stats));
 
     fetch(`/read-observed-stats?${queryString}`)
     .then(response => response.text())
@@ -234,24 +234,19 @@ function displayStats() {
 
 /**
  * Create an HTML table element and fill it with statistical data.
- * @param {String} kind is the statistical data kind (distance or beacon observed percent).
- * @param {Object} stats is an object storing the simulations' stats of a specific kind.
+ * @param {Object} stats is an object storing the simulations' stats.
  */
-function createStatsTable(kind, stats) {
+function createStatsTable(stats) {
     var title = document.createElement('h4');
-    title.innerText = kind;
     var table = document.createElement('table');
     table.classList.add('stats-table');
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
     var dataRow = table.insertRow(1);
 
-    // For beacon observed stats add the prefix 'beacon' to each measure name.
-    var prefix = kind === 'BeaconsObservedPercentStats' ? 'beacon #' : '';
-
     var i = 0;
     Object.keys(stats).forEach(measure => {
-        headerRow.insertCell(i).innerText = prefix + measure;
+        headerRow.insertCell(i).innerText = measure;
         dataRow.insertCell(i).innerText = stats[measure].toFixed(3);
         i++;
     });
