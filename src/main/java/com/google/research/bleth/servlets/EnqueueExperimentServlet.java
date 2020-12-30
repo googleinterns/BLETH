@@ -17,6 +17,7 @@ package com.google.research.bleth.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.auto.value.AutoValue;
@@ -58,6 +59,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
     private static final String PROJECT_ID = "bleth-2020";
     private static final String LOCATION_ID = "europe-west1";
     private static final String QUEUE_ID = "simulations-queue";
+    private static final String queueName = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -79,10 +81,20 @@ public class EnqueueExperimentServlet extends HttpServlet {
         int legalConfigurationsCount = 0;
         for (List<PropertyWrapper> configuration : configurations) {
             if (validateArguments(configuration)) {
-                AppEngineHttpRequest httpRequest = toHttpRequest(configuration, beaconsNum, experimentId);
+                AppEngineHttpRequest httpRequest = toHttpRequest(configuration, beaconsNum,
+                        experimentId, experimentTitle);
                 enqueueTask(httpRequest);
                 legalConfigurationsCount++;
             }
+        }
+
+        try {
+            experiment = datastore.get(experimentId);
+            experiment.setProperty(Schema.Experiment.simulationsLeft, legalConfigurationsCount);
+            datastore.put(experiment);
+        } catch (EntityNotFoundException e) {
+            response.setContentType("text/plain;");
+            response.getWriter().println(e.getMessage());
         }
 
         response.setContentType("text/plain;");
@@ -145,8 +157,10 @@ public class EnqueueExperimentServlet extends HttpServlet {
     }
 
     private AppEngineHttpRequest toHttpRequest(List<PropertyWrapper> configuration,
-                                               int beaconsNum, Key experimentId) {
+                                               int beaconsNum, Key experimentId, String experimentTitle) {
         Map<String, String> bodyMap = new HashMap<>();
+        bodyMap.put(Schema.SimulationMetadata.description,
+                "Simulation attached to experiment: " + experimentTitle);
         bodyMap.put(Schema.SimulationMetadata.beaconsNum, String.valueOf(beaconsNum));
         bodyMap.put(Schema.SimulationMetadata.beaconMovementStrategy, defaultMovementStrategy.toString());
         bodyMap.put(Schema.SimulationMetadata.observerMovementStrategy, defaultMovementStrategy.toString());
@@ -170,8 +184,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
 
         boolean nonPositiveDimensions = properties.get(Schema.SimulationMetadata.rowsNum).intValue() <= 0 ||
                 properties.get(Schema.SimulationMetadata.rowsNum).intValue() <= 0;
-        boolean nonPositiveAgentsNumber = properties.get(Schema.SimulationMetadata.beaconsNum).intValue() <= 0 ||
-                properties.get(Schema.SimulationMetadata.observersNum).intValue() <= 0;
+        boolean nonPositiveAgentsNumber = properties.get(Schema.SimulationMetadata.observersNum).intValue() <= 0;
         boolean nonPositiveCycleAndDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() <= 0 ||
                 properties.get(Schema.SimulationMetadata.awakenessDuration).intValue() <= 0;
         boolean nonPositiveThresholdRadius = properties.get(Schema.SimulationMetadata.transmissionThresholdRadius).intValue() <= 0;
@@ -188,7 +201,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
             Task task = Task.newBuilder()
                     .setAppEngineHttpRequest(httpRequest)
                     .build();
-            String queueName = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
+
             client.createTask(queueName, task);
         }
     }

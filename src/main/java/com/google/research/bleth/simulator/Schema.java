@@ -66,7 +66,7 @@ public class Schema {
     public static class Experiment {
         public static final String entityKind = "Experiment";
         public static final String experimentTitle = "experimentTitle";
-        public static final String legalSimulationsNum = "legalSimulationsLeftNum";
+        public static final String simulationsLeft = "simulationsLeft";
     }
 
     /** A class providing a single access point for the ExperimentsToSimulations entity schema. */

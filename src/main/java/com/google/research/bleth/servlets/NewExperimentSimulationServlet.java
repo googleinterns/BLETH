@@ -14,8 +14,25 @@
 
 package com.google.research.bleth.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.research.bleth.simulator.AbstractSimulation;
+import com.google.research.bleth.simulator.AwakenessStrategyFactory;
+import com.google.research.bleth.simulator.MovementStrategyFactory;
+import com.google.research.bleth.simulator.Schema;
+import com.google.research.bleth.simulator.StrategiesMapper;
+import com.google.research.bleth.simulator.TracingSimulation;
+
+import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * A servlet used for creating and running a new simulation associated to an experiment,
@@ -23,5 +40,83 @@ import javax.servlet.http.HttpServlet;
  */
 @WebServlet("/new-experiment-simulation")
 public class NewExperimentSimulationServlet extends HttpServlet {
-    // todo: implement worker servlet (doPost).
+    private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        // Get request parameters.
+        String experimentId = request.getParameter("experimentId");
+        String simulationDescription = request.getParameter("description");
+        int roundsNum = Integer.parseInt(request.getParameter("roundsNum"));
+        int rowsNum = Integer.parseInt(request.getParameter("rowsNum"));
+        int colsNum = Integer.parseInt(request.getParameter("colsNum"));
+        int beaconsNum = Integer.parseInt(request.getParameter("beaconsNum"));
+        int observersNum = Integer.parseInt(request.getParameter("observersNum"));
+        String beaconMovementStrategyAsString = request.getParameter("beaconMovementStrategy");
+        String observerMovementStrategyAsString = request.getParameter("observerMovementStrategy");
+        String observerAwakenessStrategyAsString = request.getParameter("observerAwakenessStrategy");
+        int awakenessCycle = Integer.parseInt(request.getParameter("awakenessCycle"));
+        int awakenessDuration = Integer.parseInt(request.getParameter("awakenessDuration"));
+        double transmissionThresholdRadius = Double.parseDouble(request.getParameter("transmissionThresholdRadius"));
+
+        // Mapping strategies string to types.
+        StrategiesMapper strategiesMapper = StrategiesMapper.getInstance();
+        MovementStrategyFactory.Type beaconMovementStrategy = strategiesMapper.getMovementStrategy(beaconMovementStrategyAsString);
+        MovementStrategyFactory.Type observerMovementStrategy = strategiesMapper.getMovementStrategy(observerMovementStrategyAsString);
+        AwakenessStrategyFactory.Type observerAwakenessStrategy = strategiesMapper.getAwakenessStrategy(observerAwakenessStrategyAsString);
+
+        String responseText = "Simulation has been created successfully.";
+        try {
+            // Create a new simulation.
+            AbstractSimulation simulation = new TracingSimulation.Builder()
+                    .setDescription(simulationDescription)
+                    .setMaxNumberOfRounds(roundsNum)
+                    .setRowNum(rowsNum)
+                    .setColNum(colsNum)
+                    .setBeaconsNum(beaconsNum)
+                    .setObserversNum(observersNum)
+                    .setBeaconMovementStrategyType(beaconMovementStrategy)
+                    .setObserverMovementStrategyType(observerMovementStrategy)
+                    .setAwakenessStrategyType(observerAwakenessStrategy)
+                    .setAwakenessCycle(awakenessCycle)
+                    .setAwakenessDuration(awakenessDuration)
+                    .setTransmissionThresholdRadius(transmissionThresholdRadius)
+                    .build();
+
+            // Run simulation and update experiment.
+            simulation.run();
+            updateExperiment(simulation.getId(), experimentId);
+
+        } catch (Exception e) {
+            responseText = e.getMessage();
+        }
+
+        // Write to response.
+        response.setContentType("text/plain;");
+        response.getWriter().println(responseText);
+    }
+
+    private void updateExperiment(String simulationId, String experimentId) throws EntityNotFoundException {
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction transaction = datastore.beginTransaction(options);
+        try {
+            // update simulationsToExperiments
+            Entity experimentToSimulation = new Entity((Schema.ExperimentsToSimulations.entityKind));
+            experimentToSimulation.setProperty(Schema.ExperimentsToSimulations.experimentId, experimentId);
+            experimentToSimulation.setProperty(Schema.ExperimentsToSimulations.simulationId, simulationId);
+            datastore.put(experimentToSimulation);
+
+            // decrease experiment counter
+            Entity experiment = datastore.get(KeyFactory.stringToKey(experimentId));
+            int simulationsLeft = ((Long) experiment.getProperty(Schema.Experiment.simulationsLeft)).intValue();
+            experiment.setProperty(Schema.Experiment.simulationsLeft, simulationsLeft - 1);
+            datastore.put(experiment);
+            transaction.commit();
+        } finally {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+        }
+    }
 }
