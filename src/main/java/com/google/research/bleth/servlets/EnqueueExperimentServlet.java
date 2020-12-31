@@ -40,11 +40,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * A servlet used for enqueuing multiple tasks targeted at endpoint '/new-experiment-simulation',
@@ -60,6 +62,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
     private static final String LOCATION_ID = "europe-west1";
     private static final String QUEUE_ID = "simulations-queue";
     private static final String queueName = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
+    private static final Logger log = Logger.getLogger(EnqueueExperimentServlet.class.getName());
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -70,6 +73,8 @@ public class EnqueueExperimentServlet extends HttpServlet {
             return;
         }
 
+        log.info("Enqueue Experiment Servlet invoked.");
+
         String experimentTitle = request.getParameter("experimentTitle");
         int beaconsNum = Integer.parseInt(request.getParameter("beaconsNum"));
         Set<List<PropertyWrapper>> configurations = createConfigurations(request);
@@ -77,13 +82,18 @@ public class EnqueueExperimentServlet extends HttpServlet {
         Entity experiment = new Entity(Schema.Experiment.entityKind);
         experiment.setProperty(Schema.Experiment.experimentTitle, experimentTitle);
         Key experimentId = datastore.put(experiment);
+        log.info("A new experiment entity with id " + KeyFactory.keyToString(experimentId) +
+                "was created and written to db.");
 
         int legalConfigurationsCount = 0;
         for (List<PropertyWrapper> configuration : configurations) {
             if (validateArguments(configuration)) {
                 AppEngineHttpRequest httpRequest = toHttpRequest(configuration, beaconsNum,
                         experimentId, experimentTitle);
+                log.info("A new AppEngineHttpRequest was created: "
+                + httpRequest.toString());
                 enqueueTask(httpRequest);
+                log.info("A new Task was created and enqueued.");
                 legalConfigurationsCount++;
             }
         }
@@ -92,6 +102,8 @@ public class EnqueueExperimentServlet extends HttpServlet {
             experiment = datastore.get(experimentId);
             experiment.setProperty(Schema.Experiment.simulationsLeft, legalConfigurationsCount);
             datastore.put(experiment);
+            log.info("Experiment entity with id " + KeyFactory.keyToString(experimentId) +
+                    "was updated with simulationsLeft=" + legalConfigurationsCount);
         } catch (EntityNotFoundException e) {
             response.setContentType("text/plain;");
             response.getWriter().println(e.getMessage());

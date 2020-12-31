@@ -29,6 +29,7 @@ import com.google.research.bleth.simulator.StrategiesMapper;
 import com.google.research.bleth.simulator.TracingSimulation;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,9 +42,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/new-experiment-simulation")
 public class NewExperimentSimulationServlet extends HttpServlet {
     private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private static final Logger log = Logger.getLogger(NewExperimentSimulationServlet.class.getName());
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        log.info("Experiment Simulation Worker Servlet invoked.");
+        log.info("Enqueue Experiment Servlet recieved an http POST request with params: "
+        + request.getParameterMap().toString());
 
         // Get request parameters.
         String experimentId = request.getParameter("experimentId");
