@@ -89,17 +89,12 @@ public class EnqueueExperimentServlet extends HttpServlet {
         log.info("A new experiment entity with id " + KeyFactory.keyToString(experimentId) +
                 "was created and written to db.");
 
-        int legalConfigurationsCount = 0;
+        int legalConfigurationsCount = configurations.size();
         for (List<PropertyWrapper> configuration : configurations) {
-            if (validateArguments(configuration)) {
-                AppEngineHttpRequest httpRequest = toHttpRequest(configuration, beaconsNum,
-                        experimentId, experimentTitle);
-                log.info("A new AppEngineHttpRequest was created: "
-                + httpRequest.toString());
-                enqueueTask(httpRequest);
-                log.info("A new Task was created and enqueued.");
-                legalConfigurationsCount++;
-            }
+            AppEngineHttpRequest httpRequest = toHttpRequest(configuration, beaconsNum, experimentId, experimentTitle);
+            log.info("A new AppEngineHttpRequest was created: " + httpRequest.toString());
+            enqueueTask(httpRequest);
+            log.info("A new Task was created and enqueued.");
         }
 
         try {
@@ -135,7 +130,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
         Set<PropertyWrapper> awakenessDurationValues = createIntValues(request, "awakenessDuration");
         Set<PropertyWrapper> transmissionThresholdRadiusValues = createDoubleValues(request, "transmissionThresholdRadius");
 
-        return Sets.cartesianProduct(
+        Set<List<PropertyWrapper>> configurations = Sets.cartesianProduct(
                 roundsNumValues,
                 rowsNumValues,
                 colsNumValues,
@@ -144,6 +139,8 @@ public class EnqueueExperimentServlet extends HttpServlet {
                 awakenessDurationValues,
                 transmissionThresholdRadiusValues
         );
+
+        return configurations.stream().filter(this::validateArguments).collect(ImmutableSet.toImmutableSet());
     }
 
     private Set<PropertyWrapper> createIntValues(HttpServletRequest request, String parameter) {
