@@ -130,6 +130,7 @@ public class NewExperimentSimulationServlet extends HttpServlet {
             transaction.commit();
         } finally {
             if (transaction.isActive()) {
+                log.info("Transaction has been rolled back.");
                 transaction.rollback();
             }
         }
