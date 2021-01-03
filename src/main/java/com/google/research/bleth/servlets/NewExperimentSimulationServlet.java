@@ -73,9 +73,8 @@ public class NewExperimentSimulationServlet extends HttpServlet {
         AwakenessStrategyFactory.Type observerAwakenessStrategy = strategiesMapper.getAwakenessStrategy(observerAwakenessStrategyAsString);
 
         String responseText = "Simulation has been created successfully.";
-        String simulationId;
+        response.setContentType("text/plain;");
         try {
-            // Create a new simulation.
             AbstractSimulation simulation = new TracingSimulation.Builder()
                     .setDescription(simulationDescription)
                     .setMaxNumberOfRounds(roundsNum)
@@ -91,24 +90,12 @@ public class NewExperimentSimulationServlet extends HttpServlet {
                     .setTransmissionThresholdRadius(transmissionThresholdRadius)
                     .build();
 
-            // Run simulation.
             simulation.run();
-            simulationId = simulation.getId();
-        } catch (RuntimeException e) {
+            updateExperiment(simulation.getId(), experimentId);
+        } catch (RuntimeException | EntityNotFoundException e) {
             responseText = e.getMessage();
-            response.setContentType("text/plain;");
             response.getWriter().println(responseText);
-            return;
         }
-
-        try {
-            updateExperiment(simulationId, experimentId);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        // Write to response.
-        response.setContentType("text/plain;");
         response.getWriter().println(responseText);
     }
 
