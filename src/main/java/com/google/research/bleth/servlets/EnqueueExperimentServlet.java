@@ -208,18 +208,18 @@ public class EnqueueExperimentServlet extends HttpServlet {
         Map<String, Number> properties = configuration.stream()
                 .collect(Collectors.toMap(PropertyWrapper::property, PropertyWrapper::value));
 
-        boolean nonPositiveDimensions = properties.get(Schema.SimulationMetadata.rowsNum).intValue() <= 0 ||
-                properties.get(Schema.SimulationMetadata.rowsNum).intValue() <= 0;
-        boolean nonPositiveAgentsNumber = properties.get(Schema.SimulationMetadata.observersNum).intValue() <= 0;
-        boolean nonPositiveCycleAndDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() <= 0 ||
-                properties.get(Schema.SimulationMetadata.awakenessDuration).intValue() <= 0;
-        boolean nonPositiveThresholdRadius = properties.get(Schema.SimulationMetadata.transmissionThresholdRadius).intValue() <= 0;
-        boolean nonPositiveRoundsNumber = properties.get(Schema.SimulationMetadata.roundsNum).intValue() <= 0;
-        boolean durationGreaterThanCycle = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() <
+        boolean positiveDimensions = properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0 &&
+                properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0;
+        boolean positiveAgentsNumber = properties.get(Schema.SimulationMetadata.observersNum).intValue() > 0;
+        boolean positiveCycleAndDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() > 0 &&
+                properties.get(Schema.SimulationMetadata.awakenessDuration).intValue() > 0;
+        boolean positiveThresholdRadius = properties.get(Schema.SimulationMetadata.transmissionThresholdRadius).intValue() > 0;
+        boolean positiveRoundsNumber = properties.get(Schema.SimulationMetadata.roundsNum).intValue() > 0;
+        boolean cycleGreaterOrEqualDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() >=
                 properties.get(Schema.SimulationMetadata.awakenessDuration).intValue();
 
-        return !nonPositiveDimensions && !nonPositiveAgentsNumber && !nonPositiveCycleAndDuration && !nonPositiveThresholdRadius
-                && !nonPositiveRoundsNumber && !durationGreaterThanCycle;
+        return positiveDimensions && positiveAgentsNumber && positiveCycleAndDuration && positiveThresholdRadius
+                && positiveRoundsNumber && cycleGreaterOrEqualDuration;
     }
 
     private void enqueueTask(AppEngineHttpRequest httpRequest) throws IOException {
