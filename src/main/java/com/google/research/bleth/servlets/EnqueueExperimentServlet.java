@@ -112,6 +112,10 @@ public class EnqueueExperimentServlet extends HttpServlet {
         response.getWriter().println(legalConfigurationsCount + " tasks have been added to queue.");
     }
 
+    /**
+     * A class designated for storing numerical simulation parameters.
+     * PropertyWrapper stores the property name and value as an atomic unit.
+     */
     @AutoValue
     public static abstract class PropertyWrapper {
         public static PropertyWrapper create(String property, Number value) {
