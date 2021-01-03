@@ -35,6 +35,10 @@ import com.google.research.bleth.simulator.MovementStrategyFactory;
 import com.google.research.bleth.simulator.Schema;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -169,7 +173,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
     }
 
     private AppEngineHttpRequest toHttpRequest(List<PropertyWrapper> configuration,
-                                               int beaconsNum, Key experimentId, String experimentTitle) {
+                                               int beaconsNum, Key experimentId, String experimentTitle) throws UnsupportedEncodingException {
         Map<String, String> bodyMap = new HashMap<>();
         bodyMap.put(Schema.SimulationMetadata.description,
                 "Simulation attached to experiment: " + experimentTitle);
@@ -185,9 +189,18 @@ public class EnqueueExperimentServlet extends HttpServlet {
         return AppEngineHttpRequest.newBuilder()
                 .setRelativeUri("/new-experiment-simulation")
                 .setHttpMethod(HttpMethod.POST)
-                .putHeaders("Content-Type", "application/json;")
-                .setBody(ByteString.copyFromUtf8(gson.toJson(bodyMap)))
+                .putHeaders("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8;")
+                .setBody(ByteString.copyFromUtf8(toQueryString(bodyMap)))
                 .build();
+    }
+
+    private String toQueryString(Map<String, String> params) throws UnsupportedEncodingException {
+        List<String> keyValuePairs = new ArrayList<>();
+        for (String param : params.keySet()) {
+            keyValuePairs.add(URLEncoder.encode(param, StandardCharsets.UTF_8.toString()) + "=" +
+                    URLEncoder.encode(params.get(param), StandardCharsets.UTF_8.toString()));
+        }
+        return String.join("&", keyValuePairs);
     }
 
     private boolean validateArguments(List<PropertyWrapper> configuration) {
