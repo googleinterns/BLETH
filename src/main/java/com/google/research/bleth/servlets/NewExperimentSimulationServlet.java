@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * A servlet used for creating and running a new simulation associated to an experiment,
- * and updating experimentsToSimulations database entity.
+ * and updating experimentsToSimulations database entity (which maps experiments to their associated simulations).
  */
 @WebServlet("/new-experiment-simulation")
 public class NewExperimentSimulationServlet extends HttpServlet {
