@@ -208,18 +208,18 @@ public class EnqueueExperimentServlet extends HttpServlet {
         Map<String, Number> properties = configuration.stream()
                 .collect(Collectors.toMap(PropertyWrapper::property, PropertyWrapper::value));
 
-        boolean positiveDimensions = properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0 &&
+        boolean legalDimensions = properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0 &&
                 properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0;
-        boolean positiveAgentsNumber = properties.get(Schema.SimulationMetadata.observersNum).intValue() > 0;
-        boolean positiveCycleAndDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() > 0 &&
+        boolean legalAgentsNumber = properties.get(Schema.SimulationMetadata.observersNum).intValue() > 0;
+        boolean legalCycleAndDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() > 0 &&
                 properties.get(Schema.SimulationMetadata.awakenessDuration).intValue() > 0;
-        boolean positiveThresholdRadius = properties.get(Schema.SimulationMetadata.transmissionThresholdRadius).intValue() > 0;
-        boolean positiveRoundsNumber = properties.get(Schema.SimulationMetadata.roundsNum).intValue() > 0;
+        boolean legalThresholdRadius = properties.get(Schema.SimulationMetadata.transmissionThresholdRadius).intValue() > 0;
+        boolean legalRoundsNumber = properties.get(Schema.SimulationMetadata.roundsNum).intValue() > 0;
         boolean cycleGreaterOrEqualDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() >=
                 properties.get(Schema.SimulationMetadata.awakenessDuration).intValue();
 
-        return positiveDimensions && positiveAgentsNumber && positiveCycleAndDuration && positiveThresholdRadius
-                && positiveRoundsNumber && cycleGreaterOrEqualDuration;
+        return legalDimensions && legalAgentsNumber && legalCycleAndDuration && legalThresholdRadius
+                && legalRoundsNumber && cycleGreaterOrEqualDuration;
     }
 
     private void enqueueTask(AppEngineHttpRequest httpRequest) throws IOException {
