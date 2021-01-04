@@ -94,7 +94,6 @@ public class NewExperimentSimulationServlet extends HttpServlet {
             updateExperiment(simulation.getId(), experimentId);
         } catch (RuntimeException | EntityNotFoundException e) {
             responseText = e.getMessage();
-            response.getWriter().println(responseText);
         }
         response.getWriter().println(responseText);
     }
