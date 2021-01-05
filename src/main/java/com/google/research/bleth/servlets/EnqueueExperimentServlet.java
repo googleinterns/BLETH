@@ -27,9 +27,9 @@ import com.google.cloud.tasks.v2.CloudTasksClient;
 import com.google.cloud.tasks.v2.HttpMethod;
 import com.google.cloud.tasks.v2.QueueName;
 import com.google.cloud.tasks.v2.Task;
+import com.google.common.base.Ascii;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
 import com.google.protobuf.ByteString;
 import com.google.research.bleth.simulator.AwakenessStrategyFactory;
 import com.google.research.bleth.simulator.MovementStrategyFactory;
@@ -60,7 +60,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/enqueue-experiment")
 public class EnqueueExperimentServlet extends HttpServlet {
     private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    private static final Gson gson = new Gson();
     private static final MovementStrategyFactory.Type defaultMovementStrategy = MovementStrategyFactory.Type.RANDOM;
     private static final AwakenessStrategyFactory.Type defaultAwakenessStrategy = AwakenessStrategyFactory.Type.RANDOM;
     private static final String PROJECT_ID = "bleth-2020";
@@ -158,7 +157,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
     }
 
     private String capitalizeFirstChar(String s) {
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
+        return Ascii.toUpperCase(s.substring(0, 1)) + s.substring(1);
     }
 
     private AppEngineHttpRequest toHttpRequest(List<PropertyWrapper> configuration,
