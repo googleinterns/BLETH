@@ -17,7 +17,6 @@ package com.google.research.bleth.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.auto.value.AutoValue;
@@ -83,6 +82,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
 
         Entity experiment = new Entity(Schema.Experiment.entityKind);
         experiment.setProperty(Schema.Experiment.experimentTitle, experimentTitle);
+        experiment.setProperty(Schema.Experiment.simulationsLeft, configurations.size());
         Key experimentId = datastore.put(experiment);
         log.info("A new experiment entity with id " + KeyFactory.keyToString(experimentId) +
                 " was created and written to db.");
@@ -92,17 +92,6 @@ public class EnqueueExperimentServlet extends HttpServlet {
             log.info("A new AppEngineHttpRequest was created: " + httpRequest.toString());
             enqueueTask(httpRequest);
             log.info("A new Task was created and enqueued.");
-        }
-
-        try {
-            experiment = datastore.get(experimentId);
-            experiment.setProperty(Schema.Experiment.simulationsLeft, configurations.size());
-            datastore.put(experiment);
-            log.info("Experiment entity with id " + KeyFactory.keyToString(experimentId) +
-                    " was updated with simulationsLeft=" + configurations.size());
-        } catch (EntityNotFoundException e) {
-            response.setContentType("text/plain;");
-            response.getWriter().println(e.getMessage());
         }
 
         response.setContentType("text/plain;");
