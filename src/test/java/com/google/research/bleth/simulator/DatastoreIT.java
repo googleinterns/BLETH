@@ -226,7 +226,7 @@ public class DatastoreIT {
             }
 
             @Override
-            void validateArguments() { }
+            public void validateArguments() { }
 
             @Override
             void initializeObservers() { }

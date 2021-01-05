@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BLETH</title>
+    <script src='js/new_experiment.js'></script>
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
+</head>
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <a href="new_simulation.html">Create New Simulation</a>
+            <li><a href="simulations.html">Visualize Existing Simulation</a></li>
+            <li><span>Create New Experiment</span></li>
+        </ul>
+    </nav>
+</header>
+
+<body>
+    <h1>Create and Run a New BLETH Experiment</h1>
+    
+    <!-- A form for a new experiment initialization. -->
+    <form id="newExperimentForm">
+        
+        <label for="experimentTitle">Experiment Title</label><br>
+        <input type="text" id="experimentTitle" maxlength="50"><br>
+
+        <h4>Number of Rounds</h4>
+        <label for="lowerRoundsNum">Lower Bound</label><br>
+        <input type="number" id="lowerRoundsNum" value=100 max=100000 min=1><br>
+        <label for="upperRoundsNum">Upper Bound</label><br>
+        <input type="number" id="upperRoundsNum" value=100 max=100000 min=1><br>
+        <label for="stepRoundsNum">Step Size</label><br>
+        <input type="number" id="stepRoundsNum" value=5 max=100 min=1><br>
+
+        <h4>Number of Beacons (for each configuration)</h4>
+        <label for="beaconsNum">Number of Beacons</label><br>
+        <input type="number" id="beaconsNum" value=50 max=1000 min=1><br>
+        
+        <h4>Number of Observers</h4>
+        <label for="lowerObserversNum">Lower Bound</label><br>
+        <input type="number" id="lowerObserversNum" value=50 max=1000 min=1><br>
+        <label for="upperObserversNum">Upper Bound</label><br>
+        <input type="number" id="upperObserversNum" value=50 max=1000 min=1><br>
+        <label for="stepObserversNum">Step Size</label><br>
+        <input type="number" id="stepObserversNum" value=10 max=100 min=1><br>
+
+        <h4>Number of Rows</h4>
+        <label for="lowerRowsNum">Lower Bound</label><br>
+        <input type="number" id="lowerRowsNum" value=50 max=50 min=2><br>
+        <label for="upperRowsNum">Upper Bound</label><br>
+        <input type="number" id="upperRowsNum" value=100 max=50 min=2><br>
+        <label for="stepRowsNum">Step Size</label><br>
+        <input type="number" id="stepRowsNum" value=50 max=50 min=2><br>
+        
+        <h4>Number of Columns</h4>
+        <label for="lowerColsNum">Lower Bound</label><br>
+        <input type="number" id="lowerColsNum" value=50 max=50 min=2><br>
+        <label for="upperColsNum">Upper Bound</label><br>
+        <input type="number" id="upperColsNum" value=100 max=50 min=2><br>
+        <label for="stepColsNum">Step Size</label><br>
+        <input type="number" id="stepColsNum" value=50 max=50 min=2><br>
+
+        <h4>Awakeness Cycle</h4>
+        <label for="lowerAwakenessCycle">Lower Bound</label><br>
+        <input type="number" id="lowerAwakenessCycle" value=6 min=2><br>
+        <label for="upperAwakenessCycle">Upper Bound</label><br>
+        <input type="number" id="upperAwakenessCycle" value=10 min=2><br>
+        <label for="stepAwakenessCycle">Step Size</label><br>
+        <input type="number" id="stepAwakenessCycle" value=2 min=2><br>
+
+        <h4>Awakeness Duration</h4>
+        <label for="lowerAwakenessDuration">Lower Bound</label><br>
+        <input type="number" id="lowerAwakenessDuration" value=2 min=2><br>
+        <label for="upperAwakenessDuration">Upper Bound</label><br>
+        <input type="number" id="upperAwakenessDuration" value=6 min=2><br>
+        <label for="stepAwakenessDuration">Step Size</label><br>
+        <input type="number" id="stepAwakenessDuration" value=2 min=2><br>
+        
+        <h4>Transmission Threshold Radius</h4>
+        <label for="lowerTransmissionThresholdRadius">Lower Bound</label><br>
+        <input type="number" id="lowerTransmissionThresholdRadius" value=20 max=100 min=0.1 step=0.1><br>
+        <label for="upperTransmissionThresholdRadius">Upper Bound</label><br>
+        <input type="number" id="upperTransmissionThresholdRadius" value=100 max=100 min=0.1 step=0.1><br>
+        <label for="stepTransmissionThresholdRadius">Step Size</label><br>
+        <input type="number" id="stepTransmissionThresholdRadius" value=20 max=100 min=0.1 step=0.1><br>
+
+        <input type="button" value="Submit" onclick="createNewExperiment()">
+        
+      </form>
+</body>
+</html>
