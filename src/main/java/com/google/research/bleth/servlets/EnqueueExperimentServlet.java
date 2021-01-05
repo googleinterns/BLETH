@@ -14,6 +14,8 @@
 
 package com.google.research.bleth.servlets;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -130,7 +132,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
                 transmissionThresholdRadiusValues
         );
 
-        return configurations.stream().filter(this::validateArguments).collect(ImmutableSet.toImmutableSet());
+        return configurations.stream().filter(this::validateArguments).collect(toImmutableSet());
     }
 
     private Set<PropertyWrapper> createIntValues(HttpServletRequest request, String parameter) {
