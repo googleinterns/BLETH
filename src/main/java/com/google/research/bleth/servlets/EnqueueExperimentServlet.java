@@ -34,6 +34,7 @@ import com.google.protobuf.ByteString;
 import com.google.research.bleth.simulator.AwakenessStrategyFactory;
 import com.google.research.bleth.simulator.MovementStrategyFactory;
 import com.google.research.bleth.simulator.Schema;
+import com.google.research.bleth.simulator.TracingSimulation;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -67,6 +68,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
     private static final String QUEUE_ID = "simulations-queue";
     private static final String queueName = QueueName.of(PROJECT_ID, LOCATION_ID, QUEUE_ID).toString();
     private static final Logger log = Logger.getLogger(EnqueueExperimentServlet.class.getName());
+    private static final TracingSimulation.Builder validator = new TracingSimulation.Builder();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -192,21 +194,29 @@ public class EnqueueExperimentServlet extends HttpServlet {
     }
 
     private boolean validateArguments(List<PropertyWrapper> configuration) {
+        // TODO: refactor TracingSimulation.Builder.validateArguments() to be usable in this context.
         Map<String, Number> properties = configuration.stream()
                 .collect(Collectors.toMap(PropertyWrapper::property, PropertyWrapper::value));
 
-        boolean legalDimensions = properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0 &&
-                properties.get(Schema.SimulationMetadata.colsNum).intValue() > 0;
-        boolean legalAgentsNumber = properties.get(Schema.SimulationMetadata.observersNum).intValue() > 0;
-        boolean legalCycleAndDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() > 0 &&
-                properties.get(Schema.SimulationMetadata.awakenessDuration).intValue() > 0;
-        boolean legalThresholdRadius = properties.get(Schema.SimulationMetadata.transmissionThresholdRadius).intValue() > 0;
-        boolean legalRoundsNumber = properties.get(Schema.SimulationMetadata.roundsNum).intValue() > 0;
-        boolean cycleGreaterOrEqualDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() >=
-                properties.get(Schema.SimulationMetadata.awakenessDuration).intValue();
-
-        return legalDimensions && legalAgentsNumber && legalCycleAndDuration && legalThresholdRadius
-                && legalRoundsNumber && cycleGreaterOrEqualDuration;
+        try {
+            validator
+                    .setMaxNumberOfRounds(properties.get(Schema.SimulationMetadata.roundsNum).intValue())
+                    .setRowNum(properties.get(Schema.SimulationMetadata.rowsNum).intValue())
+                    .setColNum(properties.get(Schema.SimulationMetadata.colsNum).intValue())
+                    .setBeaconsNum(1) // dummy value for validation purpose only.
+                    .setObserversNum(properties.get(Schema.SimulationMetadata.observersNum).intValue())
+                    .setBeaconMovementStrategyType(defaultMovementStrategy)
+                    .setObserverMovementStrategyType(defaultMovementStrategy)
+                    .setAwakenessStrategyType(defaultAwakenessStrategy)
+                    .setAwakenessCycle(properties.get(Schema.SimulationMetadata.awakenessCycle).intValue())
+                    .setAwakenessDuration(properties.get(Schema.SimulationMetadata.awakenessDuration).intValue())
+                    .setTransmissionThresholdRadius(properties.get(Schema.SimulationMetadata.transmissionThresholdRadius)
+                            .doubleValue())
+                    .validateArguments();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private void enqueueTask(AppEngineHttpRequest httpRequest) throws IOException {

@@ -31,7 +31,7 @@ public class TracingSimulation extends AbstractSimulation {
     public static class Builder extends AbstractSimulation.Builder {
 
         @Override
-        void validateArguments() {
+        public void validateArguments() {
             checkArgument(rowNum > 0 && colNum > 0,
                     "Board dimensions must be positive.");
             checkArgument(beaconsNum > 0 && observersNum > 0,

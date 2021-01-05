@@ -382,7 +382,7 @@ public abstract class AbstractSimulation {
         }
 
         /** Validate all simulation builder arguments are legal, when a simulation is constructed using {@code buildNew()}. */
-        abstract void validateArguments();
+        abstract public void validateArguments();
 
         /**
          * Create and initialize simulation observers in random initial locations using a factory, and store them in observers container.
