@@ -209,7 +209,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
                 .collect(Collectors.toMap(PropertyWrapper::property, PropertyWrapper::value));
 
         boolean legalDimensions = properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0 &&
-                properties.get(Schema.SimulationMetadata.rowsNum).intValue() > 0;
+                properties.get(Schema.SimulationMetadata.colsNum).intValue() > 0;
         boolean legalAgentsNumber = properties.get(Schema.SimulationMetadata.observersNum).intValue() > 0;
         boolean legalCycleAndDuration = properties.get(Schema.SimulationMetadata.awakenessCycle).intValue() > 0 &&
                 properties.get(Schema.SimulationMetadata.awakenessDuration).intValue() > 0;
