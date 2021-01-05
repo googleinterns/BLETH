@@ -145,9 +145,9 @@ public class EnqueueExperimentServlet extends HttpServlet {
     }
 
     private Set<PropertyWrapper> createIntValues(HttpServletRequest request, String parameter) {
-        int lower = Integer.parseInt(request.getParameter("lower" + upperCaseFirstChar(parameter)));
-        int upper = Integer.parseInt(request.getParameter("upper" + upperCaseFirstChar(parameter)));
-        int step = Integer.parseInt(request.getParameter("step" + upperCaseFirstChar(parameter)));
+        int lower = Integer.parseInt(request.getParameter("lower" + capitalizeFirstChar(parameter)));
+        int upper = Integer.parseInt(request.getParameter("upper" + capitalizeFirstChar(parameter)));
+        int step = Integer.parseInt(request.getParameter("step" + capitalizeFirstChar(parameter)));
         Set<PropertyWrapper> values = new HashSet<>();
         for (int value = lower; value <= upper; value += step) {
             values.add(PropertyWrapper.create(parameter, value));
@@ -156,9 +156,9 @@ public class EnqueueExperimentServlet extends HttpServlet {
     }
 
     private Set<PropertyWrapper> createDoubleValues(HttpServletRequest request, String parameter) {
-        double lower = Double.parseDouble(request.getParameter("lower" + upperCaseFirstChar(parameter)));
-        double upper = Double.parseDouble(request.getParameter("upper" + upperCaseFirstChar(parameter)));
-        double step = Double.parseDouble(request.getParameter("step" + upperCaseFirstChar(parameter)));
+        double lower = Double.parseDouble(request.getParameter("lower" + capitalizeFirstChar(parameter)));
+        double upper = Double.parseDouble(request.getParameter("upper" + capitalizeFirstChar(parameter)));
+        double step = Double.parseDouble(request.getParameter("step" + capitalizeFirstChar(parameter)));
         Set<PropertyWrapper> values = new HashSet<>();
         for (double value = lower; value <= upper; value += step) {
             values.add(PropertyWrapper.create(parameter, value));
@@ -166,7 +166,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
         return ImmutableSet.copyOf(values);
     }
 
-    private String upperCaseFirstChar(String s) {
+    private String capitalizeFirstChar(String s) {
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
