@@ -77,8 +77,6 @@ public class EnqueueExperimentServlet extends HttpServlet {
             return;
         }
 
-        log.info("Enqueue Experiment Servlet invoked.");
-
         String experimentTitle = request.getParameter("experimentTitle");
         int beaconsNum = Integer.parseInt(request.getParameter("beaconsNum"));
         Set<List<PropertyWrapper>> configurations = createConfigurations(request);
