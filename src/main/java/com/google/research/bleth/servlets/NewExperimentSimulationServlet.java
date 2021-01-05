@@ -47,7 +47,7 @@ public class NewExperimentSimulationServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        log.info("Enqueue Experiment Servlet received an http POST request with params: "
+        log.info("New Experiment Simulation Servlet received an http POST request with params: "
         + request.getParameterMap().toString());
 
         // Get request parameters.
