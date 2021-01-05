@@ -85,7 +85,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
         experiment.setProperty(Schema.Experiment.experimentTitle, experimentTitle);
         Key experimentId = datastore.put(experiment);
         log.info("A new experiment entity with id " + KeyFactory.keyToString(experimentId) +
-                "was created and written to db.");
+                " was created and written to db.");
 
         int legalConfigurationsCount = configurations.size();
         for (List<PropertyWrapper> configuration : configurations) {
@@ -100,7 +100,7 @@ public class EnqueueExperimentServlet extends HttpServlet {
             experiment.setProperty(Schema.Experiment.simulationsLeft, legalConfigurationsCount);
             datastore.put(experiment);
             log.info("Experiment entity with id " + KeyFactory.keyToString(experimentId) +
-                    "was updated with simulationsLeft=" + legalConfigurationsCount);
+                    " was updated with simulationsLeft=" + legalConfigurationsCount);
         } catch (EntityNotFoundException e) {
             response.setContentType("text/plain;");
             response.getWriter().println(e.getMessage());
