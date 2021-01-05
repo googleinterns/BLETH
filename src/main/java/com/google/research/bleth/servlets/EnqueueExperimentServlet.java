@@ -87,7 +87,6 @@ public class EnqueueExperimentServlet extends HttpServlet {
         log.info("A new experiment entity with id " + KeyFactory.keyToString(experimentId) +
                 " was created and written to db.");
 
-        int legalConfigurationsCount = configurations.size();
         for (List<PropertyWrapper> configuration : configurations) {
             AppEngineHttpRequest httpRequest = toHttpRequest(configuration, beaconsNum, experimentId, experimentTitle);
             log.info("A new AppEngineHttpRequest was created: " + httpRequest.toString());
@@ -97,17 +96,17 @@ public class EnqueueExperimentServlet extends HttpServlet {
 
         try {
             experiment = datastore.get(experimentId);
-            experiment.setProperty(Schema.Experiment.simulationsLeft, legalConfigurationsCount);
+            experiment.setProperty(Schema.Experiment.simulationsLeft, configurations.size());
             datastore.put(experiment);
             log.info("Experiment entity with id " + KeyFactory.keyToString(experimentId) +
-                    " was updated with simulationsLeft=" + legalConfigurationsCount);
+                    " was updated with simulationsLeft=" + configurations.size());
         } catch (EntityNotFoundException e) {
             response.setContentType("text/plain;");
             response.getWriter().println(e.getMessage());
         }
 
         response.setContentType("text/plain;");
-        response.getWriter().println(legalConfigurationsCount + " tasks have been added to queue.");
+        response.getWriter().println(configurations.size() + " tasks have been added to queue.");
     }
 
     /**
