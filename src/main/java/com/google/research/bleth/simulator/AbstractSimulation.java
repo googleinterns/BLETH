@@ -18,6 +18,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
@@ -42,6 +43,20 @@ public abstract class AbstractSimulation {
     private final HashMap<String, Double> distancesStats = new HashMap<>();
     private final HashMap<Beacon, ObservedInterval.Builder> beaconsObservedCurrentInterval = new HashMap<>();
     private final LinkedListMultimap<Beacon, ObservedInterval> beaconsObservedIntervals = LinkedListMultimap.create();
+
+    /** Returns simulation's observed intervals map.
+     * @return
+     * */
+    ImmutableMultimap<Integer, ObservedInterval> getBeaconsObservedIntervals() {
+        LinkedListMultimap<Integer, ObservedInterval> updatedBeaconsObservedIntervals = LinkedListMultimap.create();
+        beaconsObservedIntervals.forEach((beacon, interval) -> {
+            updatedBeaconsObservedIntervals.put(beacon.getId(), interval);
+        });
+//        beaconsObservedCurrentInterval.forEach((beacon, openInterval) -> {
+//            updatedBeaconsObservedIntervals.put(beacon.getId(), openInterval.build());
+//        });
+        return ImmutableMultimap.copyOf(updatedBeaconsObservedIntervals);
+    }
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {

@@ -155,6 +155,7 @@ public class Queries {
             delete(Schema.StatisticsState.entityKindDistance, Schema.StatisticsState.simulationId, simulationId);
             delete(Schema.BoardState.entityKindReal, Schema.BoardState.simulationId, simulationId);
             delete(Schema.BoardState.entityKindEstimated, Schema.BoardState.simulationId, simulationId);
+            //TODO: add metadata and intervals stats to deletion txn.
             datastore.delete(KeyFactory.stringToKey(simulationId));
             deleteTransaction.commit();
         } finally {

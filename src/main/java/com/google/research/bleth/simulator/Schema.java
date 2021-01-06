@@ -60,8 +60,9 @@ public class Schema {
         public static final String maximumLengthUnobservedInterval = "maximumLengthUnobservedInterval";
         public static final String averageLengthObservedInterval = "averageLengthObservedInterval";
         public static final String averageLengthUnobservedInterval = "averageLengthUnobservedInterval";
-        public static final String intervalSerialNum = "intervalSerialNum";
-        public static final String intervalDuration = "intervalDuration";
+        public static final String intervalStart = "intervalStart";
+        public static final String intervalEnd = "intervalEnd";
+        public static final String intervalObserved = "intervalObserved";
     }
 
     /** A class providing a single access point for the Experiment entity schema. */

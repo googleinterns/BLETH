@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.dev.LocalDatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
@@ -377,6 +378,35 @@ public class TracingSimulationIT {
         Table<String, String, Double> observedStats = StatisticsState.readBeaconsObservedStats("fake");
 
         assertThat(observedStats).isEmpty();
+    }
+
+    @Test
+    public void compareIntervalStatsFromSimulationAndFromDatabase() {
+        int roundsNum = 5;
+        int rowsNum = 5;
+        int colsNum = 5;
+        int beaconsNum = 10;
+        int observersNum = 10;
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum)
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(MOVE_UP)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+        ImmutableMultimap<Integer, ObservedInterval> expected = simulation.getBeaconsObservedIntervals();
+        ImmutableMultimap<Integer, ObservedInterval> actual = StatisticsState.readIntervalStats(simulation.getId());
+
+        assertThat(actual).containsExactlyEntriesIn(expected);
     }
 
     @After
