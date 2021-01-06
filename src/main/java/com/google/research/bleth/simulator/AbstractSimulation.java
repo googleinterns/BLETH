@@ -44,17 +44,12 @@ public abstract class AbstractSimulation {
     private final HashMap<Beacon, ObservedInterval.Builder> beaconsObservedCurrentInterval = new HashMap<>();
     private final LinkedListMultimap<Beacon, ObservedInterval> beaconsObservedIntervals = LinkedListMultimap.create();
 
-    /** Returns simulation's observed intervals map.
-     * @return
-     * */
+    /** Returns simulation's observed intervals map. */
     ImmutableMultimap<Integer, ObservedInterval> getBeaconsObservedIntervals() {
         LinkedListMultimap<Integer, ObservedInterval> updatedBeaconsObservedIntervals = LinkedListMultimap.create();
         beaconsObservedIntervals.forEach((beacon, interval) -> {
             updatedBeaconsObservedIntervals.put(beacon.getId(), interval);
         });
-//        beaconsObservedCurrentInterval.forEach((beacon, openInterval) -> {
-//            updatedBeaconsObservedIntervals.put(beacon.getId(), openInterval.build());
-//        });
         return ImmutableMultimap.copyOf(updatedBeaconsObservedIntervals);
     }
 

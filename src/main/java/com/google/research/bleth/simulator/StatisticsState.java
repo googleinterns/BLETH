@@ -55,10 +55,7 @@ public class StatisticsState {
                    beaconsObservedStats, beaconsObservedIntervals);
     }
 
-    /**
-     * Create and write datastore entities storing beacons' observed intervals.
-     * Positive duration indicates observed interval, negative duration indicates unobserved intervals.
-     */
+    /** Create and write datastore entities storing beacons' observed intervals. */
     public void writeIntervalStats() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -119,7 +116,7 @@ public class StatisticsState {
     /**
      * Read from the db beacons' observed intervals.
      * @param simulationId is the simulation id.
-     * @return a linked list multimap storing all beacons' observed intervals.
+     * @return an immutable multimap storing all beacons' observed intervals.
      */
     public static ImmutableMultimap<Integer, ObservedInterval> readIntervalStats(String simulationId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
