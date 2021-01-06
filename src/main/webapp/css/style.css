@@ -75,6 +75,21 @@ nav span, nav a {
     background-color:  rgb(166, 182, 189);
 }
 
+/* experiments' table */
+#experiments-table td {
+    font-size: 90%;
+    border: 2px solid rgb(166, 182, 189);
+    word-break: break-word;
+}
+
+#experiments-table tr:nth-child(1) {
+    font-weight: bold;
+}
+
+#experiments-table tr:nth-child(even) {
+    background-color:  rgb(166, 182, 189);
+}
+
 /* stats table */
 table.stats-table td {
     border: 2px solid black;
