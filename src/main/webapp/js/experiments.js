@@ -49,7 +49,7 @@ function displayExperimentsAsTable(experiments) {
         const exportDataButton = createExportDataButton(id); 
         cell.appendChild(exportDataButton);
         row.insertCell(1).innerHTML = id;
-        row.insertCell(1).innerHTML = title;
+        row.insertCell(2).innerHTML = title;
     }
 }
 
