@@ -51,6 +51,7 @@ public class Schema {
         public static final String simulationId = "simulationId";
         public static final String entityKindDistance = "DistanceStats";
         public static final String entityKindBeaconsObserved = "BeaconsObservedStats";
+        public static final String entityKindBeaconsObservedIntervals = "BeaconsObservedIntervals";
         public static final String beaconId = "beaconId";
         public static final String observedPercent = "observedPercent";
         public static final String minimumLengthObservedInterval = "minimumLengthObservedInterval";
@@ -59,6 +60,8 @@ public class Schema {
         public static final String maximumLengthUnobservedInterval = "maximumLengthUnobservedInterval";
         public static final String averageLengthObservedInterval = "averageLengthObservedInterval";
         public static final String averageLengthUnobservedInterval = "averageLengthUnobservedInterval";
+        public static final String intervalSerialNum = "intervalSerialNum";
+        public static final String intervalDuration = "intervalDuration";
     }
 
     /** A class providing a single access point for the Experiment entity schema. */

@@ -24,8 +24,10 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
 import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
+
 import java.util.Map;
 
 /** A mediator between the statistics the simulation gathered and their storage on datastore. */
@@ -33,6 +35,7 @@ public class StatisticsState {
     private final String simulationId;
     private final Map<String, Double> distanceStats;
     private final Table<String, String, Double> beaconsObservedStats;
+    private final LinkedListMultimap<Integer, ObservedInterval> beaconsObservedIntervals;
 
     /**
      * Create a new StatisticsState.
@@ -41,10 +44,35 @@ public class StatisticsState {
      * @return a new instance of StatisticsState
      */
     public static StatisticsState create(String simulationId, Map<String, Double> distanceStats,
-                                         Table<String, String, Double> beaconsObservedStats) {
+                                         Table<String, String, Double> beaconsObservedStats,
+                                         LinkedListMultimap<Integer, ObservedInterval> beaconsObservedIntervals) {
         checkNotNull(distanceStats);
         checkNotNull(beaconsObservedStats);
-        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats), beaconsObservedStats);
+        checkNotNull(beaconsObservedIntervals);
+        return new StatisticsState(simulationId, ImmutableMap.copyOf(distanceStats),
+                   beaconsObservedStats, beaconsObservedIntervals);
+    }
+
+    /**
+     * Create and write datastore entities storing beacons' observed intervals.
+     * Positive duration indicates observed interval, negative duration indicates unobserved intervals.
+     */
+    public void writeIntervalStats() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        for (Integer beaconId : beaconsObservedIntervals.keySet()) {
+            int intervalSerialNum = 0;
+            for (ObservedInterval interval : beaconsObservedIntervals.get(beaconId)) {
+                int observed = interval.observed() ? 1 : -1;
+                Entity entity = new Entity(Schema.StatisticsState.entityKindBeaconsObservedIntervals);
+                entity.setProperty(Schema.StatisticsState.simulationId, simulationId);
+                entity.setProperty(Schema.StatisticsState.beaconId, beaconId);
+                entity.setProperty(Schema.StatisticsState.intervalSerialNum, intervalSerialNum);
+                entity.setProperty(Schema.StatisticsState.intervalDuration, observed * interval.duration());
+                datastore.put(entity);
+                intervalSerialNum++;
+            }
+        }
     }
 
     /**
@@ -135,9 +163,11 @@ public class StatisticsState {
     }
 
     private StatisticsState(String simulationId, Map<String, Double> distanceStats,
-                            Table<String, String, Double> beaconsObservedStats) {
+                            Table<String, String, Double> beaconsObservedStats,
+                            LinkedListMultimap<Integer, ObservedInterval> beaconsObservedIntervals) {
         this.simulationId = simulationId;
         this.distanceStats = distanceStats;
         this.beaconsObservedStats = beaconsObservedStats;
+        this.beaconsObservedIntervals = beaconsObservedIntervals;
     }
 }

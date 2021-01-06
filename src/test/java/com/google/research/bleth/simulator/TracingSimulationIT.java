@@ -9,18 +9,20 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
 import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.Test;
-import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TracingSimulationIT {
@@ -250,9 +252,10 @@ public class TracingSimulationIT {
     @Test
     public void writeDistancesStatisticsOfSameSimulationTwiceThrowsException() {
         Map<String, Double> fakeStats = new HashMap<>();
+        LinkedListMultimap<Integer, ObservedInterval> fakeObservedIntervals = LinkedListMultimap.create();
         Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
         fakeStats.put("max", 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats, fakeObservedIntervals);
 
         statistics.writeDistancesStats();
 
@@ -358,8 +361,9 @@ public class TracingSimulationIT {
     public void writeObservedStatisticsOfSameSimulationTwiceThrowsException() {
         Map<String, Double> fakeStats = new HashMap<>();
         Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
+        LinkedListMultimap<Integer, ObservedInterval> fakeObservedIntervals = LinkedListMultimap.create();
         fakeObservedStats.put("0", Schema.StatisticsState.observedPercent, 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats, fakeObservedIntervals);
 
         statistics.writeBeaconsObservedStats();
 
