@@ -38,6 +38,8 @@ public class StatisticsState {
     private final Map<String, Double> distanceStats;
     private final Table<String, String, Double> beaconsObservedStats;
     private final LinkedListMultimap<Integer, ObservedInterval> beaconsObservedIntervals;
+    private static final String OBSERVED = "OBSERVED";
+    private static final String NOT_OBSERVED = "NOT_OBSERVED";
 
     /**
      * Create a new StatisticsState.
@@ -66,7 +68,7 @@ public class StatisticsState {
                 entity.setProperty(Schema.StatisticsState.beaconId, beaconId);
                 entity.setProperty(Schema.StatisticsState.intervalStart, interval.start());
                 entity.setProperty(Schema.StatisticsState.intervalEnd, interval.end());
-                entity.setProperty(Schema.StatisticsState.intervalObserved, interval.observed() ? 1 : 0);
+                entity.setProperty(Schema.StatisticsState.intervalObserved, interval.observed() ? OBSERVED : NOT_OBSERVED);
                 datastore.put(entity);
             }
         }
@@ -196,7 +198,7 @@ public class StatisticsState {
     private static ObservedInterval extractObservedInterval(Entity entity) {
         int start = ((Long) entity.getProperty(Schema.StatisticsState.intervalStart)).intValue();
         int end = ((Long) entity.getProperty(Schema.StatisticsState.intervalEnd)).intValue();
-        boolean observed = ((Long) entity.getProperty(Schema.StatisticsState.intervalObserved)) == 1;
+        boolean observed = entity.getProperty(Schema.StatisticsState.intervalObserved).equals(OBSERVED);
         return new AutoValue_ObservedInterval.Builder()
                 .setObserved(observed)
                 .setStart(start)
