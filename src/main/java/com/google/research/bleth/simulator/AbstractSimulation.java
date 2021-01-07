@@ -18,9 +18,11 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,15 @@ public abstract class AbstractSimulation {
     private final HashMap<String, Double> distancesStats = new HashMap<>();
     private final HashMap<Beacon, ObservedInterval.Builder> beaconsObservedCurrentInterval = new HashMap<>();
     private final LinkedListMultimap<Beacon, ObservedInterval> beaconsObservedIntervals = LinkedListMultimap.create();
+
+    /** Returns simulation's observed intervals map. */
+    ImmutableMultimap<Integer, ObservedInterval> getBeaconsObservedIntervals() {
+        LinkedListMultimap<Integer, ObservedInterval> updatedBeaconsObservedIntervals = LinkedListMultimap.create();
+        beaconsObservedIntervals.forEach((beacon, interval) -> {
+            updatedBeaconsObservedIntervals.put(beacon.getId(), interval);
+        });
+        return ImmutableMultimap.copyOf(updatedBeaconsObservedIntervals);
+    }
 
     /** Returns a static snapshot of the real board at the current round. */
     BoardState getRealBoardState() {
@@ -160,9 +171,14 @@ public abstract class AbstractSimulation {
 
         Table<String, String, Double> observedStats = calculateObservedStats(observedIntervals, unobservedIntervals);
 
-        StatisticsState statsState = StatisticsState.create(id, distancesStats, observedStats);
+        LinkedListMultimap<Integer, ObservedInterval> beaconIdsObservedIntervals = LinkedListMultimap.create();
+        beaconsObservedIntervals.forEach((beacon, interval) -> {
+                beaconIdsObservedIntervals.put(beacon.getId(), interval);
+        });
+        StatisticsState statsState = StatisticsState.create(id, distancesStats, observedStats, beaconIdsObservedIntervals);
         statsState.writeDistancesStats();
         statsState.writeBeaconsObservedStats();
+        statsState.writeIntervalStats();
     }
 
     /** An abstract builder class designed to separate the construction of a simulation from its representation. */

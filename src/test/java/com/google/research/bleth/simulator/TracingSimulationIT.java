@@ -8,19 +8,22 @@ import com.google.appengine.api.datastore.dev.LocalDatastoreService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
 import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.Test;
-import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TracingSimulationIT {
@@ -250,9 +253,10 @@ public class TracingSimulationIT {
     @Test
     public void writeDistancesStatisticsOfSameSimulationTwiceThrowsException() {
         Map<String, Double> fakeStats = new HashMap<>();
+        LinkedListMultimap<Integer, ObservedInterval> fakeObservedIntervals = LinkedListMultimap.create();
         Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
         fakeStats.put("max", 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats, fakeObservedIntervals);
 
         statistics.writeDistancesStats();
 
@@ -358,8 +362,9 @@ public class TracingSimulationIT {
     public void writeObservedStatisticsOfSameSimulationTwiceThrowsException() {
         Map<String, Double> fakeStats = new HashMap<>();
         Table<String, String, Double> fakeObservedStats = HashBasedTable.create();
+        LinkedListMultimap<Integer, ObservedInterval> fakeObservedIntervals = LinkedListMultimap.create();
         fakeObservedStats.put("0", Schema.StatisticsState.observedPercent, 0D);
-        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats);
+        StatisticsState statistics = StatisticsState.create("1", fakeStats, fakeObservedStats, fakeObservedIntervals);
 
         statistics.writeBeaconsObservedStats();
 
@@ -373,6 +378,35 @@ public class TracingSimulationIT {
         Table<String, String, Double> observedStats = StatisticsState.readBeaconsObservedStats("fake");
 
         assertThat(observedStats).isEmpty();
+    }
+
+    @Test
+    public void compareIntervalStatsFromSimulationAndFromDatabase() {
+        int roundsNum = 5;
+        int rowsNum = 5;
+        int colsNum = 5;
+        int beaconsNum = 10;
+        int observersNum = 10;
+
+        AbstractSimulation simulation = new TracingSimulation.Builder()
+                .setMaxNumberOfRounds(roundsNum)
+                .setRowNum(rowsNum)
+                .setColNum(colsNum)
+                .setBeaconsNum(beaconsNum)
+                .setObserversNum(observersNum)
+                .setTransmissionThresholdRadius(TRANSMISSION_THRESHOLD_RADIUS_EQUALS_ONE)
+                .setBeaconMovementStrategyType(MOVE_UP)
+                .setObserverMovementStrategyType(MOVE_UP)
+                .setAwakenessCycle(AWAKENESS_CYCLE_EQUALS_TWO)
+                .setAwakenessDuration(AWAKENESS_DURATION_EQUALS_ONE)
+                .setAwakenessStrategyType(AwakenessStrategyFactory.Type.FIXED)
+                .build();
+
+        simulation.run();
+        ImmutableMultimap<Integer, ObservedInterval> expected = simulation.getBeaconsObservedIntervals();
+        ImmutableMultimap<Integer, ObservedInterval> actual = StatisticsState.readIntervalStats(simulation.getId());
+
+        assertThat(actual).containsExactlyEntriesIn(expected);
     }
 
     @After
