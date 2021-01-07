@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>BLETH</title>
-    <script type='module' src='js/simulations.js'></script>
+    <script type='module' src='js/experiments.js'></script>
     <link rel="stylesheet" href="./css/style.css" type="text/css">
 </head>
 
@@ -12,15 +12,15 @@
         <ul>
             <li><a href="index.html">Home</a></li>
             <li><a href="new_simulation.html">Create New Simulation</a></li>
-            <li><span>Visualize Existing Simulation</span></li>
+            <li><a href="simulations.html">Visualize Existing Simulation</a></li>
             <li><a href="new_experiment.html">Create New Experiment</a></li>
-            <li><a href="experiments.html">Export Experiment Data</a></li>
+            <li><span>Export Experiment Data</span></li>
         </ul>
     </nav>
 </header>
 
-<body onload="retrieveSimulations()">
-    <h1>Choose a Simulation to Visualize</h1>
-    <table id="simulations-table"></table>
+<body onload="retrieveExperiments()">
+    <h1>Export Experiment Raw Data</h1>
+    <table id="experiments-table"></table>
 </body>
 </html>

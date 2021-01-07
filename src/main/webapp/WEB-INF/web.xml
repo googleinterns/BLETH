@@ -46,6 +46,10 @@
         <servlet-name>NewExperimentSimulationServlet</servlet-name>
         <servlet-class>com.google.research.bleth.servlets.NewExperimentSimulationServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ListExperimentsServlet</servlet-name>
+        <servlet-class>com.google.research.bleth.servlets.ListExperimentsServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>ReadBoardStateServlet</servlet-name>
@@ -86,6 +90,10 @@
     <servlet-mapping>
         <servlet-name>NewExperimentSimulationServlet</servlet-name>
         <url-pattern>/new-experiment-simulation</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListExperimentsServlet</servlet-name>
+        <url-pattern>/list-experiments</url-pattern>
     </servlet-mapping>
 
 </web-app>
