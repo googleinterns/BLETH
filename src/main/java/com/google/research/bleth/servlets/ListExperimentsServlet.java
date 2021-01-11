@@ -23,7 +23,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.research.bleth.simulator.Schema;
-
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

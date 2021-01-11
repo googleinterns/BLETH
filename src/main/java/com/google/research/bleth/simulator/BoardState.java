@@ -26,7 +26,6 @@ import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.research.bleth.exceptions.BoardStateAlreadyExistsException;
 import com.google.research.bleth.exceptions.ExceedingRoundException;
-
 import java.util.ArrayList;
 
 /**

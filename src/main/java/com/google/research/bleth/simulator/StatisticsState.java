@@ -29,7 +29,6 @@ import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Table;
 import com.google.research.bleth.exceptions.StatisticsAlreadyExistException;
-
 import java.util.Map;
 
 /** A mediator between the statistics the simulation gathered and their storage on datastore. */

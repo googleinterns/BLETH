@@ -23,7 +23,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.ImmutableMap;
 import com.google.research.bleth.utils.Queries;
-
 import java.util.Optional;
 
 /** A class for storing, reading and writing simulation metadata. */

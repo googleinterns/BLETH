@@ -15,7 +15,6 @@
 package com.google.research.bleth.simulator;
 
 import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

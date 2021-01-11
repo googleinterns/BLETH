@@ -20,7 +20,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.Multimap;
 import com.google.research.bleth.exceptions.ExceedingRoundException;
-
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

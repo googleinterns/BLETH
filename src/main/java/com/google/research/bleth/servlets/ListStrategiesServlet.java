@@ -17,7 +17,6 @@ package com.google.research.bleth.servlets;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.research.bleth.simulator.StrategiesMapper;
-
 import java.io.IOException;
 import java.util.HashMap;
 import javax.servlet.annotation.WebServlet;

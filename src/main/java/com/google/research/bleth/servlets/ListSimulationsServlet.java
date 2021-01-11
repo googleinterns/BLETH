@@ -22,7 +22,6 @@ import com.google.gson.JsonElement;
 import com.google.research.bleth.exceptions.MissingSortingParameterException;
 import com.google.research.bleth.simulator.SimulationMetadata;
 import com.google.research.bleth.utils.Queries;
-
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.annotation.WebServlet;

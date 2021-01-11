@@ -17,12 +17,6 @@ import com.google.research.bleth.simulator.AwakenessStrategyFactory;
 import com.google.research.bleth.simulator.MovementStrategyFactory;
 import com.google.research.bleth.simulator.Schema;
 import com.google.research.bleth.simulator.TracingSimulation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueriesIT {

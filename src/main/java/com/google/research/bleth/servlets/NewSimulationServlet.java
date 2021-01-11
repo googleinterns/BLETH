@@ -19,7 +19,6 @@ import com.google.research.bleth.simulator.AwakenessStrategyFactory;
 import com.google.research.bleth.simulator.MovementStrategyFactory;
 import com.google.research.bleth.simulator.StrategiesMapper;
 import com.google.research.bleth.simulator.TracingSimulation;
-
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

@@ -26,7 +26,6 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.common.collect.Iterables;
 import com.google.research.bleth.simulator.Schema;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

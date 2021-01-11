@@ -1,7 +1,6 @@
 package com.google.research.bleth.servlets;
 
 import com.google.research.bleth.utils.Queries;
-
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

@@ -35,7 +35,6 @@ import com.google.research.bleth.simulator.AwakenessStrategyFactory;
 import com.google.research.bleth.simulator.MovementStrategyFactory;
 import com.google.research.bleth.simulator.Schema;
 import com.google.research.bleth.simulator.TracingSimulation;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -52,7 +51,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 
 /**
  * A servlet used for enqueuing multiple tasks targeted at endpoint '/new-experiment-simulation',
