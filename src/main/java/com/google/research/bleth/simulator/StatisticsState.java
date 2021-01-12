@@ -126,9 +126,12 @@ public class StatisticsState {
 
         for (int beaconId = 0; beaconId < beaconsNum; beaconId++) {
             Query intervalsQuery = new Query(Schema.StatisticsState.entityKindBeaconsObservedIntervals);
-            Query.Filter filter = new Query.FilterPredicate(Schema.StatisticsState.beaconId,
+            Query.Filter filterByBeaconId = new Query.FilterPredicate(Schema.StatisticsState.beaconId,
                     Query.FilterOperator.EQUAL, beaconId);
-            intervalsQuery.setFilter(filter);
+            Query.Filter filterBySimulationId = new Query.FilterPredicate(Schema.StatisticsState.simulationId,
+                    Query.FilterOperator.EQUAL, simulationId);
+            Query.CompositeFilter composedQueryFilter = Query.CompositeFilterOperator.and(filterByBeaconId, filterBySimulationId);
+            intervalsQuery.setFilter(composedQueryFilter);
             intervalsQuery.addSort(Schema.StatisticsState.intervalStart, Query.SortDirection.ASCENDING);
             PreparedQuery intervalsPreparedQuery = datastore.prepare(intervalsQuery);
             for (Entity entity : intervalsPreparedQuery.asIterable()) {
