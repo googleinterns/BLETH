@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.gson.Gson;
@@ -28,7 +29,6 @@ import com.google.research.bleth.simulator.Schema;
 import com.google.research.bleth.simulator.SimulationMetadata;
 import com.google.research.bleth.simulator.StatisticsState;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,9 +79,10 @@ public class ReadExperimentStatisticsServlet extends HttpServlet {
     private static JsonElement serializeObservedIntervalsMap(ImmutableMultimap<Integer, ObservedInterval> observedIntervalsMap) {
         ImmutableMap.Builder<Integer, JsonArray> res = new ImmutableMap.Builder<>();
         for (Integer beaconId : observedIntervalsMap.keySet()) {
-            List<JsonElement> currentBeaconIntervals = new ArrayList<>();
-            observedIntervalsMap.get(beaconId).forEach(interval -> currentBeaconIntervals.add(serializeObservedInterval(interval)));
-            res.put(beaconId, gson.toJsonTree(currentBeaconIntervals).getAsJsonArray());
+            List<JsonElement> serializedBeaconIntervals = observedIntervalsMap.get(beaconId).stream()
+                    .map(ReadExperimentStatisticsServlet::serializeObservedInterval)
+                    .collect(ImmutableList.toImmutableList());
+            res.put(beaconId, gson.toJsonTree(serializedBeaconIntervals).getAsJsonArray());
         }
         return gson.toJsonTree(res.build());
     }
