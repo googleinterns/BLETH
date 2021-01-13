@@ -88,7 +88,7 @@ function displayExperimentsAsTable(experiments) {
  */
 function createExportDataButton(id, title) {
     var exportDataButton = document.createElement('button');
-    exportDataButton.innerText = 'Export';
+    exportDataButton.innerText = 'Download';
     exportDataButton.addEventListener('click', () => {
         retrieveExperimentStats(id, title);
     });
