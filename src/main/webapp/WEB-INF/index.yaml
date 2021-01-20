@@ -1,0 +1,15 @@
+indexes:
+
+  - kind: BeaconsObservedIntervals
+    ancestor: no
+    properties:
+      - name: beaconId
+      - name: intervalStart
+        direction: asc
+
+  - kind: BeaconsObservedIntervals
+    ancestor: no
+    properties:
+      - name: simulationId
+      - name: intervalStart
+        direction: asc
