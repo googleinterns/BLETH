@@ -45,11 +45,11 @@ public class ReadExperimentStatisticsServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ImmutableMap.Builder<String, JsonElement> res = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<String, JsonElement> res = ImmutableMap.builder();
         String experimentId = request.getParameter("experimentId");
 
         for (String simulationId : retrieveSimulations(experimentId)) {
-            ImmutableMap.Builder<String, JsonElement> simulationJson = new ImmutableMap.Builder<>(); // Stores metadata and stats.
+            ImmutableMap.Builder<String, JsonElement> simulationJson = ImmutableMap.builder(); // Stores metadata and stats.
             SimulationMetadata metadata = SimulationMetadata.read(simulationId);
             simulationJson.put(Schema.SimulationMetadata.entityKind, gson.toJsonTree(metadata));
             Map<String, Double> distancesStats = StatisticsState.readDistancesStats(simulationId);
@@ -77,7 +77,7 @@ public class ReadExperimentStatisticsServlet extends HttpServlet {
     }
 
     private static JsonElement serializeObservedIntervalsMap(ImmutableMultimap<Integer, ObservedInterval> observedIntervalsMap) {
-        ImmutableMap.Builder<Integer, JsonArray> res = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<Integer, JsonArray> res = ImmutableMap.builder();
         for (Integer beaconId : observedIntervalsMap.keySet()) {
             List<JsonElement> serializedBeaconIntervals = observedIntervalsMap.get(beaconId).stream()
                     .map(ReadExperimentStatisticsServlet::serializeObservedInterval)
@@ -88,7 +88,7 @@ public class ReadExperimentStatisticsServlet extends HttpServlet {
     }
 
     private static JsonElement serializeObservedInterval(ObservedInterval interval) {
-        ImmutableMap.Builder<String, Integer> res = new ImmutableMap.Builder<>();
+        ImmutableMap.Builder<String, Integer> res = ImmutableMap.builder();
         int observed = interval.observed() ? 1 : -1;
         res.put("start", interval.start());
         res.put("end", interval.end());
